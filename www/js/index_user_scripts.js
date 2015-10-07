@@ -56,7 +56,7 @@
             console.log("modelo=" + modelo);
             console.log("serie=" + serie);
             console.log("chave=" + chave);
-            if (getMainConfig()) {
+            if (getMainConfig(0)) {
                 document.getElementById("modelo").value=Cookies["modelo"];
                 document.getElementById("serie").value=Cookies["serie"];
                 writeMainConfig();
@@ -189,7 +189,7 @@ Cookies["nro_sensores"]=document.getElementById("nro_sensores").value;
     $(document).on("click","#chartx61_div", function(evt)
     {
         var txt;
-        if (typeof(json_feed.nodes_feed1[0]) === "undefined") {
+        if (json_feed.nodes_feed1[0] == undefined) {
             txt="sem dados";
         } else {
         var d=moment(new Date(json_feed.nodes_feed1[0].created_at));
@@ -210,7 +210,7 @@ Cookies["nro_sensores"]=document.getElementById("nro_sensores").value;
     $(document).on("click","#chartx71_div", function(evt)
     {
         var txt;
-        if (typeof(json_feed.nodes_feed2[0]) === "undefined") {
+        if (json_feed.nodes_feed2[0] == undefined) {
             txt="sem dados";
         } else {
         var d=moment(new Date(json_feed.nodes_feed2[0].created_at));
@@ -230,7 +230,7 @@ Cookies["nro_sensores"]=document.getElementById("nro_sensores").value;
     $(document).on("click","#chartx81_div", function(evt)
     {
         var txt;
-        if (typeof(json_feed.nodes_feed3[0]) === "undefined") {
+        if (json_feed.nodes_feed3[0] == undefined) {
             txt="sem dados";
         } else {
         var d=moment(new Date(json_feed.nodes_feed3[0].created_at));
@@ -624,7 +624,6 @@ Cookies["nro_sensores"]=document.getElementById("nro_sensores").value;
         /* button  #btn_mod_extras */
     $(document).on("click", "#btn_mod_extras", function(evt)
     {
-        console.log($("#btn_mod1").css("display"));
         if ($("#btn_mod1").css("display") != "none")
             activate_subpage("#uib_page_mod1");
         else
