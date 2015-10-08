@@ -103,9 +103,14 @@
         $(document).on("click", "#btn_gravar_ts", function (evt) {
             Cookies["api_key"] = document.getElementById("api_key").value;
             Cookies["canal"] = document.getElementById("canal").value;
-            Cookies["nro_sensores"] = document.getElementById("nro_sensores").value;
+            Cookies["passo"] = document.getElementById("passo").value;
+            Cookies["nro_pontos"] = document.getElementById("nro_pontos").value;
+            Cookies["inatividade"] =document.getElementById("inatividade").value;
+            Cookies['tempo_ler_corrente']=document.getElementById("tempo_ler_corrente").value;
+            Cookies['contador_enviar_web']=document.getElementById("contador_enviar_web").value;
             gravarConfiguracao('t', document.getElementById("text_ts"));
         });
+
 
         /* button  #btn_gravar_ap */
         $(document).on("click", "#btn_gravar_ap", function (evt) {
@@ -134,7 +139,7 @@
         $(document).on("click", "#btn_info", function (evt) {
             activate_subpage("#uib_page_info");
             lerStatus();
-            $("#text_info_modelo").html('APP Tsensor ' + VERSAO+"<BR>");
+            $("#text_info_modelo").html('APP Tsensor ' + VERSAO.MAJOR + '.' + VERSAO.MINOR + ' ' +VERSAO.DATE+"<BR>");
             $("#text_info_modelo").append('Platform:' + device.platform + '<BR>');
             $("#text_info_modelo").append('Model:' + device.model + '<BR>');
             $("#text_info_modelo").append('Version:' + device.version + '<BR>');
@@ -166,63 +171,21 @@
             }
         });
 
-        $(document).on("click", "#chartx61_div", function (evt) {
-            var txt;
-            if (json_feed.nodes_feed1[0] == undefined) {
-                txt = "sem dados";
-            } else {
-                var d = moment(new Date(json_feed.nodes_feed1[0].created_at));
-                var tensao = parseInt(json_feed.nodes_feed1[0].vcc) / 1000;
-                txt = "tensão: " + tensao +
-                    " às " + d.format('DD/MM/YYYY HH:mm:ss'); // message
+        $(document).on("click", "#chart1_div", function (evt) {
+            click_no_gauge(0);
+        });
 
-                txt = txt + '  [' + json_feed.nodes1.contador + ']' + json_feed.nodes1.status;
-                if (window.cordova) {
-                    navigator.notification.alert(txt, alertDismissed, 'Bateria', 'Fechar');
-                } else {
-                    alert(msg);
-                }
-            }
+        $(document).on("click", "#chartx61_div", function (evt) {
+            click_no_gauge(1);
         });
 
 
         $(document).on("click", "#chartx71_div", function (evt) {
-            var txt;
-            if (json_feed.nodes_feed2[0] == undefined) {
-                txt = "sem dados";
-            } else {
-                var d = moment(new Date(json_feed.nodes_feed2[0].created_at));
-                var tensao = parseInt(json_feed.nodes_feed2[0].vcc) / 1000;
-                txt = "tensão: " + tensao +
-                    " às " + d.format('DD/MM/YYYY HH:mm:ss'); // message
-                txt = txt + '  [' + json_feed.nodes2.contador + ']' + json_feed.nodes2.status;
-                if (window.cordova) {
-                    navigator.notification.alert(txt, alertDismissed, 'Bateria', 'Fechar');
-                } else {
-                    alert(msg);
-                }
-            }
-
+            click_no_gauge(2);
         });
 
         $(document).on("click", "#chartx81_div", function (evt) {
-            var txt;
-            if (json_feed.nodes_feed3[0] == undefined) {
-                txt = "sem dados";
-            } else {
-                var d = moment(new Date(json_feed.nodes_feed3[0].created_at));
-                var tensao = parseInt(json_feed.nodes_feed3[0].vcc) / 1000;
-                txt = "tensão: " + tensao +
-                    " às " + d.format('DD/MM/YYYY HH:mm:ss'); // message
-                txt = txt + '  [' + json_feed.nodes3.contador + ']' + json_feed.nodes3.status;
-
-                if (window.cordova) {
-                    navigator.notification.alert(txt, alertDismissed, 'Bateria', 'Fechar');
-                } else {
-                    alert(msg);
-                }
-            }
-
+            click_no_gauge(3);
         });
 
 
@@ -584,6 +547,12 @@
         $(document).on("click", "#btn-s-enviar-cmd", function (evt) {
             gravarComandoTS(document.getElementById("text-cmd-text"));
         });
+
+        /* button  #btn_mod4 */
+    $(document).on("click", "#btn_mod4", function(evt)
+    {
+         activate_subpage("#uib_page_mod4");
+    });
 
     }
     document.addEventListener("app.Ready", register_event_handlers, false);

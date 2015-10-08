@@ -21,6 +21,35 @@
 // // ...event handler code here...
 // }
 
+function click_no_gauge(node) {
+    var txt;
+    var n, n1;
+    console.log("click_no_gauge="+node);
+    if (node ==0) {
+        n= '$.feeds[0]';
+        n1= '$.channel';
+    } else     {
+        n= '$.nodes_feed' + node + '[0]';
+        n1= '$.nodes' + node;
+    }
+    if (jsonPath(json_feed, n+".created_at") == false) {
+        txt = "sem dados";
+    } else {
+        var d = moment(new Date(jsonPath(json_feed, n + ".created_at")));
+        var tensao = parseInt(jsonPath(json_feed, n + ".vcc")) / 1000;
+        txt = "tensão: " + tensao +
+            " às " + d.format('DD/MM/YYYY HH:mm:ss'); // message
+
+        txt = txt + '  [' + jsonPath(json_feed, n1 + ".contador") + ']' + jsonPath(json_feed, n1 + ".status");
+    }
+        if (window.cordova) {
+            navigator.notification.alert(txt, alertDismissed, 'Bateria', 'Fechar');
+        } else {
+            alert(msg);
+        }
+}
+
+/**************************************************************************/
 var json_config = null;
 // tipo = 0 ler todos os dados
 //        1 = somente os módulos
@@ -58,7 +87,9 @@ function getMainConfig(tipo) {
             type: 'GET',
             url: url,
             dataType: 'json',
-            headers: { 'User-Agent':'APP Tsensor ' + VERSAO.MAJOR + '.' + VERSAO.MINOR + ' ' +VERSAO.DATE},
+            headers: {
+                'User-Agent': 'APP Tsensor ' + VERSAO.MAJOR + '.' + VERSAO.MINOR + ' ' + VERSAO.DATE
+            },
             success: function (data) {
                 json_config = data;
                 /*  intel.xdk.notification.alert(json.channel.name, "Canal"); */
@@ -71,7 +102,9 @@ function getMainConfig(tipo) {
 
                     if (tipo == 0) {
                         if (json_config.nro_pontos == null)
-                            Cookies.create("nro_pontos", 40, 10 * 356);
+                            Cookies.create("nro_pontos", 20, 10 * 356);
+                        else
+                            Cookies.create("nro_pontos", json_config.canal.nro_pontos, 10 * 356);
                         if (json_config.passo == null)
                             Cookies.create("passo", 1, 10 * 356);
                         if (json_config.tempo_ler_corrente == null)
@@ -194,7 +227,7 @@ function writeMainConfig() {
         document.getElementById("contador_enviar_web").value = Cookies["contador_enviar_web"];
         // TS
         document.getElementById("api_key").value = Cookies["api_key"];
-        app.consoleLog("Cookies[api_key]=", Cookies["api_key"]);
+        document.getElementById("nro_pontos").value = Cookies["nro_pontos"];
         document.getElementById("inatividade").value = Cookies["inatividade"];
         // WIFI
         document.getElementById("ssid").value = Cookies["ssid"];
@@ -261,7 +294,7 @@ function gravarComandoTS(text_obj) {
         type: 'GET',
         url: addr + '?' + data,
         headers: {
-            'User-Agent': 'APP Tsensor ' + VERSAO.MAJOR + '.' + VERSAO.MINOR + ' ' + VERSAO.DATE
+            'User-Agent': 'APP Tsensor/' + VERSAO.MAJOR + '.' + VERSAO.MINOR + '/' + VERSAO.DATE
         },
         success: function (data) {
             console.log(data);
@@ -344,7 +377,9 @@ function gravarConfiguracao(pag, text_obj) {
     $.ajax({
         type: 'GET',
         url: addr,
-        //       headers: { 'User-Agent':'APP Tsensor ' + VERSAO.MAJOR + '.' + VERSAO.MINOR + ' ' +VERSAO.DATE},
+        headers: {
+            'User-Agent': 'APP Tsensor/' + VERSAO.MAJOR + '.' + VERSAO.MINOR + '/' + VERSAO.DATE
+        },
         success: function (data) {
             console.log(data);
             text_obj.innerHTML = data;
@@ -430,7 +465,9 @@ function gravarConfiguracaoSensor(pag, text_obj) {
     $.ajax({
         type: 'GET',
         url: addr + '?' + data,
-        //      headers: { 'User-Agent':'APP Tsensor ' + VERSAO.MAJOR + '.' + VERSAO.MINOR + ' ' +VERSAO.DATE},
+        headers: {
+            'User-Agent': 'APP Tsensor/' + VERSAO.MAJOR + '.' + VERSAO.MINOR + '/' + VERSAO.DATE
+        },
         success: function (data) {
             console.log(data);
             if (text_obj == null) {
@@ -475,7 +512,9 @@ function get_feed(flag_atualiza) {
         type: 'GET',
         url: url,
         //   dataType: 'json',
-        //       headers: { 'User-Agent':'APP Tsensor ' + VERSAO.MAJOR + '.' + VERSAO.MINOR + ' ' +VERSAO.DATE},
+        headers: {
+            'User-Agent': 'APP Tsensor/' + VERSAO.MAJOR + '.' + VERSAO.MINOR + '/' + VERSAO.DATE
+        },
         success: function (data) {
             //  console.log("get_feed="+data);
             //    json_feed = JSON.parse(data);
@@ -785,7 +824,7 @@ function atualiza_modulos() {
 var ts_cmds_par = [2, 3, 3, 3, 1, 1, 0, 0, 0, 1, 0, 3];
 
 var r_horas = 6;
-var MAX_NODES = 3;
+var MAX_NODES = 4;
 var VERSAO = {
     MAJOR: '1',
     MINOR: '0',
@@ -818,6 +857,7 @@ function onDeviceReady() {
         document.getElementById("chave").value=s;
     */
 }
+
 
 /*
 //  RECURSOS
