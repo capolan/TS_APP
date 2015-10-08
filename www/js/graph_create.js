@@ -34,7 +34,7 @@ function t_TelaTGG() {
     atualizaGrafico(g2, "text_pag_2_2", 5);
     atualizaGrafico(g3, "text_pag_10", 1);
     atualizaGrafico(g4, null, 1);
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < MAX_NODES; i++) {
         if (gx1[i] != undefined) {
             // gx1[i].loadData();
             var cp = i + 1;
@@ -82,7 +82,7 @@ function t_telaTS_temp_corrente() {
     atualizaGrafico(g3, "text_pag_10", 1);
     atualizaGrafico(g4, null, 1);
     atualizaGrafico(g5, "text_pag_11", 5);
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < MAX_NODES; i++) {
         if (gx1[i] != undefined) {
             var cp = i + 1;
             atualizaGrafico(gx1[i], "text-mod" + cp, 1);
@@ -160,7 +160,7 @@ function t_telaTS_temperatura() {
         atualizaGrafico(g3, "text_pag_10", 6);
         atualizaGrafico(g4, null, 1);
     }
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < MAX_NODES; i++) {
         if (gx1[i] != undefined && gx1[i].ativo == true) {
             var cp = i + 1;
             atualizaGrafico(gx1[i], "text-mod" + cp, 1);

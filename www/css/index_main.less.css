@@ -2451,3 +2451,8 @@ body:not(#afui) .upage-outer {
     text-align: left;
   }
 }
+@media all {
+  #afui .hide {
+    display: none;
+  }
+}

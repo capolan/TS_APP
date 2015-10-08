@@ -21,6 +21,216 @@
 // // ...event handler code here...
 // }
 
+var json_config = null;
+// tipo = 0 ler todos os dados
+//        1 = somente os módulos
+function getMainConfig(tipo) {
+    var ret = false;
+    app.consoleLog(">getMainConfig", "");
+
+    /*    if (window.cordova) {
+        if (navigator.connection.type == Connection.NONE) {
+        text_obj.innerHTML="Sem conexão de rede.";
+        return;
+        }
+    }
+  */
+    if (window.Cookies["modelo"] != undefined &&
+        window.Cookies["serie"] != undefined &&
+        window.Cookies["chave"] != undefined) {
+        console.log("modelo=" + Cookies["modelo"]);
+        var chave = Cookies["chave"];
+        var url = "http://45.55.77.192/obj/ti/config_ler.php?f=0&m=" + Cookies["modelo"] + "&s=" + Cookies["serie"] + "&c=" + chave.substring(0, 4) +
+            "&dp=" + device.platform +
+            '&dm=' + device.model +
+            '&dv=' + device.version +
+            '&duuid=' + device.uuid +
+            '&dc=' + device.cordova +
+            '&t1=' + VERSAO.MAJOR +
+            '&t2=' + VERSAO.MINOR +
+            '&td=' + VERSAO.DATE;
+
+        console.log("url=" + url);
+        //  document.getElementById("text_config").innerHTML=url;
+        //  document.getElementById("text_config").innerHTML="GET";
+
+        $.ajax({
+            type: 'GET',
+            url: url,
+            dataType: 'json',
+            headers: { 'User-Agent':'APP Tsensor ' + VERSAO.MAJOR + '.' + VERSAO.MINOR + ' ' +VERSAO.DATE},
+            success: function (data) {
+                json_config = data;
+                /*  intel.xdk.notification.alert(json.channel.name, "Canal"); */
+                console.log("api_key=" + json_config.canal.api_key);
+                // TS
+                if (data != 'null') {
+                    document.getElementById("text_config").innerHTML = "OK";
+                    ret = true;
+                    json_feed = null;
+
+                    if (tipo == 0) {
+                        if (json_config.nro_pontos == null)
+                            Cookies.create("nro_pontos", 40, 10 * 356);
+                        if (json_config.passo == null)
+                            Cookies.create("passo", 1, 10 * 356);
+                        if (json_config.tempo_ler_corrente == null)
+                            Cookies.create("tempo_ler_corrente", 20, 10 * 356);
+                        else
+                            Cookies.create("tempo_ler_corrente", json_config.canal.tempo_ler_corrente, 10 * 356);
+                        if (json_config.contador_enviar_web == null)
+                            Cookies.create("contador_enviar_web", 3, 10 * 356);
+                        else
+                            Cookies.create("contador_enviar_web", json_config.canal.contador_enviar_web, 10 * 356);
+                        // WIFI
+                        Cookies.create("ssid", json_config.canal.ssid, 10 * 356);
+                        Cookies.create("passwd", json_config.canal.passwd, 10 * 356);
+                        if (json_config.canal.proxy == undefined)
+                            Cookies.create("proxy", "0:0", 10 * 356);
+                        else
+                            Cookies.create("proxy", json_config.canal.proxy, 10 * 356);
+                        // TENSAO
+                        Cookies.create("tensao", json_config.canal.tensao, 10 * 356);
+                        Cookies.create("fases", json_config.canal.fases, 10 * 356);
+                        // TS
+                        Cookies.create("api_key", json_config.canal.api_key, 10 * 356);
+                        Cookies.create("inatividade", json_config.canal.offline_to_alert, 10 * 356);
+
+                        // AP wifi
+                        Cookies.create("ap_ssid", json_config.canal.ap_ssid, 10 * 356);
+                        Cookies.create("ap_passwd", json_config.canal.ap_passwd, 10 * 356);
+                        Cookies.create("ap_canal", json_config.canal.ap_canal, 10 * 356);
+                        Cookies.create("ap_cripto", json_config.canal.ap_cripto, 10 * 356);
+                        // Titulo dos campos
+                        Cookies.create("descricao", json_config.canal.descricao, 10 * 356);
+                        Cookies.create("campo1", json_config.canal.field1, 10 * 356);
+                        Cookies.create("campo2", json_config.canal.field2, 10 * 356);
+                        Cookies.create("campo3", json_config.canal.field3, 10 * 356);
+                        Cookies.create("campo4", json_config.canal.field4, 10 * 356);
+                        Cookies.create("campo5", json_config.canal.field5, 10 * 356);
+                        Cookies.create("campo6", json_config.canal.field6, 10 * 356);
+                        Cookies.create("campo7", json_config.canal.field7, 10 * 356);
+                        Cookies.create("campo8", json_config.canal.field8, 10 * 356);
+
+                        // sensor
+                        Cookies.create("nome", json_config.canal.nome, 10 * 356);
+                        Cookies.create("email", json_config.canal.email, 10 * 356);
+                        Cookies.create("celular", json_config.canal.celular, 10 * 356);
+
+                        // limites
+                        // corrente
+                        Cookies.create("campo1_min", json_config.canal.field1_min, 10 * 356);
+                        Cookies.create("campo1_max", json_config.canal.field1_max, 10 * 356);
+                        // temp principal
+                        Cookies.create("campo5_min", json_config.canal.field5_min, 10 * 356);
+                        Cookies.create("campo5_max", json_config.canal.field5_max, 10 * 356);
+                        Cookies.create("vcc", json_config.canal.vcc, 10 * 356);
+                        $("#text-s-temp-nome").val(json_config.canal.field5);
+                        $("#af-header-0-tit").html("<h1>" + json_config.canal.nome + "</h1>");
+                        define_recuros();
+                    } // tipo==0
+                    // modulos
+                    for (var m = 0; m < MAX_NODES; m++) {
+                        var n_mod = m + 1;
+                        var s_campo = 6 + m;
+                        var node = jsonPath(json_config, "$.canal.node" + n_mod);
+                        if (node != false) {
+                            node = "$.node" + n_mod;
+                            $("#sel-mod" + n_mod + " option:eq(0)").prop('selected', true);
+                            $("#af-campo-" + s_campo).prop("checked", true);
+                            $("#text-mod" + n_mod + "-nome").val(jsonPath(json_config, node + ".name"));
+                            $("#text-mod" + n_mod + "-campo").val(jsonPath(json_config, node + ".field1"));
+                            $("#text-mod" + n_mod + "-min").val(jsonPath(json_config, node + ".field1_min"));
+                            $("#text-mod" + n_mod + "-max").val(jsonPath(json_config, node + ".field1_max"));
+                            $("#text-mod" + n_mod + "-vcc").val(jsonPath(json_config, node + ".vcc_min"));
+                        } else {
+                            $("#af-campo-" + s_campo).prop("checked", false);
+                        }
+                    }
+
+
+                    Cookies.create("tela_layout", json_config.canal.tela_layout, 10 * 356);
+                    flag_getMainConfig = true;
+                    createGraphs();
+                    testarBotoesModulo();
+                    writeMainConfig();
+                    atualizaGraficoConfig();
+                    $(".uib_w_200").show();
+                }
+            },
+            error: function (data) {
+                navigator.notification.alert(
+                    data.statusText, alertDismissed,
+                    'Aviso:' + data.status, 'Fechar');
+                document.getElementById("modelo").value = Cookies["modelo"];
+                document.getElementById("serie").value = Cookies["serie"];
+                document.getElementById("chave").value = Cookies["chave"];
+                activate_subpage("#uib_page_5");
+            }
+
+        });
+    } else {
+        document.getElementById("text_config").innerHTML = "ajuste modelo/serie/chave";
+        document.getElementById("modelo").value = Cookies["modelo"];
+        document.getElementById("serie").value = Cookies["serie"];
+        document.getElementById("chave").value = Cookies["chave"];
+        activate_subpage("#uib_page_5");
+    }
+    return ret;
+}
+/*********************************************************************/
+function writeMainConfig() {
+    var xhr = new XMLHttpRequest();
+    app.consoleLog(">writeMainConfig", "");
+    if (window.Cookies["modelo"] != undefined &&
+        window.Cookies["serie"] != undefined) {
+        // document.getElementById("chave").readOnly=true;
+        document.getElementById("modelo").value = Cookies["modelo"];
+        document.getElementById("serie").value = Cookies["serie"];
+        document.getElementById("chave").value = Cookies["chave"];
+        document.getElementById("canal").value = Cookies["canal"];
+        document.getElementById("passo").value = Cookies["passo"];
+        document.getElementById("tempo_ler_corrente").value = Cookies["tempo_ler_corrente"];
+        document.getElementById("contador_enviar_web").value = Cookies["contador_enviar_web"];
+        // TS
+        document.getElementById("api_key").value = Cookies["api_key"];
+        app.consoleLog("Cookies[api_key]=", Cookies["api_key"]);
+        document.getElementById("inatividade").value = Cookies["inatividade"];
+        // WIFI
+        document.getElementById("ssid").value = Cookies["ssid"];
+        document.getElementById("passwd").value = Cookies["passwd"];
+        document.getElementById("proxy").value = Cookies["proxy"];
+        // AP wifi
+        document.getElementById("ap_ssid").value = Cookies["ap_ssid"];
+        document.getElementById("ap_passwd").value = Cookies["ap_passwd"];
+        document.getElementById("ap_canal").value = Cookies["ap_canal"];
+        document.getElementById("ap_cripto").value = Cookies["ap_cripto"];
+
+
+        // PAGINA SENSOR
+        document.getElementById("text-s-nome").value = Cookies["nome"];
+        document.getElementById("text-s-email").value = Cookies["email"];
+        document.getElementById("text-s-celular").value = Cookies["celular"];
+
+        // TEMPERATURA
+        document.getElementById("text-s-vcc").value = Cookies["vcc"];
+        document.getElementById("text-s-temp-min").value = Cookies["campo5_min"];
+        document.getElementById("text-s-temp-max").value = Cookies["campo5_max"];
+        // CORRENTE/REDE
+        if (Cookies["tensao"] == '220')
+            document.getElementById("af-radio-s-220").checked = true;
+        else
+            document.getElementById("af-radio-s-127").checked = true;
+        document.getElementById("text-s-fases").value = Cookies["fases"];
+        document.getElementById("text-s-vcc").value = Cookies["vcc"];
+        document.getElementById("text-s-corrente-min").value = Cookies["campo1_min"];
+        document.getElementById("text-s-corrente-max").value = Cookies["campo1_max"];
+
+        //        if (json.nome != 'undefined')
+        //            $("#af-header-0").html(json.nome);
+    } // if modelo
+}
+/**********************************************************************/
 
 /**********************************************************************/
 function gravarComandoTS(text_obj) {
@@ -50,6 +260,9 @@ function gravarComandoTS(text_obj) {
     $.ajax({
         type: 'GET',
         url: addr + '?' + data,
+        headers: {
+            'User-Agent': 'APP Tsensor ' + VERSAO.MAJOR + '.' + VERSAO.MINOR + ' ' + VERSAO.DATE
+        },
         success: function (data) {
             console.log(data);
             if (text_obj == null) {
@@ -131,6 +344,7 @@ function gravarConfiguracao(pag, text_obj) {
     $.ajax({
         type: 'GET',
         url: addr,
+        //       headers: { 'User-Agent':'APP Tsensor ' + VERSAO.MAJOR + '.' + VERSAO.MINOR + ' ' +VERSAO.DATE},
         success: function (data) {
             console.log(data);
             text_obj.innerHTML = data;
@@ -181,35 +395,23 @@ function gravarConfiguracaoSensor(pag, text_obj) {
         var opt;
         var campo;
         app.consoleLog("campo", campo);
-        if ($("#af-campo-6").prop("checked")) {
-            opt = $("#sel-mod1 option:selected").index();
-            campo = parseInt(opt) + 1;
-            data = data + "&node1=" + json_config.node1.serie;
-            data = data + "&node1_field" + campo + "_min=" + $("#text-mod1-min").val() +
-                "&node1_field" + campo + "=" + $("#text-mod1-campo").val() +
-                "&node1_field" + campo + "_max=" + $("#text-mod1-max").val() +
-                "&node1_nome=" + $("#text-mod1-nome").val() +
-                "&node1_vcc=" + $("#text-mod1-vcc").val();
-        }
-        if ($("#af-campo-7").prop("checked")) {
-            opt = $("#sel-mod2 option:selected").index();
-            campo = parseInt(opt) + 1;
-            data = data + "&node2=" + json_config.node2.serie;
-            data = data + "&node2_field" + campo + "_min=" + $("#text-mod2-min").val() +
-                "&node2_field" + campo + "=" + $("#text-mod2-campo").val() +
-                "&node2_field" + campo + "_max=" + $("#text-mod2-max").val() +
-                "&node2_nome=" + $("#text-mod2-nome").val() +
-                "&node2_vcc=" + $("#text-mod2-vcc").val();
-        }
-        if ($("#af-campo-8").prop("checked")) {
-            opt = $("#sel-mod3 option:selected").index();
-            campo = parseInt(opt) + 1;
-            data = data + "&node3=" + json_config.node3.serie;
-            data = data + "&node3_field" + campo + "_min=" + $("#text-mod3-min").val() +
-                "&node3_field" + campo + "=" + $("#text-mod3-campo").val() +
-                "&node3_field" + campo + "_max=" + $("#text-mod3-max").val() +
-                "&node3_nome=" + $("#text-mod3-nome").val() +
-                "&node3_vcc=" + $("#text-mod3-vcc").val();
+
+        for (var m = 0; m < MAX_NODES; m++) {
+            var n_mod = m + 1;
+            var s_campo = 6 + m;
+            var node = "&node" + n_mod;
+            if ($("#af-campo-" + s_campo).prop("checked")) {
+                opt = $("#sel-mod" + n_mod + " option:selected").index();
+                campo = parseInt(opt) + 1;
+                var v_str = jsonPath(json_config, "$.node" + n_mod + ".serie");
+                data = data + node + "=" + v_str;
+                data = data + node + "_field" + campo + "_min=" + $("#text-mod" + n_mod + "-min").val() +
+                    node + "_field" + campo + "=" + $("#text-mod" + n_mod + "-campo").val() +
+                    node + "_field" + campo + "_max=" + $("#text-mod" + n_mod + "-max").val() +
+                    node + "_nome=" + $("#text-mod" + n_mod + "-nome").val() +
+                    node + "_vcc=" + $("#text-mod" + n_mod + "-vcc").val();
+            }
+
         }
     }
 
@@ -228,6 +430,7 @@ function gravarConfiguracaoSensor(pag, text_obj) {
     $.ajax({
         type: 'GET',
         url: addr + '?' + data,
+        //      headers: { 'User-Agent':'APP Tsensor ' + VERSAO.MAJOR + '.' + VERSAO.MINOR + ' ' +VERSAO.DATE},
         success: function (data) {
             console.log(data);
             if (text_obj == null) {
@@ -272,6 +475,7 @@ function get_feed(flag_atualiza) {
         type: 'GET',
         url: url,
         //   dataType: 'json',
+        //       headers: { 'User-Agent':'APP Tsensor ' + VERSAO.MAJOR + '.' + VERSAO.MINOR + ' ' +VERSAO.DATE},
         success: function (data) {
             //  console.log("get_feed="+data);
             //    json_feed = JSON.parse(data);
@@ -289,92 +493,6 @@ function get_feed(flag_atualiza) {
     });
 }
 
-
-// Programar o Tsensor hw diretamente
-function prog_ler_ip() {
-    //    var myRe = new RegExp("([0-9\.]*)\<br\>([0-9\.]*)","g");
-    var addr = 'http://192.168.4.1?I&R';
-
-    console.log("url=" + addr);
-    if (navigator.connection.type == Connection.NONE) {
-        text_wifi.innerHTML = "Sem conexão de rede.";
-        return;
-    }
-    text_wifi.innerHTML = "Enviando ao TS";
-    $.ajax({
-        type: 'GET',
-        url: addr,
-        timeout: 15000,
-        success: function (data) {
-            console.log(data);
-            myIP = data.split(/\s*,\s*/);
-            var txt = 'AP=' + myIP[0] + '<br>STA=' + myIP[1];
-            text_wifi.innerHTML = txt;
-        },
-        error: function (data) {
-            console.log(data);
-            text_wifi.innerHTML = 'ERRO:' + data.statusText;
-        }
-    });
-
-}
-
-// Programar o Tsensor hw diretamente
-function prog_reboot_ts() {
-    var addr = 'http://192.168.4.1/s?f=7&R';
-
-    console.log("url=" + addr);
-    if (navigator.connection.type == Connection.NONE) {
-        text_wifi.innerHTML = "Sem conexão de rede.";
-        return;
-    }
-    text_wifi.innerHTML = "Enviando ao TS";
-    $.ajax({
-        type: 'GET',
-        url: addr,
-        timeout: 15000,
-        success: function (data) {
-            console.log(data);
-            text_wifi.innerHTML = data;
-        },
-        error: function (data) {
-            console.log(data);
-            text_wifi.innerHTML = 'ERRO:' + data.statusText;
-        }
-    });
-
-}
-
-// Programar o Tsensor hw diretamente
-function prog_wifi() {
-    var addr = 'http://192.168.4.1/s?f=1&R&s=' +
-        $("#ssid").val() +
-        '&p=' + $("#passwd").val() +
-        '&y=' + $("#proxy").val();
-
-    console.log("url=" + addr);
-    if (window.cordova) {
-        if (navigator.connection.type == Connection.NONE) {
-            text_wifi.innerHTML = "Sem conexão de rede.";
-            return;
-        }
-    }
-    text_wifi.innerHTML = "Enviando ao TS";
-    $.ajax({
-        type: 'GET',
-        url: addr,
-        timeout: 15000,
-        success: function (data) {
-            console.log(data);
-            text_wifi.innerHTML = data;
-        },
-        error: function (data) {
-            console.log(data);
-            text_wifi.innerHTML = 'ERRO:' + data.statusText;
-        }
-    });
-
-}
 
 /************************************************************************/
 function lerStatus() {
@@ -539,7 +657,7 @@ function atualizaGraficoConfig() {
     }
 
 
-    for (var m = 0; m < 3; m++) {
+    for (var m = 0; m < MAX_NODES; m++) {
         var v_str;
         var t = m + 1;
         var node = "$.node" + t;
@@ -580,7 +698,7 @@ function testarBotoesModulo() {
     // $("#af-campo-6").prop("checked",Cookies["flag-campo6"]);
     var page = null;
     if (json_config == null) return;
-    for (var m = 2; m >= 0; m--) {
+    for (var m = MAX_NODES - 1; m >= 0; m--) {
         var n_mod = m + 1;
         var node = jsonPath(json_config, "$.canal.node" + n_mod);
         if (node != false) {
@@ -612,231 +730,6 @@ function alertDismissed() {
 
 
 /*********************************************************************/
-var json_config = null;
-// tipo = 0 ler todos os dados
-//        1 = somente os módulos
-function getMainConfig(tipo) {
-    var ret = false;
-    app.consoleLog(">getMainConfig", "");
-
-    /*    if (window.cordova) {
-        if (navigator.connection.type == Connection.NONE) {
-        text_obj.innerHTML="Sem conexão de rede.";
-        return;
-        }
-    }
-  */
-    if (window.Cookies["modelo"] != undefined &&
-        window.Cookies["serie"] != undefined &&
-        window.Cookies["chave"] != undefined) {
-        console.log("modelo=" + Cookies["modelo"]);
-        var chave = Cookies["chave"];
-        var url = "http://45.55.77.192/obj/ti/config_ler.php?f=0&m=" + Cookies["modelo"] + "&s=" + Cookies["serie"] + "&c=" + chave.substring(0, 4);
-
-        console.log("url=" + url);
-        //  document.getElementById("text_config").innerHTML=url;
-        //  document.getElementById("text_config").innerHTML="GET";
-
-        $.ajax({
-            type: 'GET',
-            url: url,
-            dataType: 'json',
-            success: function (data) {
-                json_config = data;
-                /*  intel.xdk.notification.alert(json.channel.name, "Canal"); */
-                console.log("api_key=" + json_config.canal.api_key);
-                // TS
-                if (data != 'null') {
-                    document.getElementById("text_config").innerHTML = "OK";
-                    ret = true;
-                    json_feed = null;
-
-                    if (tipo == 0) {
-                        if (json_config.nro_pontos == null)
-                            Cookies.create("nro_pontos", 40, 10 * 356);
-                        if (json_config.passo == null)
-                            Cookies.create("passo", 1, 10 * 356);
-                        if (json_config.tempo_ler_corrente == null)
-                            Cookies.create("tempo_ler_corrente", 20, 10 * 356);
-                        else
-                            Cookies.create("tempo_ler_corrente", json_config.canal.tempo_ler_corrente, 10 * 356);
-                        if (json_config.contador_enviar_web == null)
-                            Cookies.create("contador_enviar_web", 3, 10 * 356);
-                        else
-                            Cookies.create("contador_enviar_web", json_config.canal.contador_enviar_web, 10 * 356);
-                        // WIFI
-                        Cookies.create("ssid", json_config.canal.ssid, 10 * 356);
-                        Cookies.create("passwd", json_config.canal.passwd, 10 * 356);
-                        if (json_config.canal.proxy == undefined)
-                            Cookies.create("proxy", "0:0", 10 * 356);
-                        else
-                            Cookies.create("proxy", json_config.canal.proxy, 10 * 356);
-                        // TENSAO
-                        Cookies.create("tensao", json_config.canal.tensao, 10 * 356);
-                        Cookies.create("fases", json_config.canal.fases, 10 * 356);
-                        // TS
-                        Cookies.create("api_key", json_config.canal.api_key, 10 * 356);
-                        Cookies.create("inatividade", json_config.canal.offline_to_alert, 10 * 356);
-
-                        // AP wifi
-                        Cookies.create("ap_ssid", json_config.canal.ap_ssid, 10 * 356);
-                        Cookies.create("ap_passwd", json_config.canal.ap_passwd, 10 * 356);
-                        Cookies.create("ap_canal", json_config.canal.ap_canal, 10 * 356);
-                        Cookies.create("ap_cripto", json_config.canal.ap_cripto, 10 * 356);
-                        // Titulo dos campos
-                        Cookies.create("descricao", json_config.canal.descricao, 10 * 356);
-                        Cookies.create("campo1", json_config.canal.field1, 10 * 356);
-                        Cookies.create("campo2", json_config.canal.field2, 10 * 356);
-                        Cookies.create("campo3", json_config.canal.field3, 10 * 356);
-                        Cookies.create("campo4", json_config.canal.field4, 10 * 356);
-                        Cookies.create("campo5", json_config.canal.field5, 10 * 356);
-                        Cookies.create("campo6", json_config.canal.field6, 10 * 356);
-                        Cookies.create("campo7", json_config.canal.field7, 10 * 356);
-                        Cookies.create("campo8", json_config.canal.field8, 10 * 356);
-
-                        // sensor
-                        Cookies.create("nome", json_config.canal.nome, 10 * 356);
-                        Cookies.create("email", json_config.canal.email, 10 * 356);
-                        Cookies.create("celular", json_config.canal.celular, 10 * 356);
-
-                        // limites
-                        // corrente
-                        Cookies.create("campo1_min", json_config.canal.field1_min, 10 * 356);
-                        Cookies.create("campo1_max", json_config.canal.field1_max, 10 * 356);
-                        // temp principal
-                        Cookies.create("campo5_min", json_config.canal.field5_min, 10 * 356);
-                        Cookies.create("campo5_max", json_config.canal.field5_max, 10 * 356);
-                        Cookies.create("vcc", json_config.canal.vcc, 10 * 356);
-                        $("#text-s-temp-nome").val(json_config.canal.field5);
-                        $("#af-header-0-tit").html("<h1>" + json_config.canal.nome + "</h1>");
-                        define_recuros();
-                    } // tipo==0
-                    // modulos
-                    if (json_config.canal.node1 != undefined) {
-                        $("#sel-mod1 option:eq(0)").prop('selected', true);
-                        $("#af-campo-6").prop("checked", true);
-                        if (json_config.node1.name == null)
-                            $("#text-mod1-nome").val("Mod1");
-                        else
-                            $("#text-mod1-nome").val(json_config.node1.name);
-                        $("#text-mod1-campo").val(json_config.node1.field1);
-                        $("#text-mod1-min").val(json_config.node1.field1_min);
-                        $("#text-mod1-max").val(json_config.node1.field1_max);
-                        $("#text-mod1-vcc").val(json_config.node1.vcc_min);
-                    } else {
-                        $("#af-campo-6").prop("checked", false);
-                    }
-                    if (json_config.canal.node2 != undefined) {
-                        $("#sel-mod2 option:eq(0)").prop('selected', true);
-                        $("#af-campo-7").prop("checked", true);
-                        if (json_config.node2.name == null)
-                            $("#text-mod2-nome").val("Mod2");
-                        else
-                            $("#text-mod2-nome").val(json_config.node2.name);
-                        $("#text-mod2-campo").val(json_config.node2.field1);
-                        $("#text-mod2-min").val(json_config.node2.field1_min);
-                        $("#text-mod2-max").val(json_config.node2.field1_max);
-                        $("#text-mod2-vcc").val(json_config.node2.vcc_min);
-                    } else {
-                        $("#af-campo-7").prop("checked", false);
-                    }
-                    if (json_config.canal.node3 != undefined) {
-                        $("#sel-mod3 option:eq(0)").prop('selected', true);
-                        $("#af-campo-8").prop("checked", true);
-                        if (json_config.node3.name == null)
-                            $("#text-mod3-nome").val("Mod3");
-                        else
-                            $("#text-mod3-nome").val(json_config.node3.name);
-                        $("#text-mod3-campo").val(json_config.node3.field1);
-                        $("#text-mod3-min").val(json_config.node3.field1_min);
-                        $("#text-mod3-max").val(json_config.node3.field1_max);
-                        $("#text-mod3-vcc").val(json_config.node3.vcc_min);
-                    } else {
-                        $("#af-campo-8").prop("checked", false);
-                    }
-                    Cookies.create("tela_layout", json_config.canal.tela_layout, 10 * 356);
-                    flag_getMainConfig = true;
-                    createGraphs();
-                    testarBotoesModulo();
-                    writeMainConfig();
-                    atualizaGraficoConfig();
-
-
-                }
-            },
-            error: function (data) {
-                navigator.notification.alert(
-                    data.statusText, alertDismissed,
-                    'Aviso:' + data.status, 'Fechar');
-                document.getElementById("modelo").value = Cookies["modelo"];
-                document.getElementById("serie").value = Cookies["serie"];
-                document.getElementById("chave").value = Cookies["chave"];
-                activate_subpage("#uib_page_5");
-            }
-
-        });
-    } else {
-        document.getElementById("text_config").innerHTML = "ajuste modelo/serie/chave";
-        document.getElementById("modelo").value = Cookies["modelo"];
-        document.getElementById("serie").value = Cookies["serie"];
-        document.getElementById("chave").value = Cookies["chave"];
-        activate_subpage("#uib_page_5");
-    }
-return ret;
-}
-/*********************************************************************/
-function writeMainConfig() {
-    var xhr = new XMLHttpRequest();
-    app.consoleLog(">writeMainConfig", "");
-    if (window.Cookies["modelo"] != undefined &&
-        window.Cookies["serie"] != undefined) {
-        // document.getElementById("chave").readOnly=true;
-        document.getElementById("modelo").value = Cookies["modelo"];
-        document.getElementById("serie").value = Cookies["serie"];
-        document.getElementById("chave").value = Cookies["chave"];
-        document.getElementById("canal").value = Cookies["canal"];
-        document.getElementById("passo").value = Cookies["passo"];
-        document.getElementById("tempo_ler_corrente").value = Cookies["tempo_ler_corrente"];
-        document.getElementById("contador_enviar_web").value = Cookies["contador_enviar_web"];
-        // TS
-        document.getElementById("api_key").value = Cookies["api_key"];
-        app.consoleLog("Cookies[api_key]=", Cookies["api_key"]);
-        document.getElementById("inatividade").value = Cookies["inatividade"];
-        // WIFI
-        document.getElementById("ssid").value = Cookies["ssid"];
-        document.getElementById("passwd").value = Cookies["passwd"];
-        document.getElementById("proxy").value = Cookies["proxy"];
-        // AP wifi
-        document.getElementById("ap_ssid").value = Cookies["ap_ssid"];
-        document.getElementById("ap_passwd").value = Cookies["ap_passwd"];
-        document.getElementById("ap_canal").value = Cookies["ap_canal"];
-        document.getElementById("ap_cripto").value = Cookies["ap_cripto"];
-
-
-        // PAGINA SENSOR
-        document.getElementById("text-s-nome").value = Cookies["nome"];
-        document.getElementById("text-s-email").value = Cookies["email"];
-        document.getElementById("text-s-celular").value = Cookies["celular"];
-
-        // TEMPERATURA
-        document.getElementById("text-s-vcc").value = Cookies["vcc"];
-        document.getElementById("text-s-temp-min").value = Cookies["campo5_min"];
-        document.getElementById("text-s-temp-max").value = Cookies["campo5_max"];
-        // CORRENTE/REDE
-        if (Cookies["tensao"] == '220')
-            document.getElementById("af-radio-s-220").checked = true;
-        else
-            document.getElementById("af-radio-s-127").checked = true;
-        document.getElementById("text-s-fases").value = Cookies["fases"];
-        document.getElementById("text-s-vcc").value = Cookies["vcc"];
-        document.getElementById("text-s-corrente-min").value = Cookies["campo1_min"];
-        document.getElementById("text-s-corrente-max").value = Cookies["campo1_max"];
-
-        //        if (json.nome != 'undefined')
-        //            $("#af-header-0").html(json.nome);
-    } // if modelo
-}
-/**********************************************************************/
 function lerFlagStatus() {
     //    console.log(">lerFlag_Status");
     if (json_feed == null) return;
@@ -892,6 +785,13 @@ function atualiza_modulos() {
 var ts_cmds_par = [2, 3, 3, 3, 1, 1, 0, 0, 0, 1, 0, 3];
 
 var r_horas = 6;
+var MAX_NODES = 3;
+var VERSAO = {
+    MAJOR: '1',
+    MINOR: '0',
+    DATE: '08/10/2015'
+};
+
 
 var evt_get_feed = document.createEvent("Event");
 evt_get_feed.initEvent("app.Get_Feed", false, false);
