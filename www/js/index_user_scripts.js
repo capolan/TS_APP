@@ -82,7 +82,7 @@
 
         /* button  Config */
         $(document).on("click", ".uib_w_49", function (evt) {
-            document.getElementById("text_config").value = '';
+            document.getElementById("text_config").innerHTML('');
             activate_subpage("#uib_page_5");
         });
 
@@ -132,6 +132,7 @@
 
         /* button  Config */
         $(document).on("click", ".uib_w_6", function (evt) {
+            document.getElementById("text_config").innerHTML('');
             activate_subpage("#uib_page_5");
         });
 
@@ -188,6 +189,10 @@
             click_no_gauge(3);
         });
 
+        $(document).on("click", "#chartx91_div", function (evt) {
+            click_no_gauge(4);
+        });
+
 
         /* button  #btn_home */
         $(document).on("click", "#btn_home", function (evt) {
@@ -231,6 +236,10 @@
             testarBotoesModulo();
         });
 
+        $(document).on("change", "#af-campo-9", function (evt) {
+            Cookies.create("flag-campo9", this.checked, 10 * 365);
+            testarBotoesModulo();
+        });
         /* button  page_9 */
 
 

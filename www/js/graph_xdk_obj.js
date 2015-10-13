@@ -54,7 +54,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
     if (isNaN(this.min_value)) this.min_value = 0;
 
     this.series = _series;
-    this.series = _series;
+    this.serie = null;   // numero de serie do node
     this.created_at = 'NaN';
 
     // global variables
@@ -116,7 +116,24 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
         //      console.log("none="+self.id_div);
         //      return;
         //  }
-
+        // confere que o numero da serie do node do feed == config
+        if (serie.modulo >=0) {
+            var n=self.modulo+1;
+            if (self.serie == null)
+                self.serie=getObjects(json_config.canal, "node"+n);
+            if (self.serie == false) {
+                self.serie = null;
+                console.log("sem serie json_config node"+n);
+                return;
+            }
+            // testa config com o feed
+            var node=jsonPath(valdata, "$.nodes" + n + ".serie");
+            if (self.serie != node) {
+                self.serie = null;
+                console.log("serie json_config serie"+self.serie+ " <> json_feed serie="+node);
+                return;
+            }
+        }
         self.count++;
         self.ajustaData();
 
@@ -139,7 +156,8 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
             if (self.modulo === null) {
                 d = new Date(valdata.feeds[i].created_at);
                 self.created_at = valdata.feeds[0].created_at;
-                self.offline_at = getObjects(valdata.canal, "offline_at");
+                self.offline_at = getObjects(valdata.channel, "offline_at");
+                self.status = getObjects(valdata.channel, "status");
                 if (self.vcc == null)
                     self.vcc = valdata.feeds[0].vcc;
             } else { // nodes
@@ -148,7 +166,8 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                     var v_str = jsonPath(valdata, "$.nodes_feed" + str + "[" + i + "].created_at");
                     d = new Date(v_str);
                     self.created_at = v_str;
-                    self.offline_at = jsonPath(valdata, "$.nodes" + str + "[" + i + "].offline_at");
+                    self.offline_at = jsonPath(valdata, "$.nodes" + str + ".offline_at");
+                    self.status = jsonPath(valdata, "$.nodes" + str+ ".status");
                     v_str = jsonPath(valdata, "$.nodes_feed" + str + "[" + i + "].vcc");
                     if (self.vcc == null && v_str != false)
                         self.vcc = v_str;
@@ -247,6 +266,13 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
         }
         self.chart.draw(self.data, self.options);
         //     app.consoleLog("<self.id_div",self.id_div);
+        // cor do fundo do gráfico em vermelho se offline
+        if (self.tipo==0) {
+            if (self.status==3 || self.offline_at!=false)
+                $('#'+self.id_div+' circle:nth-child(2)').attr('fill', '#FF0000');
+            else
+               $('#'+self.id_div+' circle:nth-child(2)').attr('fill', '#F7F7F7');
+        }
 
     };
 

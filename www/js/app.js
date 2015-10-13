@@ -37,10 +37,13 @@ function click_no_gauge(node) {
     } else {
         var d = moment(new Date(jsonPath(json_feed, n + ".created_at")));
         var tensao = parseInt(jsonPath(json_feed, n + ".vcc")) / 1000;
+        var serie = jsonPath(json_feed, n1 + ".serie");
+        var status = jsonPath(json_feed, n1 + ".status");
         txt = "tensão: " + tensao +
             " às " + d.format('DD/MM/YYYY HH:mm:ss'); // message
-
-        txt = txt + '  [' + jsonPath(json_feed, n1 + ".contador") + ']' + jsonPath(json_feed, n1 + ".status");
+        if (serie != false) txt = txt + ' serie=' + serie;
+        txt = txt + ', amostras=' + jsonPath(json_feed, n1 + ".contador");
+        if (node>0 && status != false)  txt = txt + ', status='+status;
     }
         if (window.cordova) {
             navigator.notification.alert(txt, alertDismissed, 'Bateria', 'Fechar');
