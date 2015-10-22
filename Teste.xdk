@@ -6,7 +6,7 @@
       "projectTypeName": "com.intel.xdk.projecttype.jsapp",
       "src": "appDesigner",
       "projectGuid": "ad54d3dd-b912-479b-a5b1-aa908e9589fc",
-      "lastModifiedDate": 1444752126148,
+      "lastModifiedDate": 1444758113586,
       "creationDate": 1435255671699
     },
     "XDK-app-designer": "true",
@@ -21,15 +21,15 @@
       {
         "id": "intel.xdk.device",
         "name": "Intel XDK Device",
-        "version": "1.2.4",
+        "version": "1.2.5",
         "originType": "repo",
         "origin": "https://github.com/01org/cordova-plugin-intel-xdk-device.git",
-        "gitref": "r1.2.4",
+        "gitref": "r1.2.5",
         "subdir": ".",
         "paramvals": {},
         "sourceLocation": "plugins/intel.xdk.device",
         "selectedState": "Included",
-        "checksum": "5d38e44a",
+        "checksum": "3613045d",
         "dependsOn": [],
         "topLevel": true,
         "permissions": {

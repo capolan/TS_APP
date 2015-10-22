@@ -8,9 +8,20 @@ function atualizaGrafico(objG, div, campo) {
     //if (window.g3.created_at != null)
     //app.consoleLog("objG.id_div="+objG.id_div+"    div",div);
     var d = moment(new Date(objG.created_at));
-
+    var txt='';
     var minmax = '';
     var offline = '';
+
+    if (objG.message != undefined && objG.message != '') {
+        document.getElementById(div).innerHTML = '<div align="center" style="size:6;color:red">'+objG.titulo+':' + objG.message + '</div>';
+        return;
+    }
+
+    if (objG.created_at != undefined) {
+        if (objG.id_div!="chart1_div") txt = "Atualizado &agrave;s ";
+        txt = txt + d.format('DD/MM/YYYY HH:mm:ss')
+    }
+
     if (objG.offline_at != false) {
         offline = '<div style="color:red">[' + objG.offline_at + ']</div>';
         //$("#"+div).css('color','red');
@@ -21,10 +32,11 @@ function atualizaGrafico(objG, div, campo) {
         minmax = "<br>min=" + mi.toFixed(1) +
             "&nbsp;&nbsp;m&aacute;x=" + ma.toFixed(1);
     }
-    document.getElementById(div).innerHTML = "Atualizado &agrave;s " +
-        d.format('DD/MM/YYYY HH:mm:ss') +
+
+
+    document.getElementById(div).innerHTML = txt +
         //        d.format('LLL')+
-        minmax + offline;
+        minmax + offline + objG.message;
 }
 /*********************************************************************/
 var g1, g2, g3, g4, g5;
@@ -93,8 +105,8 @@ function t_telaTS_temp_corrente() {
 
 function telaTS_temp_corrente() {
     console.log(">telaTS_temp_corrente");
-    var max = Math.ceil((parseInt(json_config.canal.field5_max) + 10) / 10) * 10;
-    var min = parseInt(json_config.canal.field5_min);
+    var max1 = Math.ceil((parseInt(json_config.canal.field1_max) + 100) / 100) * 100;
+    var min1 = parseInt(json_config.canal.field1_min);
     if (min < 0) {
         min = Math.floor((min - 10) / 10) * 10;
     } else min = 0;
@@ -103,14 +115,20 @@ function telaTS_temp_corrente() {
             campo: 1
         }],
         null,
-        1, 1, min, max, true);
+        1, 1, min1, max1, true);
+    var max = Math.ceil((parseInt(json_config.canal.field5_max) + 10) / 10) * 10;
+    var min = parseInt(json_config.canal.field5_min);
+    if (min < 0) {
+        min = Math.floor((min - 10) / 10) * 10;
+    } else min = 0;
     g2 = new runGraph(0, 'chart2_div', 'uib_page_2', 'Temperatura', 200, 200, [{
             nome: Cookies["campo5"],
             campo: 5
         }],
         null,
         1, 1, min, max, true);
-    g3 = new runGraph(3, 'chart3_div', 'uib_page_10', 'Fases', 160, 160, [{
+
+    g3 = new runGraph(3, 'chart3_div', 'uib_page_10', 'Fases', 200, 200, [{
                 nome: Cookies["campo2"],
                 campo: 2
             },
@@ -137,16 +155,16 @@ function telaTS_temp_corrente() {
                 campo: 4
             }],
         null,
-        Cookies["nro_pontos"], Cookies["passo"], 1, 1, true);
+        Cookies["nro_pontos"], Cookies["passo"], min1, max1, true);
 
     g5 = new runGraph(2, 'chart5_div', 'uib_page_11', 'Historio', 280, 200, [{
             nome: Cookies["campo5"],
             campo: 5
         }],
         null, Cookies["nro_pontos"], Cookies["passo"], min, max, false);
-
+    $(".uib_row_19").css("display","none");
     //g1.timerID=setInterval('t_telaTS_temp_corrente()', 15000);
-    document.addEventListener("app.Get_Feed", t_telaTS_temp_temperatura, false);
+    document.addEventListener("app.Get_Feed", t_telaTS_temp_corrente, false);
 }
 
 /*********************************************************************/
@@ -156,9 +174,13 @@ function t_telaTS_temperatura() {
     //  console.log(">t_telaTS_temperatura");
     atualizaGrafico(g1, "text_pag_2_1", 5);
     atualizaGrafico(g2, null, 5);
-    if (rec_temperatura2) {
+    if (g3 != undefined && g3.ativo==true) {
         atualizaGrafico(g3, "text_pag_10", 6);
         atualizaGrafico(g4, null, 1);
+    }
+    if (g5 != undefined && g5.ativo==true) {
+        atualizaGrafico(g5, "text_pag_11", 6);
+        atualizaGrafico(g6, null, 1);
     }
     for (var i = 0; i < MAX_NODES; i++) {
         if (gx1[i] != undefined && gx1[i].ativo == true) {
@@ -173,10 +195,13 @@ function t_telaTS_temperatura() {
 function telaTS_temperatura() {
     var max = Math.ceil((parseInt(json_config.canal.field5_max) + 10) / 10) * 10;
     var min = parseInt(json_config.canal.field5_min);
-    if (min < 0) {
+    var n_div=3;
+    if (isNaN(max))
+        max=1000;
+    if (isNaN(min)==false || min < 0) {
         min = Math.floor((min - 10) / 10) * 10;
     } else min = 0;
-    app.consoleLog(">telaTS_temperatura", "entry");
+    app.consoleLog(">telaTS_temperatura", "min="+min+"   max="+max);
     g1 = new runGraph(0, 'chart1_div', 'uib_page_2', 'Temperatura', 200, 200, [{
             nome: Cookies["campo5"],
             campo: 5
@@ -204,13 +229,14 @@ function telaTS_temperatura() {
         if (min < 0) {
             min = Math.floor((min - 20) / 10) * 10;
         } else min = 0;
-        g3 = new runGraph(0, 'chart3_div', 'uib_page_10', 'Temperatura', 200, 200, [{
+        g3 = new runGraph(0, 'chart'+n_div+'_div', 'uib_page_10', 'Temperatura', 200, 200, [{
                 nome: Cookies["campo6"],
                 campo: 6
             }],
             null,
             1, 1, min, max, true);
-        g4 = new runGraph(2, 'chart4_div', 'uib_page_10', 'Historio', 280, 200, [{
+        n_div++;
+        g4 = new runGraph(2, 'chart'+n_div+'_div', 'uib_page_10', 'Historio', 280, 200, [{
                     nome: Cookies["campo6"],
                     campo: 6
                 },
@@ -224,6 +250,37 @@ function telaTS_temperatura() {
                 }],
             null,
             Cookies["nro_pontos"], Cookies["passo"], min, max, true);
+        n_div++;
+    }
+    n_div=5;
+    if (rec_corrente_30a==true || rec_corrente_100a == true) {
+        max = Math.ceil((parseInt(json_config.canal.field1_max) + 100) / 100) * 100;
+        min = parseInt(json_config.canal.field1_min);
+        if (min < 0) {
+            min = Math.floor((min - 200) / 100) * 100;
+        } else min = 0;
+        g5 = new runGraph(0, 'chart'+n_div+'_div', 'uib_page_11', 'Consumo', 200, 200, [{
+                nome: Cookies["campo1"],
+                campo: 1
+            }],
+            null,
+            1, 1, min, max, true);
+        n_div++;
+        g6 = new runGraph(2, 'chart'+n_div+'_div', 'uib_page_11', 'Historio', 280, 200, [{
+                    nome: Cookies["campo1"],
+                    campo: 1
+                },
+                {
+                    nome: "min",
+                    campo: 100
+                },
+                {
+                    nome: "max",
+                    campo: 101
+                }],
+            null,
+            Cookies["nro_pontos"], Cookies["passo"], min, max, true);
+        n_div++;
     }
     //t_telaTS_temperatura();
 //      g1.timerID=setInterval('t_telaTS_temperatura()', 15000);

@@ -105,9 +105,9 @@
             Cookies["canal"] = document.getElementById("canal").value;
             Cookies["passo"] = document.getElementById("passo").value;
             Cookies["nro_pontos"] = document.getElementById("nro_pontos").value;
-            Cookies["inatividade"] =document.getElementById("inatividade").value;
-            Cookies['tempo_ler_corrente']=document.getElementById("tempo_ler_corrente").value;
-            Cookies['contador_enviar_web']=document.getElementById("contador_enviar_web").value;
+            Cookies["inatividade"] = document.getElementById("inatividade").value;
+            Cookies['tempo_ler_corrente'] = document.getElementById("tempo_ler_corrente").value;
+            Cookies['contador_enviar_web'] = document.getElementById("contador_enviar_web").value;
             gravarConfiguracao('t', document.getElementById("text_ts"));
         });
 
@@ -140,7 +140,7 @@
         $(document).on("click", "#btn_info", function (evt) {
             activate_subpage("#uib_page_info");
             lerStatus();
-            $("#text_info_modelo").html('APP Tsensor ' + VERSAO.MAJOR + '.' + VERSAO.MINOR + ' ' +VERSAO.DATE+"<BR>");
+            $("#text_info_modelo").html('APP Tsensor ' + VERSAO.MAJOR + '.' + VERSAO.MINOR + ' ' + VERSAO.DATE + "<BR>");
             $("#text_info_modelo").append('Platform:' + device.platform + '<BR>');
             $("#text_info_modelo").append('Model:' + device.model + '<BR>');
             $("#text_info_modelo").append('Version:' + device.version + '<BR>');
@@ -156,9 +156,16 @@
 
         $(document).on("click", "#chart1_div", function (evt) {
             //     app.consoleLog("[204] rec_temperatura2",rec_temperatura2);
-            if (rec_temperatura2 == false) // Temperatura
-                return;
-            activate_subpage("#uib_page_10");
+            if (Cookies["tela_layout"] == "0") { // Temperatura
+                if (rec_temperatura2 == true) // Temperatura 2
+                    activate_subpage("#uib_page_10");
+                else
+                if (rec_corrente_30a==true || rec_corrente_100a==true) // Temperatura 2
+                    activate_subpage("#uib_page_11");
+                else
+                    click_no_gauge(0);
+            } else
+                    activate_subpage("#uib_page_10");
         });
 
         $(document).on("click", "#chart2_div", function (evt) {
@@ -170,10 +177,6 @@
                 //       atualizaGrafico(g5,"text_pag_11");
                 activate_subpage("#uib_page_11");
             }
-        });
-
-        $(document).on("click", "#chart1_div", function (evt) {
-            click_no_gauge(0);
         });
 
         $(document).on("click", "#chartx61_div", function (evt) {
@@ -367,9 +370,9 @@
             }
             document.getElementById("text-s-temp").innerHTML = "";
             if (opt == 0) {
-                Cookies["vcc"] = document.getElementById("text-s-vcc").value;
-                Cookies["campo5_min"] = document.getElementById("text-s-temp-min").value;
-                Cookies["campo5_max"] = document.getElementById("text-s-temp-max").value;
+                // Cookies["vcc"] = document.getElementById("text-s-vcc").value;
+                //Cookies["campo5_min"] = document.getElementById("text-s-temp-min").value;
+                //Cookies["campo5_max"] = document.getElementById("text-s-temp-max").value;
                 gravarConfiguracaoSensor('t', document.getElementById("text-s-temp"));
             }
             // temp extra
@@ -389,9 +392,9 @@
             document.getElementById("text-s-temp").innerHTML = "";
 
             if (opt == 0) {
-                document.getElementById("text-s-vcc").value = Cookies["vcc"];
-                document.getElementById("text-s-temp-min").value = Cookies["campo5_min"];
-                document.getElementById("text-s-temp-max").value = Cookies["campo5_max"];
+                document.getElementById("text-s-vcc").value = json_config.canal.vcc;
+                document.getElementById("text-s-temp-min").value = json_config.canal.field5_min;
+                document.getElementById("text-s-temp-max").value = json_config.canal.field5_max;
             }
             if (opt == 1) {
                 document.getElementById("text-s-vcc").value = 0;
@@ -457,7 +460,7 @@
             var v_str;
             var t = opt + 1;
             var node = "$.node1.field" + t;
-//            case 0: // temperatura  case 1: // sensor 2   case 2: // sensor 3
+            //            case 0: // temperatura  case 1: // sensor 2   case 2: // sensor 3
             v_str = jsonPath(json_config, node);
             $("#text-mod1-campo").val(v_str);
             v_str = jsonPath(json_config, node + "_min");
@@ -508,8 +511,8 @@
         /* button  #btn-s-s-corrente */
         $(document).on("click", "#btn-s-s-corrente", function (evt) {
             Cookies["fases"] = document.getElementById("text-s-fases").value;
-            Cookies["campo1_min"] = document.getElementById("text-s-corrente-min").value;
-            Cookies["campo1_max"] = document.getElementById("text-s-corrente-max").value;
+            //Cookies["campo1_min"] = document.getElementById("text-s-corrente-min").value;
+            //Cookies["campo1_max"] = document.getElementById("text-s-corrente-max").value;
             if (document.getElementById("af-radio-s-127").checked)
                 Cookies["tensao"] = '220';
             else
@@ -558,11 +561,25 @@
         });
 
         /* button  #btn_mod4 */
-    $(document).on("click", "#btn_mod4", function(evt)
-    {
-         activate_subpage("#uib_page_mod4");
-    });
+        $(document).on("click", "#btn_mod4", function (evt) {
+            activate_subpage("#uib_page_mod4");
+        });
 
+        $(document).on("change", "#af-checkbox-s-corrente", function (evt) {
+                if($(this).is(":checked")) {
+                    rec_corrente_30a=true;
+                } else {
+                    rec_corrente_30a=false;
+                }
+        });
+
+        $(document).on("change", "#af-checkbox-s-extra", function (evt) {
+                if($(this).is(":checked")) {
+                    rec_temperatura2=true;
+                } else {
+                    rec_temperatura2=false;
+                }
+        });
     }
     document.addEventListener("app.Ready", register_event_handlers, false);
 })();

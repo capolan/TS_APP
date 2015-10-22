@@ -40,6 +40,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
     this.modulo = _modulo;
     // set your channel's read api key here if necessary
     this.isStacked = _isStacked;
+    this.message = '';
 
     this.largura = _largura;
     this.altura = _altura;
@@ -54,7 +55,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
     if (isNaN(this.min_value)) this.min_value = 0;
 
     this.series = _series;
-    this.serie = null;   // numero de serie do node
+    this.serie = null; // numero de serie do node
     this.created_at = 'NaN';
 
     // global variables
@@ -64,6 +65,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
     this.data = null;
     this.timerID = null;
     this.vcc = null;
+    this.field_flag=null;
     this.max = new Array(10);
     this.min = new Array(10);
 
@@ -100,6 +102,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
         // get the data from thingspeak
         var d, j, k, valor;
         //   app.consoleLog(self.id_div," loadData");
+        self.message = '';
 
         if (self.ativo == false) {
             app.consoleLog(self.id_div, " inativo");
@@ -108,6 +111,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
 
         if (json_feed == null) {
             app.consoleLog(self.id_div, " sem feed");
+            self.message = " sem feed";
             return;
         }
         // console.log("json_feed="+JSON.stringify(json_feed.channel));
@@ -117,23 +121,24 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
         //      return;
         //  }
         // confere que o numero da serie do node do feed == config
-        if (serie.modulo >=0) {
-            var n=self.modulo+1;
+        if (serie.modulo >= 0) {
+            var n = self.modulo + 1;
             if (self.serie == null)
-                self.serie=getObjects(json_config.canal, "node"+n);
+                self.serie = getObjects(json_config.canal, "node" + n);
             if (self.serie == false) {
                 self.serie = null;
-                console.log("sem serie json_config node"+n);
+                self.message = "sem serie json_config node" + n;
                 return;
             }
             // testa config com o feed
-            var node=jsonPath(valdata, "$.nodes" + n + ".serie");
+            var node = jsonPath(valdata, "$.nodes" + n + ".serie");
             if (self.serie != node) {
                 self.serie = null;
-                console.log("serie json_config serie"+self.serie+ " <> json_feed serie="+node);
+                self.message = "serie json_config serie" + self.serie + " <> json_feed serie=" + node;
                 return;
             }
         }
+        //self.message='count='+self.count;
         self.count++;
         self.ajustaData();
 
@@ -144,12 +149,14 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
         if (window.cordova && navigator.connection.type == Connection.NONE) return;
 
         var valdata = json_feed;
-        //    app.consoleLog("valdata",valdata);
+        //     app.consoleLog("valdata",valdata);
         self.vcc = null;
+        self.field_flag=0;
         for (var i = 0, f = 0; i <= self.nro_pontos - 1; i = i + self.passo, f++) {
             var mensagem = false;
             if (valdata.feeds[i] === undefined) {
                 app.consoleLog("poucos dados feed i=" + i + "   id_div=" + self.id_div);
+               // self.message = 'poucos dados';
                 break;
             }
 
@@ -167,7 +174,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                     d = new Date(v_str);
                     self.created_at = v_str;
                     self.offline_at = jsonPath(valdata, "$.nodes" + str + ".offline_at");
-                    self.status = jsonPath(valdata, "$.nodes" + str+ ".status");
+                    self.status = jsonPath(valdata, "$.nodes" + str + ".status");
                     v_str = jsonPath(valdata, "$.nodes_feed" + str + "[" + i + "].vcc");
                     if (self.vcc == null && v_str != false)
                         self.vcc = v_str;
@@ -189,9 +196,10 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                         var str = self.modulo + 1;
                         var v_str = jsonPath(json_config,
                             "$.node" + str + ".field1_min");
-                        valor = parseInt(v_str);
+                        valor = parseFloat(v_str);
                         //   self.min[str]=undefined;
                     }
+                    if (valor == false || isNaN(parseFloat(valor))) valor = self.min_value;
                     break;
                 case 101: // max
                     if (self.modulo === null) {
@@ -202,9 +210,10 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                         var str = self.modulo + 1;
                         var v_str = jsonPath(json_config,
                             "$.node" + str + ".field1_max");
-                        valor = parseInt(v_str);
+                        valor = parseFloat(v_str);
                         //    self.max[str]=undefined;
                     }
+                    if (valor == false || isNaN(parseFloat(valor))) valor = self.max_value;
                     break;
                 case 1:
                 case 2:
@@ -231,14 +240,21 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                         s = "$.nodes_feed" + str + "[" + i + "].mensagem";
                         mensagem = jsonPath(valdata, s);
                         v_str = jsonPath(valdata,
-                            "$.nodes" + str + ".min_field1");
-                        self.min[1] = parseInt(v_str);
+                            "$.nodes" + str + ".min_field" + campo);
+                        self.min[campo] = parseInt(v_str);
                         v_str = jsonPath(valdata,
-                            "$.nodes" + str + ".max_field1");
-                        self.max[1] = parseInt(v_str);
+                            "$.nodes" + str + ".max_field" + campo);
+                        self.max[campo] = parseInt(v_str);
+                        // status
+                        v_str = jsonPath(valdata,
+                            "$.nodes" + str + ".field" + campo + "_flag");
+                        self.field_flag = parseInt(v_str);
 
 
                     }
+                        if (valor == false && i==0) {
+                            self.message = 'sem dados';
+                        }
                     break;
                 }
                 if (self.tipo == 3) { // dounets
@@ -246,11 +262,11 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                     self.data.setCell(k, 1, valor);
                     k++;
                 } else {
-                    //                    if (self.id_div == "chartx61_div") {
-                    //                        app.consoleLog(self.id_div,
-                    //                            "dados f=" + f + "  j=" + j + " valor=" + valor);
-                    //                    }
-                    if (isNaN(valor)) valor = null;
+           //         if (self.id_div == "chart6_div") {
+        //                app.consoleLog(self.id_div,
+        //                    "dados f=" + f + "  j=" + j + " valor=" + valor);
+        //            }
+                    if (isNaN(valor) || valor == false) valor = null;
                     self.data.setCell(f, j++, valor);
                     if (self.tipo == 2 && campo <= 8) {
                         if (mensagem != false) {
@@ -264,15 +280,29 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                 } // else
             } // for
         }
-        self.chart.draw(self.data, self.options);
-        //     app.consoleLog("<self.id_div",self.id_div);
-        // cor do fundo do gráfico em vermelho se offline
-        if (self.tipo==0) {
-            if (self.status==3 || self.offline_at!=false)
-                $('#'+self.id_div+' circle:nth-child(2)').attr('fill', '#FF0000');
-            else
-               $('#'+self.id_div+' circle:nth-child(2)').attr('fill', '#F7F7F7');
+        // se tem dados, mostra o gráfico
+        if (self.message == '') {
+            if ($("#"+self.id_div).css('display') == 'none')
+                    $("#"+self.id_div).css('display','block');
+
+            self.chart.draw(self.data, self.options);
+            // cor do fundo do gráfico em vermelho se offline
+            if (self.tipo == 0) {
+                if (self.status == 3 || self.offline_at != false)
+                    $('#' + self.id_div + ' circle:nth-child(2)').attr('fill', '#FF0000');
+                else
+                    $('#' + self.id_div + ' circle:nth-child(2)').attr('fill', '#F7F7F7');
+                if (self.field_flag == 0)
+                    $('#' + self.id_div + ' circle:nth-child(1)').attr('fill', '#F7F7F7');
+                else
+                    $('#' + self.id_div + ' circle:nth-child(1)').attr('fill', '#FF0000');
+            }
+        } else {
+            if ($("#"+self.id_div).css('display') == 'block') {
+                    $("#"+self.id_div).css('display','none');
+            }
         }
+
 
     };
 
@@ -391,6 +421,8 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
         case 3: // dounets
             self.data.addColumn('string', self.titulo);
             self.data.addColumn('number', "xx");
+            self.data.addRows(self.series.length);
+
             self.nro_pontos = 1;
             self.chart = new google.visualization.PieChart(document.getElementById(self.id_div));
             self.options = {
