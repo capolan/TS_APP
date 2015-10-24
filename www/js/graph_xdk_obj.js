@@ -66,6 +66,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
     this.timerID = null;
     this.vcc = null;
     this.field_flag=null;
+    this.vcc_flag=null;
     this.max = new Array(10);
     this.min = new Array(10);
 
@@ -121,7 +122,9 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
         //      return;
         //  }
         // confere que o numero da serie do node do feed == config
-        if (serie.modulo >= 0) {
+        var valdata = json_feed;
+
+        if (serie.modulo!=null && serie.modulo >= 0) {
             var n = self.modulo + 1;
             if (self.serie == null)
                 self.serie = getObjects(json_config.canal, "node" + n);
@@ -148,10 +151,10 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
         //   app.consoleLog("self.passo",self.passo);
         if (window.cordova && navigator.connection.type == Connection.NONE) return;
 
-        var valdata = json_feed;
         //     app.consoleLog("valdata",valdata);
         self.vcc = null;
         self.field_flag=0;
+        self.vcc_flag=0;
         for (var i = 0, f = 0; i <= self.nro_pontos - 1; i = i + self.passo, f++) {
             var mensagem = false;
             if (valdata.feeds[i] === undefined) {
@@ -178,6 +181,9 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                     v_str = jsonPath(valdata, "$.nodes_feed" + str + "[" + i + "].vcc");
                     if (self.vcc == null && v_str != false)
                         self.vcc = v_str;
+                    v_str = jsonPath(valdata, "$.nodes" + str + ".vcc_flag");
+                    if (self.vcc_flag == null || v_str != false)
+                        self.vcc_flag = v_str;
                 }
             }
             if (self.tipo != 3) self.data.setCell(f, 0, d);
@@ -288,14 +294,24 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
             self.chart.draw(self.data, self.options);
             // cor do fundo do gráfico em vermelho se offline
             if (self.tipo == 0) {
+                var flag=false;
+                    if (self.id_div == "chartx71_div") console.log("vcc="+self.vcc_flag);
                 if (self.status == 3 || self.offline_at != false)
                     $('#' + self.id_div + ' circle:nth-child(2)').attr('fill', '#FF0000');
                 else
                     $('#' + self.id_div + ' circle:nth-child(2)').attr('fill', '#F7F7F7');
-                if (self.field_flag == 0)
+                if (self.field_flag == 0) {
                     $('#' + self.id_div + ' circle:nth-child(1)').attr('fill', '#F7F7F7');
-                else
+                } else {
                     $('#' + self.id_div + ' circle:nth-child(1)').attr('fill', '#FF0000');
+                    flag=true;
+                }
+                if (self.vcc_flag != 0) {
+                    if (flag==true)
+                        $('#' + self.id_div + ' circle:nth-child(1)').attr('fill', '#F97700');
+                    else
+                        $('#' + self.id_div + ' circle:nth-child(1)').attr('fill', '#F7F700');
+                }
             }
         } else {
             if ($("#"+self.id_div).css('display') == 'block') {

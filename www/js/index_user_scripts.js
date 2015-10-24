@@ -141,6 +141,9 @@
             activate_subpage("#uib_page_info");
             lerStatus();
             $("#text_info_modelo").html('APP Tsensor ' + VERSAO.MAJOR + '.' + VERSAO.MINOR + ' ' + VERSAO.DATE + "<BR>");
+            if (json_config!=null && json_config.canal.recursos != undefined) {
+                $("#text_info_modelo").append('Recursos:' + json_config.canal.recursos + '<BR>');
+            }
             $("#text_info_modelo").append('Platform:' + device.platform + '<BR>');
             $("#text_info_modelo").append('Model:' + device.model + '<BR>');
             $("#text_info_modelo").append('Version:' + device.version + '<BR>');

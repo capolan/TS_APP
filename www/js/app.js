@@ -80,7 +80,7 @@ function getMainConfig(tipo) {
         window.Cookies["chave"] != undefined) {
         console.log("modelo=" + Cookies["modelo"]);
         var chave = Cookies["chave"];
-        var url = "http://45.55.77.192/obj/ti/config_ler.php?f=0&m=" + Cookies["modelo"] + "&s=" + Cookies["serie"] + "&c=" + chave.substring(0, 4) +
+        var url = "http://"+SERVER_IP+SERVER_PATH+"/config_ler.php?f=0&m=" + Cookies["modelo"] + "&s=" + Cookies["serie"] + "&c=" + chave.substring(0, 4) +
             '&t1=' + VERSAO.MAJOR +
             '&t2=' + VERSAO.MINOR +
             '&td=' + VERSAO.DATE;
@@ -285,7 +285,7 @@ function gravarComandoTS(text_obj) {
     var node = $("#sel-node option:selected").index();
     var cmd = $("#sel-cmd option:selected").index();
     var chave = Cookies["chave"];
-    var addr = 'http://45.55.77.192/obj/ti/config_ts.php';
+    var addr = 'http://'+SERVER_IP+SERVER_PATH+'/config_ts.php';
     var data = 'f=1&m=' + Cookies['modelo'] +
         '&s=' + Cookies['serie'] +
         "&c=" + chave.substring(0, 4) +
@@ -340,7 +340,7 @@ function gravarComandoTS(text_obj) {
 /**********************************************************************/
 function gravarConfiguracao(pag, text_obj) {
     var chave = Cookies["chave"];
-    var addr = 'http://45.55.77.192/obj/ti/config_ts.php?f=2' +
+    var addr = 'http://'+SERVER_IP+SERVER_PATH+'/config_ts.php?f=2' +
         '&m=' + Cookies['modelo'] +
         '&s=' + Cookies['serie'] +
         "&c=" + chave.substring(0, 4);
@@ -408,7 +408,7 @@ function gravarConfiguracao(pag, text_obj) {
 
 function gravarConfiguracaoSensor(pag, text_obj) {
     var chave = Cookies["chave"];
-    var addr = 'http://45.55.77.192/obj/ti/config_ts.php';
+    var addr = 'http://'+SERVER_IP+SERVER_PATH+'/config_ts.php';
     var data = 'f=2&m=' + Cookies['modelo'] +
         '&s=' + Cookies['serie'] +
         "&c=" + chave.substring(0, 4);
@@ -510,7 +510,7 @@ var json_feed = null;
 
 function get_feed(flag_atualiza) {
     var horas = $("#sel-g1 option:selected").index();
-    url = 'http://45.55.77.192/obj/ti/get_feed.php?' +
+    url = 'http://'+SERVER_IP+SERVER_PATH+'/get_feed.php?' +
         'api_key=' + Cookies["api_key"] + '&results=' + Cookies["nro_pontos"];
 
     if (r_horas == null)
@@ -883,9 +883,12 @@ var r_horas = 6;
 var MAX_NODES = 4;
 var VERSAO = {
     MAJOR: '1',
-    MINOR: '0',
-    DATE: '08/10/2015'
+    MINOR: '1',
+    DATE: '23/10/2015'
 };
+
+var SERVER_IP='45.55.77.192';
+var SERVER_PATH='/0';
 
 
 var evt_get_feed = document.createEvent("Event");
