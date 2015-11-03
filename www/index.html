@@ -68,14 +68,15 @@
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
+        <script src="https://cdn.rawgit.com/mdp/gibberish-aes/master/dist/gibberish-aes-1.0.0.min.js"></script>
+        <script type="text/javascript" src="js/CryptoJS/rollups/sha256.js"></script>
+        <!--
+        <script type="text/javascript" src="js/CryptoJS/rollups/aes.js"></script>
+-->
         <script type="text/javascript" src="js/moment.js"></script>
         <script type="text/javascript" src="js/jsonpath.js"></script>
         <script type="text/javascript" src="js/graph_xdk_obj.js"></script>
         <script type="text/javascript" src="js/graph_create.js"></script>
-        <!--
-    <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js"></script>
--->
-
         <script type="text/javascript" src="js/tsensor_hw.js"></script>
         <script type="text/javascript" src="js/base64_encode.js"></script>
         <script type="text/javascript" src="js/network.js"></script>
@@ -108,18 +109,179 @@
     <body id="afui">
 
         <header class="wrapping-col wrap-element uib_w_66" data-uib="app_framework/header" data-ver="2" id="af-header-0">
+            <div class="widget uib_w_258 header-left d-margins text-user-login" data-uib="media/text" data-ver="0" id="text-user-mainpage">
+                <div class="widget-container left-receptacle"></div>
+                <div class="widget-container right-receptacle"></div>
+                <div>
+                    <p>&nbsp;</p>
+                </div>
+            </div>
             <h1 id="af-header-0-tit">Home</h1>
             <a class="button widget uib_w_67 d-margins header-right icon info" data-uib="app_framework/button" data-ver="1" id="btn_info"></a>
         </header>
-        <header class="wrapping-col wrap-element uib_w_88" data-uib="app_framework/header" data-ver="2" id="af-header-1">
+        <header class="wrapping-col wrap-element uib_w_88" data-uib="app_framework/header" data-ver="2" id="af-header-modulos">
+            <div class="widget uib_w_259 header-left d-margins text-user-login" data-uib="media/text" data-ver="0" id="text-user-modulo">
+                <div class="widget-container left-receptacle"></div>
+                <div class="widget-container right-receptacle"></div>
+                <div>
+                    <p>&nbsp;</p>
+                </div>
+            </div>
             <h1>Módulos</h1>
         </header>
-        <header class="wrapping-col wrap-element uib_w_126" data-uib="app_framework/header" data-ver="2" id="af-header-2">
+        <header class="wrapping-col wrap-element uib_w_126" data-uib="app_framework/header" data-ver="2" id="af-header-sensor">
+            <div class="widget uib_w_260 header-left d-margins" data-uib="media/text" data-ver="0" id="text-user-sensor">
+                <div class="widget-container left-receptacle"></div>
+                <div class="widget-container right-receptacle"></div>
+                <div>
+                    <p>&nbsp;</p>
+                </div>
+            </div>
             <h1>Sensor</h1>
+        </header>
+
+        <header class="wrapping-col wrap-element uib_w_216" data-uib="app_framework/header" data-ver="2" id="af-header-login">
+            <div class="widget uib_w_257 header-left d-margins text-user-login" data-uib="media/text" data-ver="0" id="text-user-login">
+                <div class="widget-container left-receptacle"></div>
+                <div class="widget-container right-receptacle"></div>
+                <div>
+                    <p>&nbsp;</p>
+                </div>
+            </div>
+            <h1>Login</h1>
+        </header>
+        <header class="wrapping-col wrap-element uib_w_261" data-uib="app_framework/header" data-ver="2" id="af-header-config">
+            <div class="widget uib_w_262 header-left d-margins text-user-login" data-uib="media/text" data-ver="0" id="text-user-config">
+                <div class="widget-container left-receptacle"></div>
+                <div class="widget-container right-receptacle"></div>
+                <div>
+                    <p>&nbsp;</p>
+                </div>
+            </div>
+            <h1>Configuração</h1>
         </header>
         <div class="uwrap" id="content">
 
-            <div class="upage panel" id="mainpage" data-header="af-header-0" data-footer="af-footer-0">
+            <div class="upage panel" id="uib_page_login" data-header="af-header-login" data-footer="af-footer-login">
+                <div class="upage-content ac0 content-area vertical-col left" id="uib_page_13">
+                    <div class="grid grid-pad urow uib_row_31 row-height-31" data-uib="layout/row" data-ver="0">
+                        <div class="col uib_col_38 col-0_12-12" data-uib="layout/col" data-ver="0">
+                            <div class="widget-container content-area vertical-col">
+                                <span class="uib_shim"></span>
+                            </div>
+                        </div>
+                        <span class="uib_shim"></span>
+                    </div>
+                    <div class="widget uib_w_217 d-margins teste" data-uib="media/text" data-ver="0">
+                        <div class="widget-container left-receptacle"></div>
+                        <div class="widget-container right-receptacle"></div>
+                        <div>
+                            <p>Usuário cadastrado</p>
+                        </div>
+                    </div><a class="button widget uib_w_218 d-margins" data-uib="app_framework/button" data-ver="1" id="btn-sign-in">Entrar</a>
+                    <div class="grid grid-pad urow uib_row_32 row-height-32" data-uib="layout/row" data-ver="0">
+                        <div class="col uib_col_39 col-0_12-12" data-uib="layout/col" data-ver="0">
+                            <div class="widget-container content-area vertical-col">
+                                <span class="uib_shim"></span>
+                            </div>
+                        </div>
+                        <span class="uib_shim"></span>
+                    </div>
+                    <div class="widget uib_w_219 d-margins teste" data-uib="media/text" data-ver="0">
+                        <div class="widget-container left-receptacle"></div>
+                        <div class="widget-container right-receptacle"></div>
+                        <div>
+                            <p>Novo Usuário</p>
+                        </div>
+                    </div><a class="button widget uib_w_220 d-margins" data-uib="app_framework/button" data-ver="1" id="btn-sign-up">Cadastrar</a>
+
+                    <div class="widget uib_w_256 d-margins" data-uib="media/text" data-ver="0" id="text-sessao-id">
+                        <div class="widget-container left-receptacle"></div>
+                        <div class="widget-container right-receptacle"></div>
+                        <div>
+                            <p>&nbsp;</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="uib_page_sign_in" class="upage-content vertical-col left hidden">
+                    <div class="table-thing with-label widget uib_w_223 d-margins" data-uib="app_framework/input" data-ver="1">
+                        <label class="narrow-control label-inline" for="text-user-name">Usuário</label>
+
+                        <input class="wide-control" type="text" id="text-user-name">
+                    </div>
+                    <div class="table-thing with-label widget uib_w_224 d-margins" data-uib="app_framework/input" data-ver="1">
+                        <label class="narrow-control label-inline" for="text-user-passwd">Senha</label>
+                        <input class="wide-control" type="text" id="text-user-passwd">
+                    </div>
+                    <div class="button-grouped flex widget uib_w_225 d-margins" data-uib="app_framework/button_group" data-ver="1"><a class="button widget uib_w_226" data-uib="app_framework/button" data-ver="1" style="border-left-width: 1px; border-left-style: solid; border-left-color: rgb(102, 102, 102); border-top-left-radius: 6px; border-bottom-left-radius: 6px;"
+                        id="btn-sign-in-entrar">Login</a><a class="button widget uib_w_227" data-uib="app_framework/button" data-ver="1" id="btn-sign-in-limpar">Limpar</a><a class="button widget uib_w_244 d-margins" data-uib="app_framework/button" data-ver="1"
+                        id="btn-sign-out">Logoff</a>
+                    </div>
+
+                    <div class="grid grid-pad urow uib_row_33 row-height-33" data-uib="layout/row" data-ver="0">
+                        <div class="col uib_col_40 col-0_12-12" data-uib="layout/col" data-ver="0">
+                            <div class="widget-container content-area vertical-col">
+
+                                <span class="uib_shim"></span>
+                            </div>
+                        </div>
+                        <span class="uib_shim"></span>
+                    </div>
+                    <a class="button widget uib_w_243 d-margins" data-uib="app_framework/button" data-ver="1" id="btn-login-reenviar">Re-enviar senha</a>
+                </div>
+                <div id="uib_page_sign_up" class="upage-content vertical-col left hidden">
+                    <div class="table-thing with-label widget uib_w_228 d-margins" data-uib="app_framework/input" data-ver="1">
+                        <label class="narrow-control label-top-left" for="text-nome-completo">Nome completo</label>
+
+                        <input class="wide-control" type="text" id="text-nome-completo">
+                    </div>
+                    <div class="table-thing with-label widget uib_w_235 d-margins" data-uib="app_framework/input" data-ver="1">
+                        <label class="narrow-control label-top-left" for="text-email">Email</label>
+                        <input class="wide-control" type="text" id="text-email">
+                    </div>
+                    <div class="table-thing with-label widget uib_w_229 d-margins" data-uib="app_framework/input" data-ver="1">
+                        <label class="narrow-control label-inline" for="text-usuario">Usuário</label>
+
+                        <input class="wide-control" type="text" id="text-usuario">
+                    </div>
+                    <div class="table-thing with-label widget uib_w_230 d-margins" data-uib="app_framework/input" data-ver="1">
+                        <label class="narrow-control label-inline" for="text-senha-1">Senha</label>
+                        <input class="wide-control" type="password" id="text-senha-1">
+                    </div>
+                    <div class="table-thing with-label widget uib_w_231 d-margins" data-uib="app_framework/input" data-ver="1">
+                        <label class="narrow-control label-inline" for="text-senha-2">Confirmação</label>
+                        <input class="wide-control" placeholder="repetir a senha" type="password" id="text-senha-2">
+                    </div>
+                    <div class="button-grouped flex widget uib_w_232 d-margins" data-uib="app_framework/button_group" data-ver="1"><a class="button widget uib_w_233" data-uib="app_framework/button" data-ver="1" style="border-left-width: 1px; border-left-style: solid; border-left-color: rgb(102, 102, 102); border-top-left-radius: 6px; border-bottom-left-radius: 6px;"
+                        id="btn-enviar-cadastro">Enviar</a><a class="button widget uib_w_234" data-uib="app_framework/button" data-ver="1" id="btn-limpar-cadastro">Limpar</a>
+                    </div>
+                </div>
+
+                <div id="uib_page_senha" class="upage-content vertical-col left hidden">
+                    <div class="widget uib_w_251 d-margins teste" data-uib="media/text" data-ver="0">
+                        <div class="widget-container left-receptacle"></div>
+                        <div class="widget-container right-receptacle"></div>
+                        <div>
+                            <p>Troca de senha</p>
+                        </div>
+                    </div>
+                    <div class="table-thing with-label widget uib_w_253 d-margins" data-uib="app_framework/input" data-ver="1">
+                        <label class="narrow-control label-inline" for="text-senha-antiga">Antiga</label>
+                        <input class="wide-control" type="password" id="text-senha-antiga">
+                    </div>
+                    <div class="table-thing with-label widget uib_w_254 d-margins" data-uib="app_framework/input" data-ver="1">
+                        <label class="narrow-control label-inline" for="text-senha-nova">Nova senha</label>
+                        <input class="wide-control" type="password" id="text-senha-nova">
+                    </div>
+                    <div class="table-thing with-label widget uib_w_255 d-margins" data-uib="app_framework/input" data-ver="1">
+                        <label class="narrow-control label-inline" for="text-senha-confirmacao">Confirmação</label>
+                        <input class="wide-control" type="password" id="text-senha-confirmacao">
+                    </div><a class="button widget uib_w_252 d-margins" data-uib="app_framework/button" data-ver="1" id="btn-senha-trocar">Alterar</a>
+                </div>
+            </div>
+
+            <div class="upage vertical-col left panel" id="mainpage" data-header="af-header-0" data-footer="af-footer-0">
 
                 <div class="upage-content ac0 content-area vertical-col" id="uib_page_2">
 
@@ -241,6 +403,17 @@
 
                         </div><span class="uib_shim"></span>
                     </div>
+
+                    <div class="grid grid-pad urow uib_row_29 row-height-29" data-uib="layout/row" data-ver="0">
+                        <div class="col uib_col_36 col-0_12-12" data-uib="layout/col" data-ver="0">
+                            <div class="widget-container content-area vertical-col">
+                                <span class="uib_shim"></span>
+                                <div id="text_pag_10_2"></div>
+
+                            </div>
+                        </div>
+                        <span class="uib_shim"></span>
+                    </div>
                 </div>
 
                 <div id="uib_page_11" class="upage-content vertical-col hidden">
@@ -267,6 +440,7 @@
                             <div class="widget-container content-area vertical-col">
                                 <span class="uib_shim">
                              <div id="chart6_div"></div></span>
+                                <div id="text_pag_11_2"></div>
 
                             </div>
 
@@ -274,6 +448,15 @@
                         <span class="uib_shim"></span>
                     </div>
 
+                    <div class="grid grid-pad urow uib_row_30 row-height-30" data-uib="layout/row" data-ver="0">
+                        <div class="col uib_col_37 col-0_12-12" data-uib="layout/col" data-ver="0">
+                            <div class="widget-container content-area vertical-col">
+                                <span class="uib_shim"></span>
+
+                            </div>
+                        </div>
+                        <span class="uib_shim"></span>
+                    </div>
                 </div>
 
                 <div id="uib_page_info" class="upage-content vertical-col hidden">
@@ -312,7 +495,7 @@
                 </div>
             </div>
 
-            <div class="upage vertical-col left panel" id="uib_page_4" data-header="none" data-footer="af-footer-5">
+            <div class="upage vertical-col left panel" id="uib_page_4" data-header="af-header-config" data-footer="af-footer-5">
                 <div id="uib_page_3" class="upage-content vertical-col hidden">
                     <div class="widget uib_w_50 d-margins teste" data-uib="media/text" data-ver="0">
                         <div class="widget-container left-receptacle"></div>
@@ -369,8 +552,17 @@
                         <div class="widget-container left-receptacle"></div>
                         <div class="widget-container right-receptacle"></div>
                         <div>
-                            <p>Configuração</p>
+                            <p>Equipamento</p>
                         </div>
+                    </div>
+                    <div class="table-thing with-label widget uib_w_263 d-margins" data-uib="app_framework/select" data-ver="1">
+                        <label class="narrow-control label-inline" for="sel-meus-sensores">Meus</label>
+
+                        <select class="wide-control" id="sel-meus-sensores">
+                            <option>Option 1</option>
+                            <option>Option 2</option>
+                            <option>Option 3</option>
+                        </select>
                     </div>
 
                     <div class="table-thing with-label widget uib_w_26 d-margins" data-uib="app_framework/input" data-ver="1">
@@ -512,7 +704,7 @@
                     </div>
                 </div>
             </div>
-            <div class="upage vertical-col left panel" id="uib_page_modulos" data-header="af-header-1" data-footer="af-footer-1">
+            <div class="upage vertical-col left panel" id="uib_page_modulos" data-header="af-header-modulos" data-footer="af-footer-1">
                 <div id="uib_page_mod1" class="upage-content vertical-col left ">
                     <div class="grid grid-pad urow uib_row_9 row-height-9" data-uib="layout/row" data-ver="0">
                         <div class="col uib_col_13 col-0_12-12" data-uib="layout/col" data-ver="0">
@@ -543,14 +735,24 @@
                         <span class="uib_shim"></span>
                     </div>
 
+                    <div class="grid grid-pad urow uib_row_25 row-height-25" data-uib="layout/row" data-ver="0">
+                        <div class="col uib_col_32 col-0_12-12" data-uib="layout/col" data-ver="0">
+                            <div class="widget-container content-area vertical-col">
+                                <span class="uib_shim"></span>
+                                <div id="chartx6_div"></div>
+                            </div>
+                        </div>
+                        <span class="uib_shim">
+                        </span>
+                    </div>
                 </div>
                 <div id="uib_page_mod2" class="upage-content vertical-col left hidden">
                     <div class="grid grid-pad urow uib_row_11 row-height-11" data-uib="layout/row" data-ver="0">
                         <div class="col uib_col_15 col-0_12-12" data-uib="layout/col" data-ver="0">
                             <div class="widget-container content-area vertical-col">
                                 <span class="uib_shim">
-                        <div id="chartx71_div"></div>
                   </span>
+                                <div id="chartx71_div"></div>
                             </div>
                         </div>
                         <span class="uib_shim"></span>
@@ -569,6 +771,17 @@
                                 <span class="uib_shim">
                           <div id="chartx72_div"></div>
                   </span>
+                            </div>
+                        </div>
+                        <span class="uib_shim"></span>
+                    </div>
+
+                    <div class="grid grid-pad urow uib_row_26 row-height-26" data-uib="layout/row" data-ver="0">
+                        <div class="col uib_col_33 col-0_12-12" data-uib="layout/col" data-ver="0">
+                            <div class="widget-container content-area vertical-col">
+                                <span class="uib_shim">
+                                </span>
+                                <div id="chartx7_div"></div>
                             </div>
                         </div>
                         <span class="uib_shim"></span>
@@ -603,6 +816,16 @@
                         </div>
                         <span class="uib_shim"></span>
                     </div>
+
+                    <div class="grid grid-pad urow uib_row_27 row-height-27" data-uib="layout/row" data-ver="0">
+                        <div class="col uib_col_34 col-0_12-12" data-uib="layout/col" data-ver="0">
+                            <div class="widget-container content-area vertical-col">
+                                <span class="uib_shim"></span>
+                                <div id="chartx8_div"></div>
+                            </div>
+                        </div>
+                        <span class="uib_shim"></span>
+                    </div>
                 </div>
                 <div id="uib_page_mod4" class="upage-content vertical-col left hidden">
                     <div class="grid grid-pad urow uib_row_23 row-height-23" data-uib="layout/row" data-ver="0">
@@ -632,6 +855,18 @@
                             </div>
                             <span class="uib_shim"></span>
                         </div>
+                    </div>
+
+                    <div class="grid grid-pad urow uib_row_28 row-height-28" data-uib="layout/row" data-ver="0">
+                        <div class="col uib_col_35 col-0_12-12" data-uib="layout/col" data-ver="0">
+                            <div class="widget-container content-area vertical-col">
+                                <span class="uib_shim"></span>
+                            </div><span class="uib_shim"> <div id="chartx9_div">
+
+                            </div>
+                        </span>
+                        </div>
+                        <span class="uib_shim"></span>
                     </div>
                 </div>
                 <div id="uib_page_mod_config" class="upage-content vertical-col left hidden">
@@ -815,7 +1050,7 @@
                 </div>
             </div>
 
-            <div class="upage panel" id="page_sensor" data-header="af-header-2" data-footer="af-footer-3">
+            <div class="upage panel" id="page_sensor" data-header="af-header-sensor" data-footer="af-footer-3">
                 <div id="sub-page-sensor-main" class="upage-content vertical-col left hidden">
                     <div class="table-thing with-label widget uib_w_147 d-margins" data-uib="app_framework/input" data-ver="1">
                         <label class="narrow-control label-top-left" for="text-s-nome">Nome</label>
@@ -1014,11 +1249,6 @@
                 </div>
 
             </div>
-            <div class="upage panel" id="uib_page_teste" data-header="none" data-footer="none">
-                <div class="upage-outer">
-                    <div class="upage-content ac0 content-area vertical-col left" id="page_59_47"></div>
-                </div>
-            </div>
             <footer class="wrap-element uib_w_114" data-uib="app_framework/footer" data-ver="1" id="af-footer-3">
                 <a class="widget uib_w_120 icon home" data-uib="app_framework/button" data-ver="1" style="border-left-width: 1px; border-left-style: solid; border-left-color: rgb(102, 102, 102); border-top-left-radius: 6px; border-bottom-left-radius: 6px;" id="btn_s_inicio"
                 href="#mainpage" data-transition="fade">Inicio</a><a class="widget uib_w_117 icon settings" data-uib="app_framework/button" data-ver="1" id="btn_s_config">Config</a><a class="widget uib_w_118 icon magnifier" data-uib="app_framework/button"
@@ -1032,18 +1262,26 @@
                 <a class="widget uib_w_202 d-margins icon graph" data-uib="app_framework/button" data-ver="1" id="btn_mod4">Mod 4</a><a class="widget uib_w_155 d-margins icon settings" data-uib="app_framework/button" data-ver="1" id="btn-m-config">Config</a>
             </footer>
 
-            <footer class="wrap-element uib_w_13" data-uib="app_framework/footer" data-ver="1" id="af-footer-5"><a class="widget uib_w_17 icon home" data-uib="app_framework/button" data-ver="1" style="border-top-right-radius: 6px; border-bottom-right-radius: 6px;">Inicio</a><a class="widget uib_w_49 d-margins icon key" data-uib="app_framework/button"
-                data-ver="1" id="btn-config-principal">Config</a>
+            <footer class="wrap-element uib_w_13" data-uib="app_framework/footer" data-ver="1" id="af-footer-5">
+                <a class="widget uib_w_17 icon home" data-uib="app_framework/button" data-ver="1" style="border-top-right-radius: 6px; border-bottom-right-radius: 6px;">Inicio</a>
+                <a class="widget uib_w_49 d-margins icon key" data-uib="app_framework/button" data-ver="1" id="btn-config-principal">Config</a>
                 <a class="widget uib_w_18 d-margins icon wifi" data-uib="app_framework/button" data-ver="1">WIFI</a>
                 <a class="widget uib_w_19 d-margins icon graph" data-uib="app_framework/button" data-ver="1">Cloud</a>
                 <a class="widget uib_w_16 icon download" data-uib="app_framework/button" data-ver="1">AP</a>
             </footer>
             <footer class="wrap-element uib_w_3" data-uib="app_framework/footer" data-ver="1" id="af-footer-0"><a class="widget uib_w_4 d-margins icon home" data-uib="app_framework/button" data-ver="1" id="btn_home">Home</a><a class="widget uib_w_71 d-margins btn-estilo icon target" data-uib="app_framework/button" data-ver="1" id="btn_mod_extras">Modulos</a>
                 <a class="widget uib_w_5 d-margins icon location" data-uib="app_framework/button" data-ver="1">Sensor</a><a class="widget uib_w_6 d-margins icon settings" data-uib="app_framework/button" data-ver="1" href="#uib_page_4" data-transition="fade">Config</a>
-                <a class="widget uib_w_102 d-margins icon close" data-uib="app_framework/button" data-ver="1" id="btn_sair">Sair</a>
+                <a class="widget uib_w_102 d-margins icon user" data-uib="app_framework/button" data-ver="1" id="btn_sair">Login</a>
             </footer>
 
         </div>
+        <footer class="wrap-element uib_w_236" data-uib="app_framework/footer" data-ver="1" id="af-footer-login">
+            <a class="widget uib_w_242 d-margins icon graph" data-uib="app_framework/button" data-ver="1" id="btn-login-pular">Pular</a><a class="widget uib_w_241 d-margins icon user" data-uib="app_framework/button" data-ver="1" id="btn-login-login">Login</a>
+            <a
+            class="widget uib_w_264 d-margins icon error" data-uib="app_framework/button" data-ver="1" id="btn-login-logoff">Logoff</a>
+                <a class="widget uib_w_250 d-margins icon key" data-uib="app_framework/button" data-ver="1" id="btn-trocar-senha">Senha</a>
+
+        </footer>
     </body>
 
 </html>

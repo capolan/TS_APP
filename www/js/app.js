@@ -28,6 +28,159 @@ function getUrlVars() {
     });
     return vars;
 }
+/***********************************************************************************/
+function validateUsuario(txt) {
+    var re = /^[a-zA-Z0-9.\-_$@!]{3,30}$/;
+    return re.test(txt);
+}
+
+/***********************************************************************************/
+function validateEmail(email) {
+    var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+    return re.test(email);
+}
+/*****************************************************************************/
+function validatePasswd(str) {
+    if (str.length < 5) {
+        return ("min 5 caracteres");
+    } else if (str.length > 20) {
+        return ("muito longa");
+    } else if (str.search(/\d/) == -1) {
+        return ("falta numero");
+    } else if (str.search(/[a-zA-Z]/) == -1) {
+        return ("falta letra");
+    } else if (str.search(/[^a-zA-Z0-9\!\@\#\$\%\^\&\*\(\)\_\+]/) != -1) {
+        return ("caractere invalido");
+    }
+    return true;
+}
+
+/******************************************************************************/
+function mensagemTela(titulo, msg) {
+    if (window.cordova)
+        navigator.notification.alert(titulo, // message
+            alertDismissed, msg, 'Fechar');
+    else {
+        if (titulo == null || titulo == '')
+            alert(msg);
+        else
+            alert(titulo + ':' + msg);
+    }
+}
+/******************************************************************************/
+function atualizaHeaderLogin(txt) {
+    document.getElementById("text-user-login").innerHTML = txt;
+    document.getElementById("text-user-mainpage").innerHTML = txt;
+    document.getElementById("text-user-config").innerHTML = txt;
+    document.getElementById("text-user-modulo").innerHTML = txt;
+    document.getElementById("text-user-sensor").innerHTML = txt;
+    if (sessao_id == null || txt=='') {
+        document.getElementById("text-sessao-id").innerHTML = '';
+        $("#btn-sign-out").hide();
+        $("#btn-login-logoff").hide();
+        $('#btn-trocar-senha').hide();
+        $("#btn-login-reenviar").hide();
+        $("#btn-enviar-cadastro").show();
+        $("#btn-sign-in-entrar").show();
+        $(".uib_w_263").hide(); //#sel-meus-sensores
+    } else {
+        document.getElementById("text-sessao-id").innerHTML = sessao_id;
+        $("#btn-sign-out").show();
+        $("#btn-login-logoff").show();
+        $("#btn-enviar-cadastro").hide();
+        $("#btn-trocar-senha").show();
+        $("#btn-login-reenviar").show();
+        $("#btn-sign-in-entrar").hide();
+        $(".uib_w_263").show(); //#sel-meus-sensores
+    }
+}
+
+
+/******************************************************************************/
+function lerMensagensSensor(_modulo, _dd_div) {
+
+    this.data = null;
+    this.table = null;
+    this.modulo = _modulo;
+    this.dd_div = _dd_div;
+
+
+    var self = this;
+
+    console.log(">lerMensagensSensor");
+
+    if (window.cordova) {
+        if (navigator.connection.type == Connection.NONE) {
+            return;
+        }
+    }
+    //    google.load("visualization", "1.1", {'packages':["table"]}, {'callback' : this.drawTable});
+    //   google.setOnLoadCallback(this.drawTable);
+
+
+    this.loadData = function () {
+        var data, msg;
+        var flag = false;
+        var l, n = self.modulo + 1;
+        var v_str = jsonPath(json_feed, "$.nodes" + n + ".contador");
+        var len = parseInt(v_str);
+
+        if (len == 0) {
+            flag = false;
+        } else {
+            l = self.data.getNumberOfRows();
+            if (l > 0)
+                self.data.removeRows(0, l);
+
+            for (var i = 0; i < len; i++) {
+                //    console.log("i:"+i+" date="+json.feeds[i].created_at+"  status="+ json.feeds[i].status);
+                if (self.modulo == null) {
+                    msg = jsonPath(json_feed, "$.feeds[" + i + "].mensagem");
+                    data = jsonPath(json_feed, "$.feeds[" + i + "].created_at");
+                } else {
+                    msg = jsonPath(json_feed, "$.nodes_feed" + n + "[" + i + "].mensagem");
+                    data = jsonPath(json_feed, "$.nodes_feed" + n + "[" + i + "].created_at");
+                }
+                if (msg != false) {
+                    flag = true;
+                    //                    console.log(data+" $ "+msg+"   "+len);
+                    self.data.addRow([data.toString(), msg.toString()]);
+                }
+            }
+        }
+        if (flag == false)
+            $(self.dd_div).hide();
+        else {
+            $(self.dd_div).show();
+            self.table.draw(self.data, {
+                showRowNumber: false,
+                page: true,
+                width: '100%',
+                height: '100%'
+            });
+        }
+
+    };
+
+    this.drawTable = function () {
+        console.log(">drawTable Status dd_div=" + self.dd_div);
+        self.data = new google.visualization.DataTable();
+        //self.data.addColumn('number', 'Nro');
+        self.data.addColumn('string', 'Data');
+        self.data.addColumn('string', 'Evento');
+        self.table = new google.visualization.Table(document.getElementById(self.dd_div));
+        self.loadData();
+    };
+
+    //google.setOnLoadCallback(this.drawTable);
+
+    if (this.data == null)
+        this.drawTable();
+    else
+        this.loadData();
+    console.log("<lerMensagensSensor");
+}
+
 /******************************************************************************************/
 function click_no_gauge(node) {
     var txt;
@@ -53,11 +206,7 @@ function click_no_gauge(node) {
         txt = txt + ', amostras=' + jsonPath(json_feed, n1 + ".contador");
         if (node > 0 && status != false) txt = txt + ', status=' + status;
     }
-    if (window.cordova) {
-        navigator.notification.alert(txt, alertDismissed, 'Bateria', 'Fechar');
-    } else {
-        alert(txt);
-    }
+    mensagemTela(null, txt);
 }
 
 /**************************************************************************/
@@ -66,7 +215,7 @@ var json_config = null;
 //        1 = somente os módulos
 function getMainConfig(tipo) {
     var ret = false;
-    app.consoleLog(">getMainConfig", "");
+    app.consoleLog(">getMainConfig",tipo);
 
     /*    if (window.cordova) {
         if (navigator.connection.type == Connection.NONE) {
@@ -80,7 +229,7 @@ function getMainConfig(tipo) {
         window.Cookies["chave"] != undefined) {
         console.log("modelo=" + Cookies["modelo"]);
         var chave = Cookies["chave"];
-        var url = "http://"+SERVER_IP+SERVER_PATH+"/config_ler.php?f=0&m=" + Cookies["modelo"] + "&s=" + Cookies["serie"] + "&c=" + chave.substring(0, 4) +
+        var url = "http://" + SERVER_IP + SERVER_PATH + "/config_ler.php?f=0&m=" + Cookies["modelo"] + "&s=" + Cookies["serie"] + "&c=" + chave.substring(0, 4) +
             '&t1=' + VERSAO.MAJOR +
             '&t2=' + VERSAO.MINOR +
             '&td=' + VERSAO.DATE;
@@ -107,7 +256,7 @@ function getMainConfig(tipo) {
             success: function (data) {
                 json_config = data;
                 /*  intel.xdk.notification.alert(json.channel.name, "Canal"); */
-                console.log("api_key=" + json_config.canal.api_key);
+                //console.log("api_key=" + json_config.canal.api_key);
                 // TS
                 if (data != 'null') {
                     document.getElementById("text_config").innerHTML = "OK";
@@ -200,9 +349,14 @@ function getMainConfig(tipo) {
                     testarBotoesModulo();
                     writeMainConfig();
                     atualizaGraficoConfig();
-                    if (json_feed == null)
+                    if (json_feed == null) {
                         atualiza_dados();
-                    $(".uib_w_215").show();
+                        $(".uib_w_215").show();
+                    }
+                    // select de 2,6 e 24horas
+                    // ativa pagina principal
+                    if (tipo==0) activate_subpage("#uib_page_2");
+
                 }
             },
             error: function (data) {
@@ -212,16 +366,16 @@ function getMainConfig(tipo) {
                 document.getElementById("modelo").value = Cookies["modelo"];
                 document.getElementById("serie").value = Cookies["serie"];
                 document.getElementById("chave").value = Cookies["chave"];
-                activate_subpage("#uib_page_5");
+                //activate_subpage("#uib_page_5");
             }
 
         });
     } else {
         document.getElementById("text_config").innerHTML = "ajuste modelo/serie/chave";
-/*        document.getElementById("modelo").value = Cookies["modelo"];
-        document.getElementById("serie").value = Cookies["serie"];
-        document.getElementById("chave").value = Cookies["chave"];
-        */
+        /*        document.getElementById("modelo").value = Cookies["modelo"];
+                document.getElementById("serie").value = Cookies["serie"];
+                document.getElementById("chave").value = Cookies["chave"];
+                */
         activate_subpage("#uib_page_5");
     }
     return ret;
@@ -285,7 +439,7 @@ function gravarComandoTS(text_obj) {
     var node = $("#sel-node option:selected").index();
     var cmd = $("#sel-cmd option:selected").index();
     var chave = Cookies["chave"];
-    var addr = 'http://'+SERVER_IP+SERVER_PATH+'/config_ts.php';
+    var addr = 'http://' + SERVER_IP + SERVER_PATH + '/config_ts.php';
     var data = 'f=1&m=' + Cookies['modelo'] +
         '&s=' + Cookies['serie'] +
         "&c=" + chave.substring(0, 4) +
@@ -325,11 +479,7 @@ function gravarComandoTS(text_obj) {
         },
         error: function (data) {
             if (text_obj == null) {
-                if (window.cordova)
-                    navigator.notification.alert(data, // message
-                        alertDismissed, 'Erro', 'Fechar');
-                else
-                    alert("Comando:" + data);
+                mensagemTela('Erro', data);
             } else {
                 text_obj.innerHTML = data;
             }
@@ -338,9 +488,175 @@ function gravarComandoTS(text_obj) {
 }
 
 /**********************************************************************/
+function updateSelSensores(data) {
+    var i, option;
+    var n,m,s,c;
+    $("#sel-meus-sensores").empty();
+    i=0;
+    m = jsonPath(data,"$.sensores[" +i+ "].modelo");
+    if (m!=false) {
+        document.getElementById("modelo").value = '';
+        document.getElementById("serie").value = '';
+        document.getElementById("chave").value = '';
+        Cookies["modelo"]='';
+        Cookies["serie"]='';
+        Cookies["chave"]='';
+    }
+    while (m != false) {
+        n = jsonPath(data,"$.sensores[" +i+ "].name");
+        s = jsonPath(data,"$.sensores[" +i+ "].serie");
+        c = jsonPath(data,"$.sensores[" +i+ "].chave");
+//        console.log("m="+m+" s="+s+" c="+c);
+        option = $('<option></option>').prop("value",i).text(n);
+        $("#sel-meus-sensores").append(option);
+        i++;
+        m = jsonPath(data,"$.sensores[" +i+ "].modelo");
+    }
+
+}
+
+/**********************************************************************/
+function signInServer(pag) {
+    var addr = 'http://' + SERVER_IP + SERVER_PATH + '/config_ts.php?';
+
+    // SIGN-IN
+    if (pag == 'boot') {
+        addr = addr + 'f=0&s=' + sessao_id;
+    }
+
+    // SIGN-IN
+    if (pag == 'in') {
+        var user = $("#text-user-name").val();
+        var passwd = $("#text-user-passwd").val();
+        //var encrypted_message = GibberishAES.enc(passwd, "TSensor"+user);
+        //var encrypted_message = Base64.encode(passwd, "TSensor");
+        var encrypted_message = CryptoJS.SHA256(passwd);
+        var encode = encodeURIComponent(encrypted_message);
+        if (user == '' || passwd == '') {
+            mensagemTela(data, 'Informe usuario e senha.');
+            return;
+        }
+
+        addr = addr + 'f=3&u=' + user + '&p=' + encode;
+    }
+    // SIGN-OUT logoff
+    if (pag == 'out') {
+        var user = $("#text-user-name").val();
+        addr = addr + 'f=7&u=' + user + '&s=' + sessao_id;
+    }
+
+    // SIGN-UP
+    if (pag == 'up') {
+        var nome = $("#text-nome-completo").val();
+        var email = $("#text-email").val();
+        var user = $("#text-usuario").val();
+        var passwd = $("#text-senha-1").val();
+        passwd = CryptoJS.SHA256(passwd);
+        var txt = "n=" + nome + "&e=" + email + "&p=" + passwd;
+        var etxt = GibberishAES.enc(txt, "TSensor" + user);
+        //var etxt = CryptoJS.AES.encrypt(txt, "TSensor"+user);
+        addr = addr + 'f=4&u=' + user + '&v=' + encodeURIComponent(etxt);
+    }
+    // RESET da senha
+    if (pag == 'reset') {
+        var email = $("#text-user-name").val();
+        if (validateEmail(email) == false) {
+            navigator.notification.alert(email, alertDismissed,
+                'Informe o email no usuario.', 'Fechar');
+            return;
+        }
+
+        addr = addr + 'f=6&e=' + email;
+    }
+    // Troca da senha
+    if (pag == 'troca') {
+        var senha_1 = $("#text-senha-antiga").val();
+        var senha_2 = $("#text-senha-nova").val();
+        var senha_3 = $("#text-senha-confirmacao").val();
+        senha_1 = CryptoJS.SHA256(senha_1);
+        senha_2 = CryptoJS.SHA256(senha_2);
+        senha_3 = CryptoJS.SHA256(senha_3);
+        var txt = "&s1=" + senha_1 + "&s2=" + senha_2 + "&s3=" + senha_3;
+        var etxt = GibberishAES.enc(txt, "TSensor");
+        //var etxt = CryptoJS.AES.encrypt(txt, "TSensor"+user);
+        addr = addr + 'f=8&u=' + user + '&v=' + encodeURIComponent(etxt);
+    }
+    console.log("pag=" + pag + "  user=" + user + " addr=" + addr + "   txt=" + txt);
+    if (window.cordova) {
+        if (navigator.connection.type == Connection.NONE) {
+            navigator.notification.alert(data, // message
+                alertDismissed, 'Sem conexão com a rede.', 'Fechar');
+            return;
+        }
+    }
+    $.ajax({
+        type: 'GET',
+        url: addr,
+        headers: {
+            'User-Agent': 'APP Tsensor/' + VERSAO.MAJOR + '.' + VERSAO.MINOR + '/' + VERSAO.DATE
+        },
+        success: function (data) {
+            console.log(data);
+            if (pag == 'in') {
+                console.log("data="+data);
+                mensagemTela("Bem vindo "+data.login, 'Login');
+                if (data.login == undefined || data.login=='') {
+                    sessao_id = null;
+                    json_user=undefined;
+                    Cookies.erase("sessao_id");
+                    atualizaHeaderLogin('');
+                } else {
+                    json_user=data;
+                    sessao_id = data.sessao;
+                    Cookies.create("sessao_id", sessao_id, 365);
+                    atualizaHeaderLogin(data.login);
+                    updateSelSensores(data);
+                }
+            } else
+            if (pag == 'out') {
+                sessao_id = null;
+                Cookies.erase("sessao_id");
+                $("#text-nome-completo").empty();
+                $("#text-user-name").empty(); // sign-in
+                $("#text-email").empty();
+                $("#text-usuario").empty();
+                atualizaHeaderLogin('Logout com sucesso');
+                //mensagemTela(data.msg, 'Logoff');
+            } else
+            if (pag == 'boot') {
+                if (data.ret == 'OK') {
+                        $("#text-nome-completo").val(data.nome);
+                        $("#text-user-name").val(data.login); // sign-in
+                        $("#text-email").val(data.email);
+                        $("#text-usuario").val(data.login);
+                        sessao_id = data.sessao;
+                        Cookies.create("sessao_id", sessao_id, 365);
+                        updateSelSensores(data);
+                        atualizaHeaderLogin(data.login);
+                        json_user=data;
+                } else {
+                    $("#text-nome-completo").empty();
+                    $("#text-user-name").empty(); // sign-in
+                    $("#text-email").empty();
+                    $("#text-usuario").empty();
+                    sessao_id = null;
+                    Cookies.erase("sessao_id");
+                    atualizaHeaderLogin('');
+                    json_user=undefined;
+                }
+            } else
+                mensagemTela(data, 'Retorno');
+
+        },
+        error: function (data) {
+            mensagemTela(data.responseText, data.status + ':' + data.statusText);
+        }
+    });
+}
+/**********************************************************************/
 function gravarConfiguracao(pag, text_obj) {
     var chave = Cookies["chave"];
-    var addr = 'http://'+SERVER_IP+SERVER_PATH+'/config_ts.php?f=2' +
+    var addr = 'http://' + SERVER_IP + SERVER_PATH + '/config_ts.php?f=2' +
         '&m=' + Cookies['modelo'] +
         '&s=' + Cookies['serie'] +
         "&c=" + chave.substring(0, 4);
@@ -408,7 +724,7 @@ function gravarConfiguracao(pag, text_obj) {
 
 function gravarConfiguracaoSensor(pag, text_obj) {
     var chave = Cookies["chave"];
-    var addr = 'http://'+SERVER_IP+SERVER_PATH+'/config_ts.php';
+    var addr = 'http://' + SERVER_IP + SERVER_PATH + '/config_ts.php';
     var data = 'f=2&m=' + Cookies['modelo'] +
         '&s=' + Cookies['serie'] +
         "&c=" + chave.substring(0, 4);
@@ -510,7 +826,7 @@ var json_feed = null;
 
 function get_feed(flag_atualiza) {
     var horas = $("#sel-g1 option:selected").index();
-    url = 'http://'+SERVER_IP+SERVER_PATH+'/get_feed.php?' +
+    url = 'http://' + SERVER_IP + SERVER_PATH + '/get_feed.php?' +
         'api_key=' + Cookies["api_key"] + '&results=' + Cookies["nro_pontos"];
 
     if (r_horas == null)
@@ -612,7 +928,7 @@ function lerStatus() {
     this.drawTable = function () {
         console.log(">drawTable");
         self.data = new google.visualization.DataTable();
-        self.data.addColumn('number', 'Data');
+        self.data.addColumn('number', 'Nro');
         self.data.addColumn('string', 'Data');
         self.data.addColumn('string', 'Evento');
         self.table = new google.visualization.Table(document.getElementById("pag_info_status"));
@@ -766,7 +1082,7 @@ function atualizaGraficoConfig() {
             red_value = range_val - (range_val * 0.1) + min;
             yellow_value = range_val - (range_val * 0.25) + min;
 
-            v_str=gx1[m].data.getColumnLabel(1);
+            v_str = gx1[m].data.getColumnLabel(1);
             console.log("GET field1=" + v_str);
 
             v_str = jsonPath(json_config, node + ".field1");
@@ -887,13 +1203,24 @@ var VERSAO = {
     DATE: '23/10/2015'
 };
 
-var SERVER_IP='45.55.77.192';
-var SERVER_PATH='/0';
+var SERVER_IP = '45.55.77.192';
+var SERVER_PATH = '/0';
 
+/*********************************************************************/
+var g1, g2, g3, g4, g5, g6;
+var gtext = [];
+var user = null;
+var json_user;
+/*********************************************************************/
+var sessao_id = null;
 
 var evt_get_feed = document.createEvent("Event");
 evt_get_feed.initEvent("app.Get_Feed", false, false);
 var HREF = window.location.href;
+
+function onDeviceReadyXDK() {
+    console.log("XXXXXXXXXXXXXXXXXXXXX onDeviceReadyXDK");
+}
 
 function onDeviceReady() {
     console.log("onDeviceReady");
@@ -910,6 +1237,13 @@ function onDeviceReady() {
     if (vc != undefined) {
         Cookies.create("chave", vc, 10 * 365);
     }
+    // testa sessao
+    if (Cookies["sessao_id"] != undefined) {
+        sessao_id = Cookies["sessao_id"];
+        console.log("sessao=" + sessao_id);
+        signInServer('boot');
+    } else
+        atualizaHeaderLogin('');
 
     if (intel.xdk.isxdk == true) {
         // Application is running in XDK
@@ -919,6 +1253,7 @@ function onDeviceReady() {
         validarInteiro(Cookies["nro_pontos"], 1, 100) == "") {
         Cookies.create("nro_pontos", 20, 10 * 365);
     }
+
     // sensor principal
     $(".uib_col_6").height(200);
     $(".uib_col_7").height(220);
@@ -936,7 +1271,8 @@ function onDeviceReady() {
     $(".uib_col_30").height(200);
     $(".uib_col_31").height(220);
     // select
-    $("#sel_horas").css('width',100);
+    $("#sel_horas").css('width', 100);
+    $(".uib_w_263").hide(); //#sel-meus-sensores
 
 
     getMainConfig(0);

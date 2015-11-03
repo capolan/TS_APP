@@ -39,8 +39,6 @@ function atualizaGrafico(objG, div, campo) {
         minmax + offline + objG.message;
 }
 /*********************************************************************/
-var g1, g2, g3, g4, g5;
-/*********************************************************************/
 function t_TelaTGG() {
     atualizaGrafico(g1, "text_pag_2_1", 1);
     atualizaGrafico(g2, "text_pag_2_2", 5);
@@ -174,19 +172,23 @@ function t_telaTS_temperatura() {
     //  console.log(">t_telaTS_temperatura");
     atualizaGrafico(g1, "text_pag_2_1", 5);
     atualizaGrafico(g2, null, 5);
+    gtext[0].loadData();
     if (g3 != undefined && g3.ativo==true) {
         atualizaGrafico(g3, "text_pag_10", 6);
         atualizaGrafico(g4, null, 1);
+        gtext[1].loadData();
     }
     if (g5 != undefined && g5.ativo==true) {
         atualizaGrafico(g5, "text_pag_11", 6);
         atualizaGrafico(g6, null, 1);
+        gtext[2].loadData();
     }
     for (var i = 0; i < MAX_NODES; i++) {
         if (gx1[i] != undefined && gx1[i].ativo == true) {
             var cp = i + 1;
             atualizaGrafico(gx1[i], "text-mod" + cp, 1);
             gx2[i].loadData();
+            gt[i].loadData();
         }
     }
 
@@ -222,8 +224,11 @@ function telaTS_temperatura() {
             }],
         null,
         Cookies["nro_pontos"], Cookies["passo"], min, max, false);
+    gtext[0]= new lerMensagensSensor(null,"text_pag_2_2");
 
-    if (rec_temperatura2) {
+
+    if (rec_temperatura2==true) {
+        console.log("rec_tempreatura 2");
         max = Math.ceil((parseInt(json_config.canal.field6_max) + 10) / 10) * 10;
         min = parseInt(json_config.canal.field6_min);
         if (min < 0) {
@@ -250,10 +255,13 @@ function telaTS_temperatura() {
                 }],
             null,
             Cookies["nro_pontos"], Cookies["passo"], min, max, true);
+        gtext[1]= new lerMensagensSensor(null,"text_pag_10_2");
+
         n_div++;
     }
     n_div=5;
     if (rec_corrente_30a==true || rec_corrente_100a == true) {
+        console.log("rec_corrente");
         max = Math.ceil((parseInt(json_config.canal.field1_max) + 100) / 100) * 100;
         min = parseInt(json_config.canal.field1_min);
         if (min < 0) {
@@ -280,6 +288,7 @@ function telaTS_temperatura() {
                 }],
             null,
             Cookies["nro_pontos"], Cookies["passo"], min, max, true);
+        gtext[2]= new lerMensagensSensor(null,"text_pag_11_2");
         n_div++;
     }
     //t_telaTS_temperatura();
@@ -323,9 +332,10 @@ function createGraphs() {
 /********************************************************************/
 var gx1 = [];
 var gx2 = [];
+var gt = [];
 
 function createGraphx(_modulo) {
-    var chartx1, chartx2, campo;
+    var chartx1, chartx2, chart, campo;
     var modulo = parseInt(_modulo);
     var pagina = '';
     app.consoleLog("createGraphX=" + modulo, "entry");
@@ -338,6 +348,7 @@ function createGraphx(_modulo) {
         var node;
         chartx1 = 'chartx' + num_mod + '1_div';
         chartx2 = 'chartx' + num_mod + '2_div';
+        chart = 'chartx' + num_mod + '_div';
         campo = 'campo6';
         node = '$.node' + n_mod;
         nome_campo = jsonPath(json_config, node + ".field1");
@@ -368,6 +379,7 @@ function createGraphx(_modulo) {
                 }],
             modulo,
             Cookies["nro_pontos"], Cookies["passo"], 20, 1, min, max, false);
+        gt[modulo] = new lerMensagensSensor(modulo,chart);
     }
     //app.consoleLog("gx2",gx2);
 }

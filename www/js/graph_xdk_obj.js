@@ -90,7 +90,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
         //            if (self.nro_pontos == self.nro_pontos_old || self.tipo==3)
         if (self.nro_pontos == contador || self.tipo == 3 || self.tipo == 0)
             return;
-        console.log(">ajustaData " + self.id_div + "  pontos=" + self.nro_pontos + "  new=" + contador);
+    //    console.log(">ajustaData " + self.id_div + "  pontos=" + self.nro_pontos + "  new=" + contador);
         self.nro_pontos = self.data.getNumberOfRows() - 1;
         self.data.removeRows(1, self.nro_pontos);
         self.nro_pontos = contador;
@@ -126,6 +126,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
 
         if (serie.modulo!=null && serie.modulo >= 0) {
             var n = self.modulo + 1;
+
             if (self.serie == null)
                 self.serie = getObjects(json_config.canal, "node" + n);
             if (self.serie == false) {
@@ -278,6 +279,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                         if (mensagem != false) {
                             self.data.setCell(f, j++, '+');
                             self.data.setCell(f, j++, "<p>" + mensagem + "</p>");
+
                         } else {
                             self.data.setCell(f, j++, '');
                             self.data.setCell(f, j++, '');
@@ -295,7 +297,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
             // cor do fundo do gráfico em vermelho se offline
             if (self.tipo == 0) {
                 var flag=false;
-                    if (self.id_div == "chartx71_div") console.log("vcc="+self.vcc_flag);
+                 //   if (self.id_div == "chartx71_div") console.log("vcc="+self.vcc_flag);
                 if (self.status == 3 || self.offline_at != false)
                     $('#' + self.id_div + ' circle:nth-child(2)').attr('fill', '#FF0000');
                 else
@@ -324,13 +326,13 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
 
     // initialize the chart
     this.initChart = function () {
-        app.consoleLog("initChart=" + self.tipo, "entry");
+      //  app.consoleLog("initChart=" + self.tipo, "entry");
         self.data = new google.visualization.DataTable();
         if (self.tipo == 1 || self.tipo == 2) {
             var flag = true;
             self.data.addColumn('datetime', 'Label');
             for (var key in self.series) {
-                app.consoleLog(self.tipo + ':key=' + key + " titulo=" + self.series[key].nome + " data=" + self.series[key].campo);
+        //        app.consoleLog(self.tipo + ':key=' + key + " titulo=" + self.series[key].nome + " data=" + self.series[key].campo);
                 self.data.addColumn('number', self.series[key].nome);
                 if (self.tipo == 2 && flag == true) { // linha
                     self.data.addColumn({
@@ -352,11 +354,11 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
         var range_val = self.max_value - self.min_value;
         var red_value = range_val - (range_val * 0.1) + self.min_value;
         var yellow_value = range_val - (range_val * 0.25) + self.min_value;
-        console.log("range=" + range_val + " yellow=" + yellow_value + " red=" + red_value + "  max=" + self.max_value + " min=" + self.min_value);
+        //console.log("range=" + range_val + " yellow=" + yellow_value + " red=" + red_value + "  max=" + self.max_value + " min=" + self.min_value);
         var tick_value = 5;
         switch (self.tipo) {
         case 0: // gauge
-            app.consoleLog("0.titulo=" + self.series[0].nome + " data=" + self.series[0].campo);
+            //app.consoleLog("0.titulo=" + self.series[0].nome + " data=" + self.series[0].campo);
             self.data.addColumn('datetime', 'Label');
             self.data.addColumn('number', self.series[0].nome);
             self.data.addRows(1);

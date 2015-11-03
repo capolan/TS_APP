@@ -3,6 +3,7 @@
  *
  * App Framework will use a 'native' theme unless told not to.
  */
+/*global af */
 
 (function()
  {

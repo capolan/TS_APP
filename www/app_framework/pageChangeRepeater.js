@@ -7,7 +7,8 @@
  * in App Framework.
  */
 $(function() {
-	$(document).on('loadpanel', function(){
-		$(document).trigger('pagechange');
-	});
+  "use strict";
+  $(document).on('loadpanel', function(){
+    $(document).trigger('pagechange');
+  });
 });

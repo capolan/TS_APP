@@ -191,6 +191,7 @@ dev.onDeviceReadyXDK = function() {
     var fName = "dev.onDeviceReadyXDK():" ;
     dev.consoleLog(fName, dev.isDeviceReady.d_xdk_ready______) ;
     window.setTimeout(dev.onDeviceReady, dev.INSURANCE) ;
+    onDeviceReadyXDK();
 } ;
 
 // This is a faux onDeviceReady for browser scenario, mostly for code symmetry and fail-safe.

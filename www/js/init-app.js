@@ -140,6 +140,7 @@ app.initEvents = function() {
 
 // ver init-app-startup.js
 document.addEventListener("app.Ready", app.initEvents, false) ;
+//document.addEventListener("intel.xdk.device.ready", onDeviceReadyXDK, false) ;
 
 
 
