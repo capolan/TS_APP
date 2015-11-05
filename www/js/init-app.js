@@ -62,7 +62,6 @@ app.initEvents = function() {
         document.addEventListener("intel.xdk.device.barcode.scan", barcodeScanned, false);
         document.addEventListener("deviceready",onDeviceReady,false);
     } else { // browser
-        $("#btn_sair").hide();
         $("#btn_ler_barcode").hide();
         onDeviceReady();
     }

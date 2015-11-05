@@ -50,7 +50,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
     if (isNaN(this.passo)) this.passo = 1;
 
     this.max_value = parseInt(_max_value);
-    if (isNaN(this.max_value)) this.max_value = 1000;
+    if (isNaN(this.max_value)) this.max_value = 100;
     this.min_value = parseInt(_min_value);
     if (isNaN(this.min_value)) this.min_value = 0;
 
@@ -269,10 +269,10 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                     self.data.setCell(k, 1, valor);
                     k++;
                 } else {
-           //         if (self.id_div == "chart6_div") {
-        //                app.consoleLog(self.id_div,
-        //                    "dados f=" + f + "  j=" + j + " valor=" + valor);
-        //            }
+                   if (self.id_div == "chart1_div") {
+                        app.consoleLog(self.id_div,
+                                       "dados f=" + f + "  j=" + j + " valor=" + valor+ "  d="+d.toString());
+                    }
                     if (isNaN(valor) || valor == false) valor = null;
                     self.data.setCell(f, j++, valor);
                     if (self.tipo == 2 && campo <= 8) {
@@ -354,11 +354,11 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
         var range_val = self.max_value - self.min_value;
         var red_value = range_val - (range_val * 0.1) + self.min_value;
         var yellow_value = range_val - (range_val * 0.25) + self.min_value;
-        //console.log("range=" + range_val + " yellow=" + yellow_value + " red=" + red_value + "  max=" + self.max_value + " min=" + self.min_value);
+        console.log("range=" + range_val + " yellow=" + yellow_value + " red=" + red_value + "  max=" + self.max_value + " min=" + self.min_value);
         var tick_value = 5;
         switch (self.tipo) {
         case 0: // gauge
-            //app.consoleLog("0.titulo=" + self.series[0].nome + " data=" + self.series[0].campo);
+            app.consoleLog("0.titulo=" + self.series[0].nome + " data=" + self.series[0].campo);
             self.data.addColumn('datetime', 'Label');
             self.data.addColumn('number', self.series[0].nome);
             self.data.addRows(1);

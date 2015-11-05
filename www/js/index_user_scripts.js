@@ -136,7 +136,8 @@
 
         $(document).on("click", "#chart2_div", function (evt) {
             if (Cookies["tela_layout"] == "0") // Temperatura
-                return;
+                click_no_gauge(0);
+            else
             if (Cookies["tela_layout"] == "1") // TGG
                 activate_subpage("#uib_page_10");
             else {
@@ -170,6 +171,10 @@
             click_no_gauge(1);
         });
 
+
+        $(document).on("click", "#chartx62_div", function (evt) {
+            click_no_gauge(1);
+        });
 
         $(document).on("click", "#chartx71_div", function (evt) {
             click_no_gauge(2);
@@ -245,7 +250,7 @@
             var chave = document.getElementById("chave").value;
             //        alert(modelo);
             document.getElementById("text_config").innerHTML = "";
-            if (typeof modelo !== 'undefined') {
+            if (typeof modelo !== 'undefined' && modelo!='') {
                 document.getElementById("text_config").innerHTML = "pesquisando servidor...";
                 Cookies.erase("modelo");
                 Cookies.erase("serie");
@@ -254,7 +259,8 @@
                 Cookies.create("serie", serie, 10 * 365);
                 Cookies.create("chave", chave, 10 * 365);
                 getMainConfig(0);
-            }
+            } else
+                mensagemTela("Falta dados", "Informe modelo/serie/chave");
 
         });
 
@@ -570,14 +576,8 @@
          activate_subpage("#uib_page_5");
     });
 
-        /* button  #btn_sair */
-
-
-        /* button  #btn-avulso */
-
-
-        /* button  #btn_sair */
-    $(document).on("click", "#btn_sair", function(evt)
+        /* button  #btn_login */
+    $(document).on("click", "#btn_login", function(evt)
     {
          /*global activate_subpage */
          activate_subpage("#uib_page_13");
@@ -788,7 +788,18 @@
     });
 
 
-        $(document).on("change", "#sel-meus-sensores", function (evt) {
+    $(document).on("change", "#sel-meus-sensores", function (evt) {
+            /* your code goes here */
+            if (json_user == undefined) return;
+            var opt = $("#sel-meus-sensores option:selected").index();
+            document.getElementById("modelo").value=json_user.sensores[opt].modelo;
+            document.getElementById("serie").value=json_user.sensores[opt].serie;
+            document.getElementById("chave").value=json_user.sensores[opt].chave;
+
+    });
+
+
+    $(document).on("focusout", "#sel-meus-sensores", function (evt) {
             /* your code goes here */
             if (json_user == undefined) return;
             var opt = $("#sel-meus-sensores option:selected").index();
@@ -808,6 +819,20 @@
             mensagemTela('Erro','Usuario nao logado');
         else {
             signInServer('out');
+        }
+    });
+
+        /* button  #btn_login */
+    $(document).on("click", "#btn_login", function(evt)
+    {
+        /* your code goes here */
+    });
+
+        /* button  #btn-login-logoff */
+    $(document).on("click", "#btn-login-logoff", function(evt)
+    {
+         /*global activate_subpage */
+         activate_subpage("#uib_page_13");
     });
 
     }

@@ -199,7 +199,7 @@ function telaTS_temperatura() {
     var min = parseInt(json_config.canal.field5_min);
     var n_div=3;
     if (isNaN(max))
-        max=1000;
+        max=100;
     if (isNaN(min)==false || min < 0) {
         min = Math.floor((min - 10) / 10) * 10;
     } else min = 0;
@@ -228,7 +228,7 @@ function telaTS_temperatura() {
 
 
     if (rec_temperatura2==true) {
-        console.log("rec_tempreatura 2");
+        console.log("rec_temperatura 2");
         max = Math.ceil((parseInt(json_config.canal.field6_max) + 10) / 10) * 10;
         min = parseInt(json_config.canal.field6_min);
         if (min < 0) {

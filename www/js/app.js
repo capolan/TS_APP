@@ -74,7 +74,7 @@ function atualizaHeaderLogin(txt) {
     document.getElementById("text-user-config").innerHTML = txt;
     document.getElementById("text-user-modulo").innerHTML = txt;
     document.getElementById("text-user-sensor").innerHTML = txt;
-    if (sessao_id == null || txt=='') {
+    if (sessao_id == null || txt == '') {
         document.getElementById("text-sessao-id").innerHTML = '';
         $("#btn-sign-out").hide();
         $("#btn-login-logoff").hide();
@@ -215,7 +215,7 @@ var json_config = null;
 //        1 = somente os módulos
 function getMainConfig(tipo) {
     var ret = false;
-    app.consoleLog(">getMainConfig",tipo);
+    app.consoleLog(">getMainConfig", tipo);
 
     /*    if (window.cordova) {
         if (navigator.connection.type == Connection.NONE) {
@@ -355,7 +355,7 @@ function getMainConfig(tipo) {
                     }
                     // select de 2,6 e 24horas
                     // ativa pagina principal
-                    if (tipo==0) activate_subpage("#uib_page_2");
+                    if (tipo == 0) activate_subpage("#uib_page_2");
 
                 }
             },
@@ -490,27 +490,27 @@ function gravarComandoTS(text_obj) {
 /**********************************************************************/
 function updateSelSensores(data) {
     var i, option;
-    var n,m,s,c;
+    var n, m, s, c;
     $("#sel-meus-sensores").empty();
-    i=0;
-    m = jsonPath(data,"$.sensores[" +i+ "].modelo");
-    if (m!=false) {
+    i = 0;
+    m = jsonPath(data, "$.sensores[" + i + "].modelo");
+    if (m != false) {
         document.getElementById("modelo").value = '';
         document.getElementById("serie").value = '';
         document.getElementById("chave").value = '';
-        Cookies["modelo"]='';
-        Cookies["serie"]='';
-        Cookies["chave"]='';
+        Cookies["modelo"] = '';
+        Cookies["serie"] = '';
+        Cookies["chave"] = '';
     }
     while (m != false) {
-        n = jsonPath(data,"$.sensores[" +i+ "].name");
-        s = jsonPath(data,"$.sensores[" +i+ "].serie");
-        c = jsonPath(data,"$.sensores[" +i+ "].chave");
-//        console.log("m="+m+" s="+s+" c="+c);
-        option = $('<option></option>').prop("value",i).text(n);
+        n = jsonPath(data, "$.sensores[" + i + "].name");
+        s = jsonPath(data, "$.sensores[" + i + "].serie");
+        c = jsonPath(data, "$.sensores[" + i + "].chave");
+        //        console.log("m="+m+" s="+s+" c="+c);
+        option = $('<option></option>').prop("value", i).text(n);
         $("#sel-meus-sensores").append(option);
         i++;
-        m = jsonPath(data,"$.sensores[" +i+ "].modelo");
+        m = jsonPath(data, "$.sensores[" + i + "].modelo");
     }
 
 }
@@ -598,15 +598,15 @@ function signInServer(pag) {
         success: function (data) {
             console.log(data);
             if (pag == 'in') {
-                console.log("data="+data);
-                mensagemTela("Bem vindo "+data.login, 'Login');
-                if (data.login == undefined || data.login=='') {
+                console.log("data=" + data);
+                mensagemTela('Login', "bem vindo " + data.login);
+                if (data.login == undefined || data.login == '') {
                     sessao_id = null;
-                    json_user=undefined;
+                    json_user = undefined;
                     Cookies.erase("sessao_id");
                     atualizaHeaderLogin('');
                 } else {
-                    json_user=data;
+                    json_user = data;
                     sessao_id = data.sessao;
                     Cookies.create("sessao_id", sessao_id, 365);
                     atualizaHeaderLogin(data.login);
@@ -620,20 +620,20 @@ function signInServer(pag) {
                 $("#text-user-name").empty(); // sign-in
                 $("#text-email").empty();
                 $("#text-usuario").empty();
-                atualizaHeaderLogin('Logout com sucesso');
-                //mensagemTela(data.msg, 'Logoff');
+                atualizaHeaderLogin('');
+                mensagemTela('Logoff com sucesso','');
             } else
             if (pag == 'boot') {
                 if (data.ret == 'OK') {
-                        $("#text-nome-completo").val(data.nome);
-                        $("#text-user-name").val(data.login); // sign-in
-                        $("#text-email").val(data.email);
-                        $("#text-usuario").val(data.login);
-                        sessao_id = data.sessao;
-                        Cookies.create("sessao_id", sessao_id, 365);
-                        updateSelSensores(data);
-                        atualizaHeaderLogin(data.login);
-                        json_user=data;
+                    $("#text-nome-completo").val(data.nome);
+                    $("#text-user-name").val(data.login); // sign-in
+                    $("#text-email").val(data.email);
+                    $("#text-usuario").val(data.login);
+                    sessao_id = data.sessao;
+                    Cookies.create("sessao_id", sessao_id, 365);
+                    updateSelSensores(data);
+                    atualizaHeaderLogin(data.login);
+                    json_user = data;
                 } else {
                     $("#text-nome-completo").empty();
                     $("#text-user-name").empty(); // sign-in
@@ -642,7 +642,7 @@ function signInServer(pag) {
                     sessao_id = null;
                     Cookies.erase("sessao_id");
                     atualizaHeaderLogin('');
-                    json_user=undefined;
+                    json_user = undefined;
                 }
             } else
                 mensagemTela(data, 'Retorno');
@@ -1008,6 +1008,13 @@ function atualizaGraficoConfig() {
         if (min < 0) {
             min = Math.floor((min - 10) / 10) * 10;
         } else min = 0;
+
+        if (isNaN(max))
+            max = 100;
+        if (isNaN(min) == false || min < 0) {
+            min = Math.floor((min - 10) / 10) * 10;
+        } else min = 0;
+
         var range_val = max - min;
         var red_value = range_val - (range_val * 0.1) + min;
         var yellow_value = range_val - (range_val * 0.25) + min;
