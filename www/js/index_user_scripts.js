@@ -84,29 +84,29 @@
             gravarConfiguracao('a', document.getElementById("text_ap"));
         });
 
-        /* button  #btn-config2 */
-        $(document).on("click", "#btn-config2", function (evt) {
-            Cookies["nro_pontos"] = document.getElementById("nro_pontos").value;
-            Cookies["passo"] = document.getElementById("passo").value;
-            Cookies["tempo_ler_corrente"] = document.getElementById("tempo_ler_corrente").value;
-            Cookies["contador_enviar_web"] = document.getElementById("contador_enviar_web").value;
-            gravarConfiguracao('p', document.getElementById("text_config"));
-        });
 
         /* button  Config */
         $(document).on("click", ".uib_w_6", function (evt) {
-            document.getElementById("text_config").innerHTML('');
+            document.getElementById("text_config").innerHTML = '';
             activate_subpage("#uib_page_5");
         });
 
         /* button  #btn_info */
         $(document).on("click", "#btn_info", function (evt) {
             activate_subpage("#uib_page_info");
-            lerStatus();
+            lerStatus('alertas', "pag_info_status");
             $("#text_info_modelo").html('APP Tsensor ' + VERSAO.MAJOR + '.' + VERSAO.MINOR + ' ' + VERSAO.DATE + "<BR>");
-            if (json_config!=null && json_config.canal.recursos != undefined) {
+            if (json_config != null && json_config.canal.recursos != undefined) {
                 $("#text_info_modelo").append('Recursos:' + json_config.canal.recursos + '<BR>');
             }
+            for (var m = 1; m <= MAX_NODES; m++) {
+                var v_str = jsonPath(json_config, "$.node" + m + ".recursos");
+                if (v_str != false) {
+                    $("#text_info_modelo").append('Módulo ' + m + ':' + v_str + '<BR>');
+                }
+
+            }
+
             $("#text_info_modelo").append('Platform:' + device.platform + '<BR>');
             $("#text_info_modelo").append('Model:' + device.model + '<BR>');
             $("#text_info_modelo").append('Version:' + device.version + '<BR>');
@@ -117,7 +117,7 @@
         /* button  #btn_ler_status */
         $(document).on("click", "#btn_ler_status", function (evt) {
             pagina_status = 0;
-            lerStatus();
+            lerStatus('alertas', "pag_info_status");
         });
 
         $(document).on("click", "#chart1_div", function (evt) {
@@ -126,12 +126,12 @@
                 if (rec_temperatura2 == true) // Temperatura 2
                     activate_subpage("#uib_page_10");
                 else
-                if (rec_corrente_30a==true || rec_corrente_100a==true) // Temperatura 2
-                    activate_subpage("#uib_page_11");
+                if (rec_corrente_30a == true || rec_corrente_100a == true) // Temperatura 2
+                    activate_subpage("#uib_page_10");
                 else
                     click_no_gauge(0);
             } else
-                    activate_subpage("#uib_page_10");
+                activate_subpage("#uib_page_10");
         });
 
         $(document).on("click", "#chart2_div", function (evt) {
@@ -148,13 +148,12 @@
 
         $(document).on("click", "#chart3_div", function (evt) {
             if (Cookies["tela_layout"] == "0") // Temperatura
-                if (rec_corrente_30a==true || rec_corrente_100a==true)
+                if (rec_corrente_30a == true || rec_corrente_100a == true)
                     activate_subpage("#uib_page_11");
                 else {
                     console.log("#uib_page_2");
                     activate_subpage("#uib_page_2");
-                }
-            else
+                } else
             if (Cookies["tela_layout"] == "1") // TGG
                 activate_subpage("#uib_page_10");
             else {
@@ -167,27 +166,96 @@
             activate_subpage("#uib_page_2");
         });
 
-        $(document).on("click", "#chartx61_div", function (evt) {
+        $(document).on("click", "#chartx611_div", function (evt) {
+            if (gm1[0][2] != undefined) {
+                $("#chartx611_div").css("display", "none");
+                $("#chartx612_div").css("display", "none");
+                $("#chartx621_div").css("display", "block");
+                $("#chartx622_div").css("display", "block");
+            } else {
+                click_no_gauge(1);
+            }
+        });
+
+        $(document).on("click", "#chartx612_div", function (evt) {
             click_no_gauge(1);
         });
 
-
-        $(document).on("click", "#chartx62_div", function (evt) {
-            click_no_gauge(1);
+        $(document).on("click", "#chartx621_div", function (evt) {
+            if (gm1[0][2] != undefined) {
+                $("#chartx611_div").css("display", "block");
+                $("#chartx612_div").css("display", "block");
+                $("#chartx621_div").css("display", "none");
+                $("#chartx622_div").css("display", "none");
+            } else {
+                click_no_gauge(1);
+            }
         });
 
-        $(document).on("click", "#chartx71_div", function (evt) {
+        $(document).on("click", "#chartx711_div", function (evt) {
+            if (gm1[1][2] != undefined) {
+                $("#chartx711_div").css("display", "none");
+                $("#chartx712_div").css("display", "none");
+                $("#chartx721_div").css("display", "block");
+                $("#chartx722_div").css("display", "block");
+            } else {
+                click_no_gauge(2);
+            }
+        });
+
+        $(document).on("click", "#chartx712_div", function (evt) {
             click_no_gauge(2);
         });
 
-        $(document).on("click", "#chartx81_div", function (evt) {
+        $(document).on("click", "#chartx721_div", function (evt) {
+            if (gm1[1][2] != undefined) {
+                $("#chartx711_div").css("display", "block");
+                $("#chartx712_div").css("display", "block");
+                $("#chartx721_div").css("display", "none");
+                $("#chartx722_div").css("display", "none");
+            } else {
+                click_no_gauge(1);
+            }
+        });
+
+        $(document).on("click", "#chartx811_div", function (evt) {
             click_no_gauge(3);
         });
 
-        $(document).on("click", "#chartx91_div", function (evt) {
+        $(document).on("click", "#chartx812_div", function (evt) {
+            click_no_gauge(3);
+        });
+
+        $(document).on("click", "#chartx821_div", function (evt) {
+            if (gm1[2][2] != undefined) {
+                $("#chartx811_div").css("display", "block");
+                $("#chartx812_div").css("display", "block");
+                $("#chartx821_div").css("display", "none");
+                $("#chartx822_div").css("display", "none");
+            } else {
+                click_no_gauge(3);
+            }
+        });
+
+        $(document).on("click", "#chartx911_div", function (evt) {
             click_no_gauge(4);
         });
 
+
+        $(document).on("click", "#chartx912_div", function (evt) {
+            click_no_gauge(4);
+        });
+
+        $(document).on("click", "#chartx921_div", function (evt) {
+            if (gm1[3][2] != undefined) {
+                $("#chartx911_div").css("display", "block");
+                $("#chartx912_div").css("display", "block");
+                $("#chartx921_div").css("display", "none");
+                $("#chartx922_div").css("display", "none");
+            } else {
+                click_no_gauge(4);
+            }
+        });
 
         /* button  #btn_home */
         $(document).on("click", "#btn_home", function (evt) {
@@ -248,9 +316,9 @@
             var modelo = document.getElementById("modelo").value;
             var serie = document.getElementById("serie").value;
             var chave = document.getElementById("chave").value;
-            //        alert(modelo);
+                    console.log("btn_let_config_web");
             document.getElementById("text_config").innerHTML = "";
-            if (typeof modelo !== 'undefined' && modelo!='') {
+            if (modelo != '' && serie != '' && chave != '') {
                 document.getElementById("text_config").innerHTML = "pesquisando servidor...";
                 Cookies.erase("modelo");
                 Cookies.erase("serie");
@@ -274,13 +342,13 @@
             pagina_status = pagina_status - 10;
             if (pagina_status < 0)
                 pagina_status = 0;
-            lerStatus();
+            lerStatus('alertas', "pag_info_status");
         });
 
         /* button  #btn_status_proximo */
         $(document).on("click", "#btn_status_proximo", function (evt) {
             pagina_status = pagina_status + 10;
-            lerStatus();
+            lerStatus('alertas', "pag_info_status");
         });
 
 
@@ -358,6 +426,7 @@
                 return;
             }
             document.getElementById("text-s-temp").innerHTML = "";
+            console.log(">btn-s-s-temp "+opt)
             if (opt == 0) {
                 // Cookies["vcc"] = document.getElementById("text-s-vcc").value;
                 //Cookies["campo5_min"] = document.getElementById("text-s-temp-min").value;
@@ -436,10 +505,7 @@
             if (opt == 0) r_horas = 2;
             if (opt == 1) r_horas = 6;
             if (opt == 2) r_horas = 24;
-        });
-
-        // modulo 1 selecao do campo
-        $(document).on("change", "#sel-g1", function (evt) {
+            if (opt == 3) r_horas = 48;
             atualiza_dados();
         });
 
@@ -451,6 +517,7 @@
             var node = "$.node1.field" + t;
             //            case 0: // temperatura  case 1: // sensor 2   case 2: // sensor 3
             v_str = jsonPath(json_config, node);
+            if (v_str == false) return;
             $("#text-mod1-campo").val(v_str);
             v_str = jsonPath(json_config, node + "_min");
             $("#text-mod1-min").val(v_str);
@@ -465,6 +532,7 @@
             var t = opt + 1;
             var node = "$.node2.field" + t;
             v_str = jsonPath(json_config, node);
+            if (v_str == false) return;
             $("#text-mod2-campo").val(v_str);
             v_str = jsonPath(json_config, node + "_min");
             $("#text-mod2-min").val(v_str);
@@ -479,6 +547,7 @@
             var t = opt + 1;
             var node = "$.node3.field" + t;
             v_str = jsonPath(json_config, node);
+            if (v_str == false) return;
             $("#text-mod3-campo").val(v_str);
             v_str = jsonPath(json_config, node + "_min");
             $("#text-mod3-min").val(v_str);
@@ -555,288 +624,327 @@
         });
 
         $(document).on("change", "#af-checkbox-s-corrente", function (evt) {
-                if($(this).is(":checked")) {
-                    rec_corrente_30a=true;
-                } else {
-                    rec_corrente_30a=false;
-                }
+            if ($(this).is(":checked")) {
+                rec_corrente_30a = true;
+            } else {
+                rec_corrente_30a = false;
+            }
         });
 
         $(document).on("change", "#af-checkbox-s-extra", function (evt) {
-                if($(this).is(":checked")) {
-                    rec_temperatura2=true;
-                } else {
-                    rec_temperatura2=false;
-                }
+            if ($(this).is(":checked")) {
+                rec_temperatura2 = true;
+            } else {
+                rec_temperatura2 = false;
+            }
         });
         /* button  #btn-config-principal */
-    $(document).on("click", "#btn-config-principal", function(evt)
-    {
-         /*global activate_subpage */
-         activate_subpage("#uib_page_5");
-    });
+        $(document).on("click", "#btn-config-principal", function (evt) {
+            /*global activate_subpage */
+            activate_subpage("#uib_page_5");
+        });
 
         /* button  #btn_login */
-    $(document).on("click", "#btn_login", function(evt)
-    {
-         /*global activate_subpage */
-         activate_subpage("#uib_page_13");
-    });
+        $(document).on("click", "#btn_login", function (evt) {
+            /*global activate_subpage */
+            activate_subpage("#uib_page_13");
+        });
 
         /* button  #btn-sign-in */
-    $(document).on("click", "#btn-sign-in", function(evt)
-    {
-         /*global activate_subpage */
-         activate_subpage("#uib_page_sign_in");
-    });
+        $(document).on("click", "#btn-sign-in", function (evt) {
+            /*global activate_subpage */
+            activate_subpage("#uib_page_sign_in");
+        });
 
         /* button  #btn-sign-up */
-    $(document).on("click", "#btn-sign-up", function(evt)
-    {
-         /*global activate_subpage */
-         activate_subpage("#uib_page_sign_up");
-    });
+        $(document).on("click", "#btn-sign-up", function (evt) {
+            /*global activate_subpage */
+            activate_subpage("#uib_page_sign_up");
+        });
 
         /* button  #btn-sign-in-limpar */
-    $(document).on("click", "#btn-sign-in-limpar", function(evt)
-    {
-        /* your code goes here */
-        $("#text-user-name").empty();
-        $("#text-user-passwd").empty();
-    });
+        $(document).on("click", "#btn-sign-in-limpar", function (evt) {
+            /* your code goes here */
+            $("#text-user-name").empty();
+            $("#text-user-passwd").empty();
+        });
 
         /* button  #btn-sign-in-entrar */
-    $(document).on("click", "#btn-sign-in-entrar", function(evt)
-    {
-        /* your code goes here */
-        signInServer('in');
-    });
+        $(document).on("click", "#btn-sign-in-entrar", function (evt) {
+            /* your code goes here */
+            signInServer('in');
+        });
 
 
-    $(document).on("change", "#text-email", function(evt)
-    {
-        var email=$("#text-email").val();
-        if (validateEmail(email) == false) {
-            navigator.notification.alert(email, alertDismissed,
-                                    'Email inválido.', 'Fechar');
-        }
-    });
+        $(document).on("change", "#text-email", function (evt) {
+            var email = $("#text-email").val();
+            if (validateEmail(email) == false) {
+                navigator.notification.alert(email, alertDismissed,
+                    'Email inválido.', 'Fechar');
+            }
+        });
 
-    $(document).on("change", "#text-usuario", function(evt)
-    {
-        var usr=$("#text-usuario").val();
-        if (validateUsuario(usr) == false) {
-            navigator.notification.alert(usr, alertDismissed,
-                                    'Usuário inválido.', 'Fechar');
-        }
-    });
+        $(document).on("change", "#text-usuario", function (evt) {
+            var usr = $("#text-usuario").val();
+            if (validateUsuario(usr) == false) {
+                navigator.notification.alert(usr, alertDismissed,
+                    'Usuário inválido.', 'Fechar');
+            }
+        });
 
 
-    $(document).on("change", "#text-senha-1", function(evt)
-    {
-        var passwd=$("#text-senha-1").val();
-        var ret=validatePasswd(passwd);
-        if (ret != true) {
-            navigator.notification.alert(ret, alertDismissed,
-                                    'Senha inválida.', 'Fechar');
-        }
-    });
+        $(document).on("change", "#text-senha-1", function (evt) {
+            var passwd = $("#text-senha-1").val();
+            var ret = validatePasswd(passwd);
+            if (ret != true) {
+                navigator.notification.alert(ret, alertDismissed,
+                    'Senha inválida.', 'Fechar');
+            }
+        });
 
 
-    $(document).on("change", "#text-senha-2", function(evt)
-    {
-        var passwd=$("#text-senha-2").val();
-        var ret=validatePasswd(passwd);
-        if (ret != true) {
-            navigator.notification.alert(ret, alertDismissed,
-                                    'Senha inválida.', 'Fechar');
-        }
-    });
+        $(document).on("change", "#text-senha-2", function (evt) {
+            var passwd = $("#text-senha-2").val();
+            var ret = validatePasswd(passwd);
+            if (ret != true) {
+                navigator.notification.alert(ret, alertDismissed,
+                    'Senha inválida.', 'Fechar');
+            }
+        });
 
-    /* button  #btn-limpar-cadastro */
-    $(document).on("click", "#btn-limpar-cadastro", function(evt)
-    {
-        /* your code goes here */
-        $("#text-nome-completo").empty();
-        $("#text-email").empty();
-        $("#text-usuario").empty();
-        $("#text-senha-1").empty();
-        $("#text-senha-2").empty();
-    });
+        /* button  #btn-limpar-cadastro */
+        $(document).on("click", "#btn-limpar-cadastro", function (evt) {
+            /* your code goes here */
+            $("#text-nome-completo").empty();
+            $("#text-email").empty();
+            $("#text-usuario").empty();
+            $("#text-senha-1").empty();
+            $("#text-senha-2").empty();
+        });
 
         /* button  #btn-enviar-cadastro */
-    $(document).on("click", "#btn-enviar-cadastro", function(evt)
-    {
-        var txt,ret;
-        if ($("text-senha-1").val() != $("text-senha-2").val()) {
-            navigator.notification.alert(data, // message
-                        alertDismissed, 'Senhas diferentes, conferir.', 'Fechar');
-            return;
-        }
-        txt=$("#text-email").val();
-        if (validateEmail(txt) == false) {
-            navigator.notification.alert(txt, alertDismissed,
-                                    'Email inválido.', 'Fechar');
-            return;
-        }
-        txt=$("#text-usuario").val();
-        if (validateUsuario(txt) == false) {
-            navigator.notification.alert(txt, alertDismissed,
-                                    'Usuário inválido.', 'Fechar');
-        }
-        txt=$("#text-senha-1").val();
-        ret=validatePasswd(txt);
-        if (ret != true) {
-            navigator.notification.alert(ret, alertDismissed,
-                                    'Senha inválida.', 'Fechar');
-            return;
-        }
-        txt=$("#text-senha-2").val();
-        ret=validatePasswd(txt);
-        if (ret != true) {
-            navigator.notification.alert(ret, alertDismissed,
-                                    'Senha inválida.', 'Fechar');
-            return;
-        }
-        signInServer('up');
-    });
+        $(document).on("click", "#btn-enviar-cadastro", function (evt) {
+            var txt, ret;
+            if ($("text-senha-1").val() != $("text-senha-2").val()) {
+                navigator.notification.alert(data, // message
+                    alertDismissed, 'Senhas diferentes, conferir.', 'Fechar');
+                return;
+            }
+            txt = $("#text-email").val();
+            if (validateEmail(txt) == false) {
+                navigator.notification.alert(txt, alertDismissed,
+                    'Email inválido.', 'Fechar');
+                return;
+            }
+            txt = $("#text-usuario").val();
+            if (validateUsuario(txt) == false) {
+                navigator.notification.alert(txt, alertDismissed,
+                    'Usuário inválido.', 'Fechar');
+            }
+            txt = $("#text-senha-1").val();
+            ret = validatePasswd(txt);
+            if (ret != true) {
+                navigator.notification.alert(ret, alertDismissed,
+                    'Senha inválida.', 'Fechar');
+                return;
+            }
+            txt = $("#text-senha-2").val();
+            ret = validatePasswd(txt);
+            if (ret != true) {
+                navigator.notification.alert(ret, alertDismissed,
+                    'Senha inválida.', 'Fechar');
+                return;
+            }
+            signInServer('up');
+        });
 
         /* button  #btn-login-login */
-    $(document).on("click", "#btn-login-login", function(evt)
-    {
-         /*global activate_subpage */
-         activate_subpage("#uib_page_13");
-    });
+        $(document).on("click", "#btn-login-login", function (evt) {
+            /*global activate_subpage */
+            activate_subpage("#uib_page_13");
+        });
 
         /* button  #btn-pular */
-    $(document).on("click", "#btn-pular", function(evt)
-    {
-        /* your code goes here */
-         activate_subpage("#uib_page_2");
-    });
+        $(document).on("click", "#btn-pular", function (evt) {
+            /* your code goes here */
+            activate_subpage("#uib_page_2");
+        });
 
-    $(document).on("click", "#btn-login-reenviar", function(evt)
-    {
-         /*global activate_subpage */
-        signInServer('reset');
+        $(document).on("click", "#btn-login-reenviar", function (evt) {
+            /*global activate_subpage */
+            signInServer('reset');
 
 
-    });
+        });
 
         /* button  #btn-login-pular */
-    $(document).on("click", "#btn-login-pular", function(evt)
-    {
-         /*global activate_subpage */
-         activate_subpage("#uib_page_2");
-    });
+        $(document).on("click", "#btn-login-pular", function (evt) {
+            /*global activate_subpage */
+            activate_subpage("#uib_page_2");
+        });
 
         /* button  #btn-sign-out */
-    $(document).on("click", "#btn-sign-out", function(evt)
-    {
-        /* your code goes here */
-        if (sessao_id == null)
-            mensagemTela('Erro','Usuario nao logado');
-        else {
-            signInServer('out');
-            //$("#text-user-name").empty();
-            //$("#text-user-passwd").empty();
-        }
-    });
+        $(document).on("click", "#btn-sign-out", function (evt) {
+            /* your code goes here */
+            if (sessao_id == null)
+                mensagemTela('Erro', 'Usuario nao logado');
+            else {
+                signInServer('out');
+                //$("#text-user-name").empty();
+                //$("#text-user-passwd").empty();
+            }
+        });
 
         /* button  #btn-trocar-senha */
-    $(document).on("click", "#btn-trocar-senha", function(evt)
-    {
-         /*global activate_subpage */
-         activate_subpage("#uib_page_senha");
-    });
+        $(document).on("click", "#btn-trocar-senha", function (evt) {
+            /*global activate_subpage */
+            activate_subpage("#uib_page_senha");
+        });
 
         /* button  #btn-senha-trocar */
-    $(document).on("click", "#btn-senha-trocar", function(evt)
-    {
-        /* your code goes here */
-        var txt,txt2,ret;
-        if (sessao_id == null) {
-            navigator.notification.alert("Ops", alertDismissed,
-                                    'Usuario nao logado.', 'Fechar');
-        }
-        txt=$("#text-senha-antiga").val();
-        if (txt == '') {
-            navigator.notification.alert(ret, alertDismissed,
-                                    'Senha antiga inválida.', 'Fechar');
-            return;
-        }
-        txt=$("#text-senha-nova").val();
-        ret=validatePasswd(txt);
-        if (ret != true) {
-            navigator.notification.alert(ret, alertDismissed,
-                                    'Senha nova inválida.', 'Fechar');
-            return;
-        }
-        txt2=$("#text-senha-confirmacao").val();
-        ret=validatePasswd(txt2);
-        if (ret != true) {
-            navigator.notification.alert(ret, alertDismissed,
-                                    'Confirmação da senha inválida.', 'Fechar');
-            return;
-        }
-        if (txt!=txt2) {
-            navigator.notification.alert(ret, alertDismissed,
-                                    'Senha nova e confirmação devem ser iguais.', 'Fechar');
-            return;
-        }
+        $(document).on("click", "#btn-senha-trocar", function (evt) {
+            /* your code goes here */
+            var txt, txt2, ret;
+            if (sessao_id == null) {
+                navigator.notification.alert("Ops", alertDismissed,
+                    'Usuario nao logado.', 'Fechar');
+            }
+            txt = $("#text-senha-antiga").val();
+            if (txt == '') {
+                navigator.notification.alert(ret, alertDismissed,
+                    'Senha antiga inválida.', 'Fechar');
+                return;
+            }
+            txt = $("#text-senha-nova").val();
+            ret = validatePasswd(txt);
+            if (ret != true) {
+                navigator.notification.alert(ret, alertDismissed,
+                    'Senha nova inválida.', 'Fechar');
+                return;
+            }
+            txt2 = $("#text-senha-confirmacao").val();
+            ret = validatePasswd(txt2);
+            if (ret != true) {
+                navigator.notification.alert(ret, alertDismissed,
+                    'Confirmação da senha inválida.', 'Fechar');
+                return;
+            }
+            if (txt != txt2) {
+                navigator.notification.alert(ret, alertDismissed,
+                    'Senha nova e confirmação devem ser iguais.', 'Fechar');
+                return;
+            }
             signInServer('troca');
-    });
+        });
 
 
-    $(document).on("change", "#sel-meus-sensores", function (evt) {
+        $(document).on("change", "#sel-meus-sensores", function (evt) {
             /* your code goes here */
             if (json_user == undefined) return;
             var opt = $("#sel-meus-sensores option:selected").index();
-            document.getElementById("modelo").value=json_user.sensores[opt].modelo;
-            document.getElementById("serie").value=json_user.sensores[opt].serie;
-            document.getElementById("chave").value=json_user.sensores[opt].chave;
+            document.getElementById("modelo").value = json_user.sensores[opt].modelo;
+            document.getElementById("serie").value = json_user.sensores[opt].serie;
+            document.getElementById("chave").value = json_user.sensores[opt].chave;
 
-    });
+        });
 
 
-    $(document).on("focusout", "#sel-meus-sensores", function (evt) {
+        $(document).on("focusout", "#sel-meus-sensores", function (evt) {
             /* your code goes here */
             if (json_user == undefined) return;
             var opt = $("#sel-meus-sensores option:selected").index();
-            document.getElementById("modelo").value=json_user.sensores[opt].modelo;
-            document.getElementById("serie").value=json_user.sensores[opt].serie;
-            document.getElementById("chave").value=json_user.sensores[opt].chave;
+            document.getElementById("modelo").value = json_user.sensores[opt].modelo;
+            document.getElementById("serie").value = json_user.sensores[opt].serie;
+            document.getElementById("chave").value = json_user.sensores[opt].chave;
 
-    });
+        });
 
 
 
         /* button  #btn-login-logoff */
-    $(document).on("click", "#btn-login-logoff", function(evt)
-    {
-        /* your code goes here */
-        if (sessao_id == null)
-            mensagemTela('Erro','Usuario nao logado');
-        else {
-            signInServer('out');
-        }
-    });
+        $(document).on("click", "#btn-login-logoff", function (evt) {
+            /* your code goes here */
+            if (sessao_id == null)
+                mensagemTela('Erro', 'Usuario nao logado');
+            else {
+                signInServer('out');
+            }
+        });
 
         /* button  #btn_login */
-    $(document).on("click", "#btn_login", function(evt)
-    {
-        /* your code goes here */
-    });
+        $(document).on("click", "#btn_login", function (evt) {
+            /* your code goes here */
+        });
 
         /* button  #btn-login-logoff */
-    $(document).on("click", "#btn-login-logoff", function(evt)
-    {
-         /*global activate_subpage */
-         activate_subpage("#uib_page_13");
-    });
+        $(document).on("click", "#btn-login-logoff", function (evt) {
+            /*global activate_subpage */
+            activate_subpage("#uib_page_13");
+        });
 
+        /* button  #btn-assoc-ts */
+        $(document).on("click", "#btn-assoc-ts", function (evt) {
+            if (json_user == undefined) {
+                mensagemTela("Erro", "Necessário estar logado");
+                return;
+            }
+            if ($("#modelo").val() == '') {
+                mensagemTela("Alerta", "Informar modelo");
+                return;
+            }
+            if ($("#serie").val() == '') {
+                mensagemTela("Alerta", "Informar serie");
+                return;
+            }
+            if ($("#chave").val() == '') {
+                mensagemTela("Alerta", "Informar chave");
+                return;
+            }
+            /* your code goes here */
+            signInServer('TS+');
+        });
+
+        /* button  #btn-desassoc-ts */
+        $(document).on("click", "#btn-desassoc-ts", function (evt) {
+            if (json_user == undefined) {
+                mensagemTela("Erro", "Necessário estar logado");
+                return;
+            }
+            if ($("#modelo").val() == '') {
+                mensagemTela("Alerta", "Informar modelo");
+                return;
+            }
+            if ($("#serie").val() == '') {
+                mensagemTela("Alerta", "Informar serie");
+                return;
+            }
+            if ($("#chave").val() == '') {
+                mensagemTela("Alerta", "Informar chave");
+                return;
+            }
+            /* your code goes here */
+            signInServer('TS-');
+        });
+
+        /* button  #btn-alerta-salvar */
+        $(document).on("click", "#btn-alerta-salvar", function (evt) {
+            /* your code goes here */
+            signInServer('reg');
+        });
+
+        /* button  #btn-alerta-limpar */
+        $(document).on("click", "#btn-alerta-limpar", function (evt) {
+            /* your code goes here */
+            $("#text-alerta-usuario").empty();
+            $("#text-alerta-msg").emtpy();
+
+        });
+
+
+        console.log("<index_user_scripts.js");
     }
-    document.addEventListener("app.Ready", register_event_handlers, false);
+
+  document.addEventListener("app.Ready", register_event_handlers, false);
 })();
 //getMainConfig();
 

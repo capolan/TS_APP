@@ -69,29 +69,40 @@ function mensagemTela(titulo, msg) {
 }
 /******************************************************************************/
 function atualizaHeaderLogin(txt) {
+    console.log(">atualizaHeaderLogin " + txt);
     document.getElementById("text-user-login").innerHTML = txt;
     document.getElementById("text-user-mainpage").innerHTML = txt;
     document.getElementById("text-user-config").innerHTML = txt;
     document.getElementById("text-user-modulo").innerHTML = txt;
     document.getElementById("text-user-sensor").innerHTML = txt;
-    if (sessao_id == null || txt == '') {
+    if (json_user == undefined) {
         document.getElementById("text-sessao-id").innerHTML = '';
+        $("#text-user-name").empty();
         $("#btn-sign-out").hide();
         $("#btn-login-logoff").hide();
         $('#btn-trocar-senha').hide();
         $("#btn-login-reenviar").hide();
         $("#btn-enviar-cadastro").show();
         $("#btn-sign-in-entrar").show();
+        $("#btn-assoc-ts").hide();
+        $("#btn-desassoc-ts").hide();
         $(".uib_w_263").hide(); //#sel-meus-sensores
     } else {
         document.getElementById("text-sessao-id").innerHTML = sessao_id;
+        $("#text-user-name").val(json_user.login);
         $("#btn-sign-out").show();
         $("#btn-login-logoff").show();
         $("#btn-enviar-cadastro").hide();
         $("#btn-trocar-senha").show();
         $("#btn-login-reenviar").show();
         $("#btn-sign-in-entrar").hide();
+        $("#btn-assoc-ts").show();
+        $("#btn-desassoc-ts").show();
         $(".uib_w_263").show(); //#sel-meus-sensores
+        Cookies["modelo"] = json_user.sensores[0].modelo;
+        Cookies["serie"] = json_user.sensores[0].serie;
+        Cookies["chave"] = json_user.sensores[0].chave;
+
     }
 }
 
@@ -107,7 +118,7 @@ function lerMensagensSensor(_modulo, _dd_div) {
 
     var self = this;
 
-    console.log(">lerMensagensSensor");
+    console.log(">lerMensagensSensor   div=" + _dd_div);
 
     if (window.cordova) {
         if (navigator.connection.type == Connection.NONE) {
@@ -122,6 +133,7 @@ function lerMensagensSensor(_modulo, _dd_div) {
         var data, msg;
         var flag = false;
         var l, n = self.modulo + 1;
+        var id_alerta;
         var v_str = jsonPath(json_feed, "$.nodes" + n + ".contador");
         var len = parseInt(v_str);
 
@@ -136,25 +148,36 @@ function lerMensagensSensor(_modulo, _dd_div) {
                 //    console.log("i:"+i+" date="+json.feeds[i].created_at+"  status="+ json.feeds[i].status);
                 if (self.modulo == null) {
                     msg = jsonPath(json_feed, "$.feeds[" + i + "].mensagem");
+                    id_alerta = parseInt(jsonPath(json_feed, "$.feeds[" + i + "].id_alerta"));
                     data = jsonPath(json_feed, "$.feeds[" + i + "].created_at");
                 } else {
                     msg = jsonPath(json_feed, "$.nodes_feed" + n + "[" + i + "].mensagem");
+                    id_alerta = parseInt(jsonPath(json_feed, "$.nodes_feed" + n + "[" + i + "].id_alerta"));
                     data = jsonPath(json_feed, "$.nodes_feed" + n + "[" + i + "].created_at");
                 }
                 if (msg != false) {
+                    var d = moment(new Date(data));
                     flag = true;
-                    //                    console.log(data+" $ "+msg+"   "+len);
-                    self.data.addRow([data.toString(), msg.toString()]);
+                    //         console.log(json_feed );
+                    //      console.log("id_alerta="+id_alerta );
+                    self.data.addRow([id_alerta, d.format('DD/MM/YYYY HH:mm'), {
+                        v: '1',
+                        f: msg.toString()
+                    }]);
                 }
             }
         }
         if (flag == false)
             $(self.dd_div).hide();
         else {
+            var view = new google.visualization.DataView(self.data);
+            view.hideColumns([0]);
+
             $(self.dd_div).show();
             self.table.draw(self.data, {
                 showRowNumber: false,
-                page: true,
+                allowHtml: true,
+                page: "enable",
                 width: '100%',
                 height: '100%'
             });
@@ -165,12 +188,42 @@ function lerMensagensSensor(_modulo, _dd_div) {
     this.drawTable = function () {
         console.log(">drawTable Status dd_div=" + self.dd_div);
         self.data = new google.visualization.DataTable();
-        //self.data.addColumn('number', 'Nro');
+        self.data.addColumn('number', 'Id');
         self.data.addColumn('string', 'Data');
         self.data.addColumn('string', 'Evento');
         self.table = new google.visualization.Table(document.getElementById(self.dd_div));
+
+        google.visualization.events.addListener(self.table, 'select', self.clickOnTable);
+
+
         self.loadData();
     };
+
+    this.clickOnTable = function () {
+        var selection = self.table.getSelection();
+        var message = '';
+
+        for (var i = 0; i < selection.length; i++) {
+            var item = selection[i];
+            if (item.row != null) {
+                var str = self.data.getFormattedValue(item.row, 0);
+                var data = self.data.getFormattedValue(item.row, 1);
+                var msg = self.data.getFormattedValue(item.row, 2);
+                if (json_user != undefined) {
+                    $("#text-alerta-usuario").val(json_user.login);
+                }
+                 document.getElementById("text-evento-titulo").innerHTML="<p>Evento:"+str+"</p>";
+                $("#text-alerta-id").val(str);
+                $("#text-alerta-data").val(data);
+                $("#text-alerta-mensagem").val(msg);
+                $('#uib_page_alerta').scrollTop(0);
+                lerStatus('retorno', 'table_feedback_div');
+                activate_subpage("#uib_page_alerta");
+                return;
+                message += '{row:' + item.row + ', column:none}; value (col 0) = ' + str + '\n';
+            }
+        }
+    }
 
     //google.setOnLoadCallback(this.drawTable);
 
@@ -321,10 +374,19 @@ function getMainConfig(tipo) {
                         //Cookies.create("vcc", json_config.canal.vcc, 10 * 356);
                         $("#text-s-temp-nome").val(json_config.canal.field5);
                         $("#af-header-0-tit").html("<h1>" + json_config.canal.nome + "</h1>");
+                        var v_str = json_config.canal.addr_serv;
+                        if (v_str != undefined && v_str != null) {
+                            // letra U
+                            var i = v_str.charCodeAt(0) - 83;
+                            $("#sel-endereco-TS").prop('selectedIndex', i);
+                        }
+
                         define_recuros();
+                        console.log(data);
                     } // tipo==0
                     // modulos
                     for (var m = 0; m < MAX_NODES; m++) {
+                        var sens, option;
                         var n_mod = m + 1;
                         var s_campo = 6 + m;
                         var node = jsonPath(json_config, "$.canal.node" + n_mod);
@@ -337,6 +399,17 @@ function getMainConfig(tipo) {
                             $("#text-mod" + n_mod + "-min").val(jsonPath(json_config, node + ".field1_min"));
                             $("#text-mod" + n_mod + "-max").val(jsonPath(json_config, node + ".field1_max"));
                             $("#text-mod" + n_mod + "-vcc").val(jsonPath(json_config, node + ".vcc_min"));
+                            $("#sel-mod" + n_mod).empty();
+                            for (sens = 1; sens <= MAX_NODES_SENSORES; sens++) {
+                                node = jsonPath(json_config, "$.node" + n_mod + ".field" + sens);
+                                console.log("sens  node=" + node);
+                                if (node == false)
+                                    continue;
+                                option = $('<option></option>').prop("value", sens - 1).text(sens + ":" + node);
+                                $("#sel-mod" + n_mod).append(option);
+                            }
+
+
                         } else {
                             $("#af-campo-" + s_campo).prop("checked", false);
                         }
@@ -415,18 +488,18 @@ function writeMainConfig() {
         document.getElementById("text-s-celular").value = Cookies["celular"];
 
         // TEMPERATURA
-        document.getElementById("text-s-vcc").value = json_config.canal.vcc;
-        document.getElementById("text-s-temp-min").value = json_config.canal.field5_min;
-        document.getElementById("text-s-temp-max").value = json_config.canal.field5_max;
+        //document.getElementById("text-s-vcc").value = json_config.canal.vcc;
+        //document.getElementById("text-s-temp-min").value = json_config.canal.field5_min;
+        //document.getElementById("text-s-temp-max").value = json_config.canal.field5_max;
         // CORRENTE/REDE
-        if (Cookies["tensao"] == '220')
-            document.getElementById("af-radio-s-220").checked = true;
-        else
-            document.getElementById("af-radio-s-127").checked = true;
-        document.getElementById("text-s-fases").value = Cookies["fases"];
-        document.getElementById("text-s-vcc").value = Cookies["vcc"];
-        document.getElementById("text-s-corrente-min").value = json_config.canal.field1_min;
-        document.getElementById("text-s-corrente-max").value = json_config.canal.field1_max;
+        //if (Cookies["tensao"] == '220')
+        //            document.getElementById("af-radio-s-220").checked = true;
+        //        else
+        //            document.getElementById("af-radio-s-127").checked = true;
+        //        document.getElementById("text-s-fases").value = Cookies["fases"];
+        //        document.getElementById("text-s-vcc").value = Cookies["vcc"];
+        ////        document.getElementById("text-s-corrente-min").value = json_config.canal.field1_min;
+        //      document.getElementById("text-s-corrente-max").value = json_config.canal.field1_max;
 
         //        if (json.nome != 'undefined')
         //            $("#af-header-0").html(json.nome);
@@ -519,7 +592,15 @@ function updateSelSensores(data) {
 function signInServer(pag) {
     var addr = 'http://' + SERVER_IP + SERVER_PATH + '/config_ts.php?';
 
-    // SIGN-IN
+    if (window.cordova) {
+        if (navigator.connection.type == Connection.NONE) {
+            navigator.notification.alert(data, // message
+                alertDismissed, 'Sem conexão com a rede.', 'Fechar');
+            return;
+        }
+    }
+
+    // BOOT
     if (pag == 'boot') {
         addr = addr + 'f=0&s=' + sessao_id;
     }
@@ -581,14 +662,41 @@ function signInServer(pag) {
         //var etxt = CryptoJS.AES.encrypt(txt, "TSensor"+user);
         addr = addr + 'f=8&u=' + user + '&v=' + encodeURIComponent(etxt);
     }
-    console.log("pag=" + pag + "  user=" + user + " addr=" + addr + "   txt=" + txt);
-    if (window.cordova) {
-        if (navigator.connection.type == Connection.NONE) {
-            navigator.notification.alert(data, // message
-                alertDismissed, 'Sem conexão com a rede.', 'Fechar');
-            return;
+
+    // Associar usuario a TS
+    if (pag == 'TS+') {
+        addr = addr + 'p=20&u=' + json_user.login +
+            '&m=' + $("#modelo").val() +
+            '&s=' + $("#serie").val() +
+            '&c=' + $("#chave").val();
+    }
+
+    // Dessociar usuario a TS
+    if (pag == 'TS-') {
+        addr = addr + 'p=21&u=' + json_user.login +
+            '&m=' + $("#modelo").val() +
+            '&s=' + $("#serie").val() +
+            '&c=' + $("#chave").val();
+    }
+    // registrar comentario
+    if (pag == 'reg') {
+        addr = addr + 'p=30&u=';
+        if (json_user != undefined) {
+            addr = addr + '&u=' + json_user.login;
+        }
+        addr = addr + '&id_alerta=' + $("#text-alerta-id").val() +
+            '&n=' + $("#text-alerta-usuario").val() +
+            '&m=' + encodeURIComponent($("#text-alerta-msg").val());
+        for (var i = 0; i < 3; i++) {
+            if ($("#af-alerta-" + i).prop("checked")) {
+                addr = addr + '&o=' + i;
+                break;
+            }
         }
     }
+
+
+    console.log("pag=" + pag + "  user=" + user + " addr=" + addr + "   txt=" + txt);
     $.ajax({
         type: 'GET',
         url: addr,
@@ -599,13 +707,14 @@ function signInServer(pag) {
             console.log(data);
             if (pag == 'in') {
                 console.log("data=" + data);
-                mensagemTela('Login', "bem vindo " + data.login);
                 if (data.login == undefined || data.login == '') {
+                    mensagemTela('', "Usuario/senha inválida");
                     sessao_id = null;
                     json_user = undefined;
                     Cookies.erase("sessao_id");
                     atualizaHeaderLogin('');
                 } else {
+                    mensagemTela(data.login, "Bem vindo");
                     json_user = data;
                     sessao_id = data.sessao;
                     Cookies.create("sessao_id", sessao_id, 365);
@@ -615,37 +724,55 @@ function signInServer(pag) {
             } else
             if (pag == 'out') {
                 sessao_id = null;
+                json_user = undefined;
                 Cookies.erase("sessao_id");
                 $("#text-nome-completo").empty();
                 $("#text-user-name").empty(); // sign-in
                 $("#text-email").empty();
                 $("#text-usuario").empty();
                 atualizaHeaderLogin('');
-                mensagemTela('Logoff com sucesso','');
+                mensagemTela('Logoff com sucesso', '');
             } else
             if (pag == 'boot') {
                 if (data.ret == 'OK') {
-                    $("#text-nome-completo").val(data.nome);
-                    $("#text-user-name").val(data.login); // sign-in
-                    $("#text-email").val(data.email);
-                    $("#text-usuario").val(data.login);
+                    json_user = data;
+                    /*   $("#text-nome-completo").val(data.nome);
+                       $("#text-user-name").val(data.login); // sign-in
+                       $("#text-email").val(data.email);
+                       $("#text-usuario").val(data.login);*/
                     sessao_id = data.sessao;
                     Cookies.create("sessao_id", sessao_id, 365);
                     updateSelSensores(data);
                     atualizaHeaderLogin(data.login);
-                    json_user = data;
                 } else {
-                    $("#text-nome-completo").empty();
-                    $("#text-user-name").empty(); // sign-in
-                    $("#text-email").empty();
-                    $("#text-usuario").empty();
+                    /*    $("#text-nome-completo").empty();
+                        $("#text-user-name").empty(); // sign-in
+                        $("#text-email").empty();
+                        $("#text-usuario").empty();*/
                     sessao_id = null;
                     Cookies.erase("sessao_id");
-                    atualizaHeaderLogin('');
                     json_user = undefined;
+                    atualizaHeaderLogin('');
                 }
             } else
-                mensagemTela(data, 'Retorno');
+            if (pag == 'TS+') {
+                var nome = jsonPath(json_config, "$.channel.name");
+                if (data.status == "1" && nome != false) {
+                    option = $('<option></option>').prop("value", 1).text(nome);
+                    $("#sel-meus-sensores").append(option);
+                    document.getElementById("text_config").innerHTML = "Sucesso na inclusao.";
+                } else
+                    document.getElementById("text_config").innerHTML = "Erro:" + data.mensagem;
+            } else
+            if (pag == 'TS-') {
+                if (data.status == "1") {
+                    var nome = jsonPath(json_config, "$.channel.name");
+                    $("#sel-meus-sensores").find(nome).remove();
+                    document.getElementById("text_config").innerHTML = "Sucesso na remocao.";
+                } else
+                    document.getElementById("text_config").innerHTML = "Erro:" + data.mensagem;
+            } else
+                mensagemTela(data.mensagem, 'Retorno');
 
         },
         error: function (data) {
@@ -663,11 +790,14 @@ function gravarConfiguracao(pag, text_obj) {
 
     addr = addr + '&pag=' + pag;
     if (pag == 'w') {
+        var idx = $("#sel-endereco-TS option:selected").index();
+        var addr_serv = String.fromCharCode(idx + 83);
         // wifi
         console.log("passwd=" + Cookies["passwd"]);
         addr = addr + '&ssid=' + Cookies['ssid'] +
             '&passwd=' + Cookies['passwd'] +
-            '&proxy=' + Cookies['proxy'];
+            '&proxy=' + Cookies['proxy'] +
+            '&addr_serv=' + addr_serv;
     }
     if (pag == 't') {
         // TS
@@ -690,9 +820,6 @@ function gravarConfiguracao(pag, text_obj) {
             '&ap_passwd=' + Cookies['ap_passwd'] +
             '&ap_canal=' + Cookies['ap_canal'] +
             '&ap_cripto=' + Cookies['ap_cripto'];
-    }
-    if (pag == 'p') {
-        // parametros
     }
     if (pag == 'u') {
         addr = addr + '&updated_flag=1';
@@ -771,11 +898,21 @@ function gravarConfiguracaoSensor(pag, text_obj) {
                 campo = parseInt(opt) + 1;
                 var v_str = jsonPath(json_config, "$.node" + n_mod + ".serie");
                 data = data + node + "=" + v_str;
-                data = data + node + "_field" + campo + "_min=" + $("#text-mod" + n_mod + "-min").val() +
-                    node + "_field" + campo + "=" + $("#text-mod" + n_mod + "-campo").val() +
-                    node + "_field" + campo + "_max=" + $("#text-mod" + n_mod + "-max").val() +
+                data = data +
                     node + "_nome=" + $("#text-mod" + n_mod + "-nome").val() +
-                    node + "_vcc=" + $("#text-mod" + n_mod + "-vcc").val();
+                    node + "_field" + campo + "=" + $("#text-mod" + n_mod + "-campo").val();
+                v_str = $("#text-mod" + n_mod + "-min").val();
+                if (isNaN(parseInt(v_str)) != false) {
+                    node = node + "_field" + campo + "_min=" + v_str;
+                }
+                v_str = $("#text-mod" + n_mod + "-max").val();
+                if (isNaN(parseInt(v_str)) != false) {
+                    node = node + "_field" + campo + "_max=" + v_str;
+                }
+                v_str = $("#text-mod" + n_mod + "-vcc").val();
+                if (isNaN(parseInt(v_str)) != false) {
+                    node + "_vcc=" + v_str;
+                }
             }
 
         }
@@ -825,20 +962,16 @@ function gravarConfiguracaoSensor(pag, text_obj) {
 var json_feed = null;
 
 function get_feed(flag_atualiza) {
-    var horas = $("#sel-g1 option:selected").index();
     url = 'http://' + SERVER_IP + SERVER_PATH + '/get_feed.php?' +
         'api_key=' + Cookies["api_key"] + '&results=' + Cookies["nro_pontos"];
 
-    if (r_horas == null)
-        url = url + '&horas=' + horas;
-    else
-        url = url + '&r_horas=' + r_horas;
+    url = url + '&r_horas=' + r_horas;
 
 
-    app.consoleLog("get_feed", url);
-    json_feed = null;
-    if (Cookies["api_key"] == 'undefined' || Cookies['api_key'].length != 16)
+    app.consoleLog("   get_feed", url);
+    if (Cookies["api_key"] == undefined) // || Cookies['api_key'].length != 16)
         return;
+    json_feed = null;
     $.ajax({
         type: 'GET',
         url: url,
@@ -850,7 +983,7 @@ function get_feed(flag_atualiza) {
             //  console.log("get_feed="+data);
             //    json_feed = JSON.parse(data);
             json_feed = data;
-            console.log("GET FEED OK " + flag_atualiza + " canal=" + json_feed.channel.canal);
+            //console.log("GET FEED OK " + flag_atualiza + " canal=" + json_feed.channel.canal);
             if (flag_atualiza)
                 document.dispatchEvent(evt_get_feed);
 
@@ -865,7 +998,7 @@ function get_feed(flag_atualiza) {
 
 
 /************************************************************************/
-function lerStatus() {
+function lerStatus(tipo, _dd_div) {
 
     this.data = null;
     this.table = null;
@@ -886,7 +1019,13 @@ function lerStatus() {
     this.loadData = function () {
         //$("#pag_info_status").html("Conectando servidor.");
         var xhr = new XMLHttpRequest();
-        var url = "http://45.55.77.192/obj/ti/config_ler_status.php?f=1&m=" + Cookies['modelo'] + "&s=" + Cookies['serie'] + '&limit=' + pagina_status;
+        var url = "http://" + SERVER_IP + SERVER_PATH + "/config_ler_status.php?";
+
+        if (tipo == 'alertas') {
+            url = url + "f=1&m=" + Cookies['modelo'] + "&s=" + Cookies['serie'] + '&limit=' + pagina_status;
+        } else {
+            url = url + "f=2&alerta=" + $("#text-alerta-id").val();
+        }
         console.log(url);
         xhr.timeout = 4000;
         xhr.open("GET", url, true);
@@ -895,20 +1034,40 @@ function lerStatus() {
                 var json_string = xhr.responseText;
                 var json = JSON.parse(json_string);
                 var len = json.feeds.length;
-                console.log("onLoad len=" + len);
+                //console.log("onLoad len=" + len);
                 self.flag = true;
                 if (len == 0) {
-                    $("#pag_info_status").html("Sem registros. posição=" + pagina_status);
+                    $("#"+_dd_div).html("Sem registros");
                 } else {
                     for (var i = 0; i < len; i++) {
+                        var ftxt;
+                        var d = moment(new Date(json.feeds[i].created_at));
+
+
+                        if (tipo == 'alertas') {
+                            if (json.feeds[i].grupo == '1') {
+                                ftxt = json.feeds[i].status + " [" + json.feeds[i].tipo_alerta + "]";
+                            } else {
+                                ftxt = "<font style=\"color:blue\">" + json.feeds[i].status + "</font>" + " [" + json.feeds[i].tipo_alerta + "]";
+                            }
+                        } else {   // alerta_retorno
+                                if (json.feeds[i].nome != null)
+                                    ftxt=json.feeds[i].nome + ':';
+                                else
+                                    ftxt='';
+                                ftxt = json.feeds[i].mensagem + " [" + json.feeds[i].situacao + "]";
+                        }
                         //    console.log("i:"+i+" date="+json.feeds[i].created_at+"  status="+ json.feeds[i].status);
-                        self.data.addRow([pagina_status + i + 1, json.feeds[i].created_at, {
+                        self.data.addRow([d.format('DD/MM/YYYY HH:mm'), {
                             v: '1',
-                            f: json.feeds[i].status
+                            f: ftxt
                         }]);
                     }
                     self.table.draw(self.data, {
                         showRowNumber: false,
+                        allowHtml: true,
+                        showRowNumber: true,
+                        page: "enable",
                         width: '100%',
                         height: '100%'
                     });
@@ -925,13 +1084,22 @@ function lerStatus() {
         xhr.send();
     };
 
+    this.handlePage = function (e) {}
+
     this.drawTable = function () {
         console.log(">drawTable");
         self.data = new google.visualization.DataTable();
-        self.data.addColumn('number', 'Nro');
+        //self.data.addColumn('number', 'Nro');
         self.data.addColumn('string', 'Data');
-        self.data.addColumn('string', 'Evento');
-        self.table = new google.visualization.Table(document.getElementById("pag_info_status"));
+        if (tipo == 'alerta')
+            self.data.addColumn('string', 'Evento');
+        else
+            self.data.addColumn('string', 'Comentário');
+        self.table = new google.visualization.Table(document.getElementById(_dd_div));
+        google.visualization.events.addListener(self.table, 'page', function (e) {
+            self.handlePage(e)
+        });
+
         self.loadData();
     };
 
@@ -1076,7 +1244,7 @@ function atualizaGraficoConfig() {
         var t = m + 1;
         var node = "$.node" + t;
         console.log("modulo=" + m);
-        if (gx1[m] != undefined && getObjects(json_config, node) != false) {
+        if (gm1[m] != undefined && gm1[m][0] != undefined && getObjects(json_config, node) != false) {
             max = Math.ceil((parseInt(json_config.node1.field1_max) + 10) / 10) * 10;
             v_str = jsonPath(json_config, node + ".field1_min");
             console.log("min=" + v_str);
@@ -1089,22 +1257,22 @@ function atualizaGraficoConfig() {
             red_value = range_val - (range_val * 0.1) + min;
             yellow_value = range_val - (range_val * 0.25) + min;
 
-            v_str = gx1[m].data.getColumnLabel(1);
+            v_str = gm1[m][0].data.getColumnLabel(1);
             console.log("GET field1=" + v_str);
 
             v_str = jsonPath(json_config, node + ".field1");
             console.log("field1=" + v_str);
-            gx1[m].data.setColumnLabel(1, v_str);
-            gx1[m].options.min = min;
-            gx1[m].options.max = max;
-            gx1[m].options.redFrom = red_value;
-            gx1[m].options.redTo = max;
-            gx1[m].options.yellowFrom = yellow_value;
-            gx1[m].options.yellowTo = red_value;
-            gx2[m].data.setColumnLabel(1, v_str);
-            gx2[m].options.title = v_str;
-            gx2[m].options.vAxis.minValue = min;
-            gx2[m].options.vAxis.maxValue = max;
+            gm1[m][0].data.setColumnLabel(1, v_str);
+            gm1[m][0].options.min = min;
+            gm1[m][0].options.max = max;
+            gm1[m][0].options.redFrom = red_value;
+            gm1[m][0].options.redTo = max;
+            gm1[m][0].options.yellowFrom = yellow_value;
+            gm1[m][0].options.yellowTo = red_value;
+            gm2[m][0].data.setColumnLabel(1, v_str);
+            gm2[m][0].options.title = v_str;
+            gm2[m][0].options.vAxis.minValue = min;
+            gm2[m][0].options.vAxis.maxValue = max;
         }
     }
     atualiza_dados();
@@ -1119,6 +1287,7 @@ function testarBotoesModulo() {
     for (var m = MAX_NODES - 1; m >= 0; m--) {
         var n_mod = m + 1;
         var node = jsonPath(json_config, "$.canal.node" + n_mod);
+        // console.log("m=" + m + "    gm1=" + gm1[m] + "   NODE=" + node);
         if (node != false) {
             $("#btn_mod" + n_mod).show();
             $("#cfg-mod" + n_mod).show();
@@ -1128,9 +1297,9 @@ function testarBotoesModulo() {
         } else {
             $("#btn_mod" + n_mod).hide();
             $("#cfg-mod" + n_mod).hide();
-            if (gx1[m] != undefined) {
-                gx1[m].ativo = false;
-                gx2[m].ativo = false;
+            if (gm1[m] != undefined && gm1[m][0] != undefined) {
+                gm1[m][0].ativo = false;
+                gm2[m][0].ativo = false;
             }
         }
     }
@@ -1202,12 +1371,13 @@ function atualiza_modulos() {
 /* 0 - Sleep  ... 10-Remover 11 - reset de firmware 12-limites*/
 var ts_cmds_par = [2, 3, 3, 3, 1, 1, 0, 0, 0, 1, 0, 3];
 
-var r_horas = 6;
+var r_horas = 2;
 var MAX_NODES = 4;
+var MAX_NODES_SENSORES = 2;
 var VERSAO = {
     MAJOR: '1',
     MINOR: '1',
-    DATE: '23/10/2015'
+    DATE: '06/11/2015'
 };
 
 var SERVER_IP = '45.55.77.192';
@@ -1280,6 +1450,11 @@ function onDeviceReady() {
     // select
     $("#sel_horas").css('width', 100);
     $(".uib_w_263").hide(); //#sel-meus-sensores
+    // readonly id_alerta
+    $("#text-alerta-id").prop("readonly", true);
+    $("#text-alerta-id").css('width', 100);
+    $("#text-alerta-data").prop("readonly", true);
+    //$("#text-alerta-mensagem").prop("readonly", true);
 
 
     getMainConfig(0);

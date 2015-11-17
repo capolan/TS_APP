@@ -152,7 +152,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
         //   app.consoleLog("self.passo",self.passo);
         if (window.cordova && navigator.connection.type == Connection.NONE) return;
 
-        //     app.consoleLog("valdata",valdata);
+       //      app.consoleLog("id_div="+self.id_div+ "  valdata",valdata);
         self.vcc = null;
         self.field_flag=0;
         self.vcc_flag=0;
@@ -261,6 +261,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                     }
                         if (valor == false && i==0) {
                             self.message = 'sem dados';
+                            self.message = '';
                         }
                     break;
                 }
@@ -269,10 +270,10 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                     self.data.setCell(k, 1, valor);
                     k++;
                 } else {
-                   if (self.id_div == "chart1_div") {
-                        app.consoleLog(self.id_div,
-                                       "dados f=" + f + "  j=" + j + " valor=" + valor+ "  d="+d.toString());
-                    }
+            //       if (self.id_div == "chartx611_div") {
+            //            app.consoleLog(self.id_div,
+            //                           "dados f=" + f + "  j=" + j + " valor=" + valor+ "  d="+d.toString());
+            //        }
                     if (isNaN(valor) || valor == false) valor = null;
                     self.data.setCell(f, j++, valor);
                     if (self.tipo == 2 && campo <= 8) {

@@ -2,7 +2,7 @@
 // Programar o Tsensor hw diretamente
 function prog_ler_ip() {
     //    var myRe = new RegExp("([0-9\.]*)\<br\>([0-9\.]*)","g");
-    var addr = 'http://192.168.4.1?I&R';
+    var addr = 'http://192.168.4.1/?I&R';
 
     console.log("url=" + addr);
     if (navigator.connection.type == Connection.NONE) {
@@ -28,7 +28,7 @@ function prog_ler_ip() {
 
 }
 
-// Programar o Tsensor hw diretamente
+// REBOOT
 function prog_reboot_ts() {
     var addr = 'http://192.168.4.1/s?f=7&R';
 
