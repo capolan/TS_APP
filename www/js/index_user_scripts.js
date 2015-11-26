@@ -123,15 +123,22 @@
         $(document).on("click", "#chart1_div", function (evt) {
             //     app.consoleLog("[204] rec_temperatura2",rec_temperatura2);
             if (Cookies["tela_layout"] == "0") { // Temperatura
-                if (rec_temperatura2 == true) // Temperatura 2
-                    activate_subpage("#uib_page_10");
-                else
-                if (rec_corrente_30a == true || rec_corrente_100a == true) // Temperatura 2
-                    activate_subpage("#uib_page_10");
-                else
+                if (rec_temperatura2 == true) { // Temperatura 2
+                    if (g3.sem_dados == true)
+                        mensagemTela("Sem dados", "Temperatura 2");
+                    else
+                        activate_subpage("#uib_page_10");
+                } else
+                if (rec_corrente_30a == true || rec_corrente_100a == true) { // Temperatura 2
+                    if (g3.sem_dados == true)
+                        mensagemTela("Sem dados", "Corrente");
+                    else
+                        activate_subpage("#uib_page_10");
+                } else
                     click_no_gauge(0);
-            } else
+            } else {
                 activate_subpage("#uib_page_10");
+            }
         });
 
         $(document).on("click", "#chart2_div", function (evt) {
@@ -316,7 +323,7 @@
             var modelo = document.getElementById("modelo").value;
             var serie = document.getElementById("serie").value;
             var chave = document.getElementById("chave").value;
-                    console.log("btn_let_config_web");
+            console.log("btn_let_config_web");
             document.getElementById("text_config").innerHTML = "";
             if (modelo != '' && serie != '' && chave != '') {
                 document.getElementById("text_config").innerHTML = "pesquisando servidor...";
@@ -426,14 +433,14 @@
                 return;
             }
             document.getElementById("text-s-temp").innerHTML = "";
-            console.log(">btn-s-s-temp "+opt)
+            console.log(">btn-s-s-temp " + opt)
             if (opt == 0) {
                 // Cookies["vcc"] = document.getElementById("text-s-vcc").value;
                 //Cookies["campo5_min"] = document.getElementById("text-s-temp-min").value;
                 //Cookies["campo5_max"] = document.getElementById("text-s-temp-max").value;
                 gravarConfiguracaoSensor('t', document.getElementById("text-s-temp"));
             }
-            // temp extra
+            // temp
             if (opt == 1) {
                 gravarConfiguracaoSensor('x', document.getElementById("text-s-temp"));
             }
@@ -455,7 +462,7 @@
                 document.getElementById("text-s-temp-max").value = json_config.canal.field5_max;
             }
             if (opt == 1) {
-                document.getElementById("text-s-vcc").value = 0;
+                document.getElementById("text-s-vcc").value = json_config.canal.vcc;
                 document.getElementById("text-s-temp-min").value = json_config.canal.field6_min;
                 document.getElementById("text-s-temp-max").value = json_config.canal.field6_max;
             }
@@ -944,7 +951,7 @@
         console.log("<index_user_scripts.js");
     }
 
-  document.addEventListener("app.Ready", register_event_handlers, false);
+    document.addEventListener("app.Ready", register_event_handlers, false);
 })();
 //getMainConfig();
 

@@ -212,7 +212,7 @@ function lerMensagensSensor(_modulo, _dd_div) {
                 if (json_user != undefined) {
                     $("#text-alerta-usuario").val(json_user.login);
                 }
-                 document.getElementById("text-evento-titulo").innerHTML="<p>Evento:"+str+"</p>";
+                document.getElementById("text-evento-titulo").innerHTML = "<p>Evento:" + str + "</p>";
                 $("#text-alerta-id").val(str);
                 $("#text-alerta-data").val(data);
                 $("#text-alerta-mensagem").val(msg);
@@ -282,7 +282,7 @@ function getMainConfig(tipo) {
         window.Cookies["chave"] != undefined) {
         console.log("modelo=" + Cookies["modelo"]);
         var chave = Cookies["chave"];
-        var url = "http://" + SERVER_IP + SERVER_PATH + "/config_ler.php?f=0&m=" + Cookies["modelo"] + "&s=" + Cookies["serie"] + "&c=" + chave.substring(0, 4) +
+        var url = SERVER_HTTP + SERVER_IP + SERVER_PATH + "/config_ler.php?f=0&m=" + Cookies["modelo"] + "&s=" + Cookies["serie"] + "&c=" + chave.substring(0, 4) +
             '&t1=' + VERSAO.MAJOR +
             '&t2=' + VERSAO.MINOR +
             '&td=' + VERSAO.DATE;
@@ -387,11 +387,13 @@ function getMainConfig(tipo) {
                     // modulos
                     for (var m = 0; m < MAX_NODES; m++) {
                         var sens, option;
+                        var recursos;
                         var n_mod = m + 1;
                         var s_campo = 6 + m;
                         var node = jsonPath(json_config, "$.canal.node" + n_mod);
                         if (node != false) {
                             node = "$.node" + n_mod;
+                            recursos = jsonPath(json_config, node + ".recursos");
                             $("#sel-mod" + n_mod + " option:eq(0)").prop('selected', true);
                             $("#af-campo-" + s_campo).prop("checked", true);
                             $("#text-mod" + n_mod + "-nome").val(jsonPath(json_config, node + ".name"));
@@ -403,8 +405,10 @@ function getMainConfig(tipo) {
                             for (sens = 1; sens <= MAX_NODES_SENSORES; sens++) {
                                 node = jsonPath(json_config, "$.node" + n_mod + ".field" + sens);
                                 console.log("sens  node=" + node);
-                                if (node == false)
+                                if (sens == 2 && (recursos & 0x10) != 0x10) {
                                     continue;
+                                }
+
                                 option = $('<option></option>').prop("value", sens - 1).text(sens + ":" + node);
                                 $("#sel-mod" + n_mod).append(option);
                             }
@@ -455,7 +459,7 @@ function getMainConfig(tipo) {
 }
 /*********************************************************************/
 function writeMainConfig() {
-    var xhr = new XMLHttpRequest();
+    //var xhr = new XMLHttpRequest();
     app.consoleLog(">writeMainConfig", "");
     if (window.Cookies["modelo"] != undefined &&
         window.Cookies["serie"] != undefined) {
@@ -488,18 +492,18 @@ function writeMainConfig() {
         document.getElementById("text-s-celular").value = Cookies["celular"];
 
         // TEMPERATURA
-        //document.getElementById("text-s-vcc").value = json_config.canal.vcc;
-        //document.getElementById("text-s-temp-min").value = json_config.canal.field5_min;
-        //document.getElementById("text-s-temp-max").value = json_config.canal.field5_max;
+        document.getElementById("text-s-vcc").value = json_config.canal.vcc;
+        document.getElementById("text-s-temp-min").value = json_config.canal.field5_min;
+        document.getElementById("text-s-temp-max").value = json_config.canal.field5_max;
         // CORRENTE/REDE
-        //if (Cookies["tensao"] == '220')
-        //            document.getElementById("af-radio-s-220").checked = true;
-        //        else
-        //            document.getElementById("af-radio-s-127").checked = true;
-        //        document.getElementById("text-s-fases").value = Cookies["fases"];
-        //        document.getElementById("text-s-vcc").value = Cookies["vcc"];
-        ////        document.getElementById("text-s-corrente-min").value = json_config.canal.field1_min;
-        //      document.getElementById("text-s-corrente-max").value = json_config.canal.field1_max;
+        if (Cookies["tensao"] == '220')
+            document.getElementById("af-radio-s-220").checked = true;
+        else
+            document.getElementById("af-radio-s-127").checked = true;
+        document.getElementById("text-s-fases").value = Cookies["fases"];
+        //document.getElementById("text-s-vcc").value = Cookies["vcc"];
+        document.getElementById("text-s-corrente-min").value = json_config.canal.field1_min;
+        document.getElementById("text-s-corrente-max").value = json_config.canal.field1_max;
 
         //        if (json.nome != 'undefined')
         //            $("#af-header-0").html(json.nome);
@@ -512,7 +516,7 @@ function gravarComandoTS(text_obj) {
     var node = $("#sel-node option:selected").index();
     var cmd = $("#sel-cmd option:selected").index();
     var chave = Cookies["chave"];
-    var addr = 'http://' + SERVER_IP + SERVER_PATH + '/config_ts.php';
+    var addr = SERVER_HTTP + SERVER_IP + SERVER_PATH + '/config_ts.php';
     var data = 'f=1&m=' + Cookies['modelo'] +
         '&s=' + Cookies['serie'] +
         "&c=" + chave.substring(0, 4) +
@@ -590,7 +594,7 @@ function updateSelSensores(data) {
 
 /**********************************************************************/
 function signInServer(pag) {
-    var addr = 'http://' + SERVER_IP + SERVER_PATH + '/config_ts.php?';
+    var addr = SERVER_HTTP + SERVER_IP + SERVER_PATH + '/config_ts.php?';
 
     if (window.cordova) {
         if (navigator.connection.type == Connection.NONE) {
@@ -783,7 +787,7 @@ function signInServer(pag) {
 /**********************************************************************/
 function gravarConfiguracao(pag, text_obj) {
     var chave = Cookies["chave"];
-    var addr = 'http://' + SERVER_IP + SERVER_PATH + '/config_ts.php?f=2' +
+    var addr = SERVER_HTTP + SERVER_IP + SERVER_PATH + '/config_ts.php?f=2' +
         '&m=' + Cookies['modelo'] +
         '&s=' + Cookies['serie'] +
         "&c=" + chave.substring(0, 4);
@@ -808,12 +812,6 @@ function gravarConfiguracao(pag, text_obj) {
             '&tempo_ler_corrente=' + Cookies['tempo_ler_corrente'] +
             '&contador_enviar_web=' + Cookies['contador_enviar_web'];
     }
-    if (pag == 'r') {
-        // rede
-        addr = addr + '&tensao=' + Cookies["tensao"] +
-            '&fases=' + Cookies['fases'] +
-            '&vcc=' + Cookies['vcc'];
-    }
     if (pag == 'a') {
         // AP
         addr = addr + '&ap_ssid=' + Cookies['ap_ssid'] +
@@ -822,7 +820,7 @@ function gravarConfiguracao(pag, text_obj) {
             '&ap_cripto=' + Cookies['ap_cripto'];
     }
     if (pag == 'u') {
-        addr = addr + '&updated_flag=1';
+        addr = addr + '&updated_flag=10';
     }
     console.log("addr=" + addr);
     if (window.cordova) {
@@ -841,6 +839,7 @@ function gravarConfiguracao(pag, text_obj) {
         success: function (data) {
             console.log(data);
             text_obj.innerHTML = data;
+            atualiza_modulos();
         },
         error: function (data) {
             text_obj.innerHTML = 'ERRO:' + data;
@@ -851,37 +850,42 @@ function gravarConfiguracao(pag, text_obj) {
 
 function gravarConfiguracaoSensor(pag, text_obj) {
     var chave = Cookies["chave"];
-    var addr = 'http://' + SERVER_IP + SERVER_PATH + '/config_ts.php';
+    var addr = SERVER_HTTP + SERVER_IP + SERVER_PATH + '/config_ts.php';
     var data = 'f=2&m=' + Cookies['modelo'] +
         '&s=' + Cookies['serie'] +
         "&c=" + chave.substring(0, 4);
 
 
+    app.consoleLog(addr, data);
     if (pag == 'r') {
         // rede/corrente
         data = data + '&tensao=' + Cookies["tensao"] +
             '&fases=' + Cookies['fases'] +
             '&field1_min=' + document.getElementById("text-s-corrente-min").value +
-            '&field1_max=' + document.getElementById("text-s-corrente-max").value;
+            '&field1_max=' + document.getElementById("text-s-corrente-max").value +
+            '&updated_flag=10';
     }
     if (pag == 't') {
         // temperatura
-        data = data + '&vcc=' + json_config.canal.vcc +
-            '&field5=' + document.getElementById("text-s-temp-nome").value +
+        data = data + '&vcc=' + document.getElementById("text-s-vcc").value +
+            '&field5=' + encodeURIComponent(document.getElementById("text-s-temp-nome").value) +
             '&field5_min=' + document.getElementById("text-s-temp-min").value +
-            '&field5_max=' + document.getElementById("text-s-temp-max").value;
+            '&field5_max=' + document.getElementById("text-s-temp-max").value +
+            '&updated_flag=10';
     }
     if (pag == 'x') {
         // temperatura
         data = data +
-            '&field6=' + document.getElementById("text-s-temp-nome").value +
+            '&field6=' + encodeURIComponent(document.getElementById("text-s-temp-nome").value) +
             '&field6_min=' + document.getElementById("text-s-temp-min").value +
-            '&field6_max=' + document.getElementById("text-s-temp-max").value;
+            '&field6_max=' + document.getElementById("text-s-temp-max").value +
+            '&updated_flag=10';
     }
     if (pag == 'm') {
-        data = data + "&nome=" + document.getElementById("text-s-nome").value +
-            "&email=" + document.getElementById("text-s-email").value +
-            "&celular=" + document.getElementById("text-s-celular").value;
+        data = data + "&nome=" + encodeURIComponent(document.getElementById("text-s-nome").value) +
+            "&email=" + encodeURIComponent(document.getElementById("text-s-email").value) +
+            "&celular=" + ncodeURIComponent(document.getElementById("text-s-celular").value) +
+            '&updated_flag=10';
     }
     // nodes limites e offline_at
     if (pag == 'n') {
@@ -899,19 +903,20 @@ function gravarConfiguracaoSensor(pag, text_obj) {
                 var v_str = jsonPath(json_config, "$.node" + n_mod + ".serie");
                 data = data + node + "=" + v_str;
                 data = data +
-                    node + "_nome=" + $("#text-mod" + n_mod + "-nome").val() +
+                    node + "_nome=" + encodeURIComponent($("#text-mod" + n_mod + "-nome").val()) +
                     node + "_field" + campo + "=" + $("#text-mod" + n_mod + "-campo").val();
                 v_str = $("#text-mod" + n_mod + "-min").val();
-                if (isNaN(parseInt(v_str)) != false) {
-                    node = node + "_field" + campo + "_min=" + v_str;
+                console.log("#text-mod" + n_mod + "-min:" + v_str);
+                if (isNaN(parseInt(v_str)) == false) {
+                    data = data + node + "_field" + campo + "_min=" + v_str;
                 }
                 v_str = $("#text-mod" + n_mod + "-max").val();
-                if (isNaN(parseInt(v_str)) != false) {
-                    node = node + "_field" + campo + "_max=" + v_str;
+                if (isNaN(parseInt(v_str)) == false) {
+                    data = data + node + "_field" + campo + "_max=" + v_str;
                 }
                 v_str = $("#text-mod" + n_mod + "-vcc").val();
-                if (isNaN(parseInt(v_str)) != false) {
-                    node + "_vcc=" + v_str;
+                if (isNaN(parseInt(v_str)) == false) {
+                    data = data + node + "_vcc=" + v_str;
                 }
             }
 
@@ -944,6 +949,7 @@ function gravarConfiguracaoSensor(pag, text_obj) {
             } else {
                 text_obj.innerHTML = data;
             }
+            atualiza_modulos();
         },
         error: function (data) {
             if (text_obj == null) {
@@ -962,7 +968,7 @@ function gravarConfiguracaoSensor(pag, text_obj) {
 var json_feed = null;
 
 function get_feed(flag_atualiza) {
-    url = 'http://' + SERVER_IP + SERVER_PATH + '/get_feed.php?' +
+    url = SERVER_HTTP + SERVER_IP + SERVER_PATH + '/get_feed.php?' +
         'api_key=' + Cookies["api_key"] + '&results=' + Cookies["nro_pontos"];
 
     url = url + '&r_horas=' + r_horas;
@@ -975,7 +981,7 @@ function get_feed(flag_atualiza) {
     $.ajax({
         type: 'GET',
         url: url,
-        //   dataType: 'json',
+        //  dataType: 'application/json',
         headers: {
             'User-Agent': 'APP Tsensor/' + VERSAO.MAJOR + '.' + VERSAO.MINOR + '/' + VERSAO.DATE
         },
@@ -986,6 +992,7 @@ function get_feed(flag_atualiza) {
             //console.log("GET FEED OK " + flag_atualiza + " canal=" + json_feed.channel.canal);
             if (flag_atualiza)
                 document.dispatchEvent(evt_get_feed);
+            lerFlagStatus();
 
         },
         error: function (data) {
@@ -1019,7 +1026,7 @@ function lerStatus(tipo, _dd_div) {
     this.loadData = function () {
         //$("#pag_info_status").html("Conectando servidor.");
         var xhr = new XMLHttpRequest();
-        var url = "http://" + SERVER_IP + SERVER_PATH + "/config_ler_status.php?";
+        var url = SERVER_HTTP + SERVER_IP + SERVER_PATH + "/config_ler_status.php?";
 
         if (tipo == 'alertas') {
             url = url + "f=1&m=" + Cookies['modelo'] + "&s=" + Cookies['serie'] + '&limit=' + pagina_status;
@@ -1037,7 +1044,7 @@ function lerStatus(tipo, _dd_div) {
                 //console.log("onLoad len=" + len);
                 self.flag = true;
                 if (len == 0) {
-                    $("#"+_dd_div).html("Sem registros");
+                    $("#" + _dd_div).html("Sem registros");
                 } else {
                     for (var i = 0; i < len; i++) {
                         var ftxt;
@@ -1050,12 +1057,12 @@ function lerStatus(tipo, _dd_div) {
                             } else {
                                 ftxt = "<font style=\"color:blue\">" + json.feeds[i].status + "</font>" + " [" + json.feeds[i].tipo_alerta + "]";
                             }
-                        } else {   // alerta_retorno
-                                if (json.feeds[i].nome != null)
-                                    ftxt=json.feeds[i].nome + ':';
-                                else
-                                    ftxt='';
-                                ftxt = json.feeds[i].mensagem + " [" + json.feeds[i].situacao + "]";
+                        } else { // alerta_retorno
+                            if (json.feeds[i].nome != null)
+                                ftxt = json.feeds[i].nome + ':';
+                            else
+                                ftxt = '';
+                            ftxt = json.feeds[i].mensagem + " [" + json.feeds[i].situacao + "]";
                         }
                         //    console.log("i:"+i+" date="+json.feeds[i].created_at+"  status="+ json.feeds[i].status);
                         self.data.addRow([d.format('DD/MM/YYYY HH:mm'), {
@@ -1186,21 +1193,48 @@ function atualizaGraficoConfig() {
         var range_val = max - min;
         var red_value = range_val - (range_val * 0.1) + min;
         var yellow_value = range_val - (range_val * 0.25) + min;
+
+
+        max = parseInt(json_config.canal.field5_max);
+        min = parseInt(json_config.canal.field5_min);
+        var diff_val = Math.ceil((max - min) / 3);
+        yellow_value = min;
+        red_value = max;
         g1.data.setColumnLabel(1, Cookies["campo5"]);
-        g1.options.min = min;
-        g1.options.max = max;
-        g1.options.redFrom = red_value;
-        g1.options.redTo = max;
-        g1.options.yellowFrom = yellow_value;
-        g1.options.yellowTo = red_value;
+        if (isNaN(min)) {
+            range_val = max;
+            red_value = range_val - (range_val * 0.1) + min;
+            yellow_value = range_val - (range_val * 0.25) + min;
+            g1.options.min = 0;
+            g1.options.max = max;
+            g1.options.greenFrom= 0;
+            g1.options.greenTo= yellow_value;
+            g1.options.yellowFrom = yellow_value;
+            g1.options.yellowTo = red_value;
+            g1.options.redFrom = red_value;
+            g1.options.redTo = max;
+            g1.options.redColor = '#DC3912';
+        } else {
+            g1.options.min = min - diff_val;
+            g1.options.max = max + diff_val;
+            g1.options.redFrom = red_value;
+            g1.options.redTo = max + diff_val;
+            g1.options.greenFrom = yellow_value;
+            g1.options.greenTo = red_value;
+            g1.options.yellowFrom = min - diff_val;
+            g1.options.yellowTo = yellow_value;
+            g1.options.redColor = '#FF9900';
+        }
         // grafico linha
         g2.data.setColumnLabel(1, Cookies["campo5"]);
         g2.options.title = Cookies["campo5"];
         //g2.options.vAxis.minValue=min;
         //g2.options.vAxis.maxValue=max;
         if (window.g3 != undefined) {
-            g3.data.setColumnLabel(1, Cookies["campo6"]);
-            g3.data.setColumnLabel(1, Cookies["campo6"]);
+            if (rec_temperatura2 != false)
+                g3.data.setColumnLabel(1, Cookies["campo6"]);
+            else // corrente
+                g3.data.setColumnLabel(1, Cookies["campo1"]);
         }
         break;
     case '2': // temperatura e corrente
@@ -1244,35 +1278,64 @@ function atualizaGraficoConfig() {
         var t = m + 1;
         var node = "$.node" + t;
         console.log("modulo=" + m);
-        if (gm1[m] != undefined && gm1[m][0] != undefined && getObjects(json_config, node) != false) {
-            max = Math.ceil((parseInt(json_config.node1.field1_max) + 10) / 10) * 10;
-            v_str = jsonPath(json_config, node + ".field1_min");
-            console.log("min=" + v_str);
-            min = parseInt(v_str);
-            if (min < 0) {
-                min = Math.floor((min - 10) / 10) * 10;
-            } else min = 0;
+        if (gm1[m] != undefined && jsonPath(json_config, node) != false) {
+            for (sens = 1; gm1[m][sens] != undefined && sens <= MAX_NODES_SENSORES; sens++) {
+                v_str = jsonPath(json_config, node + ".field" + sens + "_max");
+                max = Math.ceil((parseInt(v_str) + 10) / 10) * 10;
+                v_str = jsonPath(json_config, node + ".field" + sens + "_min");
+                console.log("min=" + v_str);
+                min = parseInt(v_str);
+                if (min < 0) {
+                    min = Math.floor((min - 10) / 10) * 10;
+                } else min = 0;
 
-            range_val = max - min;
-            red_value = range_val - (range_val * 0.1) + min;
-            yellow_value = range_val - (range_val * 0.25) + min;
+                range_val = max - min;
+                red_value = range_val - (range_val * 0.1) + min;
+                yellow_value = range_val - (range_val * 0.25) + min;
 
-            v_str = gm1[m][0].data.getColumnLabel(1);
-            console.log("GET field1=" + v_str);
+                v_str = gm1[m][sens].data.getColumnLabel(1);
+                console.log("GET field" + sens + "=" + v_str);
 
-            v_str = jsonPath(json_config, node + ".field1");
-            console.log("field1=" + v_str);
-            gm1[m][0].data.setColumnLabel(1, v_str);
-            gm1[m][0].options.min = min;
-            gm1[m][0].options.max = max;
-            gm1[m][0].options.redFrom = red_value;
-            gm1[m][0].options.redTo = max;
-            gm1[m][0].options.yellowFrom = yellow_value;
-            gm1[m][0].options.yellowTo = red_value;
-            gm2[m][0].data.setColumnLabel(1, v_str);
-            gm2[m][0].options.title = v_str;
-            gm2[m][0].options.vAxis.minValue = min;
-            gm2[m][0].options.vAxis.maxValue = max;
+                v_str = jsonPath(json_config, node + ".field" + sens);
+                //                console.log("field" + sens + "=" + v_str);
+
+                max = parseInt(jsonPath(json_config, node + ".field" + sens + "_max"));
+                min = parseInt(jsonPath(json_config, node + ".field" + sens + "_min"));
+                gm1[m][sens].data.setColumnLabel(1, v_str);
+                gm2[m][sens].data.setColumnLabel(1, v_str);
+                gm2[m][sens].options.title = v_str;
+                console.log("min=" + min);
+                if (isNaN(max)) min = 100;
+                if (isNaN(min)) {
+                    range_val = max;
+                    red_value = range_val - (range_val * 0.1);
+                    yellow_value = range_val - (range_val * 0.25);
+                    gm1[m][sens].options.min = 0;
+                    gm1[m][sens].options.max = max;
+                    gm1[m][sens].options.greenFrom= 0;
+                    gm1[m][sens].options.greenTo= yellow_value;
+                    gm1[m][sens].options.yellowFrom = yellow_value;
+                    gm1[m][sens].options.yellowTo = red_value;
+                    gm1[m][sens].options.redFrom = red_value;
+                    gm1[m][sens].options.redTo = max;
+                    gm1[m][sens].options.redColor = '#DC3912';
+                } else {
+                    diff_val = Math.ceil((max - min) / 3);
+                    yellow_value = min;
+                    red_value = max;
+                    gm1[m][sens].options.min = min - diff_val;
+                    gm1[m][sens].options.max = max + diff_val;
+                    gm1[m][sens].options.greenFrom = yellow_value;
+                    gm1[m][sens].options.greenTo = red_value;
+                    gm1[m][sens].options.yellowFrom = min - diff_val;
+                    gm1[m][sens].options.yellowTo = yellow_value;
+                    gm1[m][sens].options.redFrom = red_value;
+                    gm1[m][sens].options.redTo = max + diff_val;
+                    gm1[m][sens].options.redColor = '#FF9900';
+                    //gm2[m][1].options.vAxis.minValue = min;
+                    //gm2[m][1].options.vAxis.maxValue = max;
+                }
+            }
         }
     }
     atualiza_dados();
@@ -1359,7 +1422,6 @@ function lerFlagStatus() {
 function atualiza_dados() {
     //console.log(">atualiza_dados");
     get_feed(true);
-    lerFlagStatus();
 }
 
 function atualiza_modulos() {
@@ -1380,6 +1442,7 @@ var VERSAO = {
     DATE: '06/11/2015'
 };
 
+var SERVER_HTTP = 'http://';
 var SERVER_IP = '45.55.77.192';
 var SERVER_PATH = '/0';
 
@@ -1462,7 +1525,7 @@ function onDeviceReady() {
     //    createGraphs();
     //    testarBotoesModulo();
     setInterval('atualiza_dados()', 10000, true);
-    setInterval('atualiza_modulos()', 60000, true);
+    // setInterval('atualiza_modulos()', 60000, true);
     moment.locale("pt-BR");
     $('#api_key').prop('readonly', true);
     $('#canal').prop('readonly', true);

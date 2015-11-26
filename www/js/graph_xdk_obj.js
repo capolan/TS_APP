@@ -36,6 +36,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
     this.id_div = _id_div;
     this.page = _page;
     this.titulo = _titulo;
+    this.sem_dados = true;
     // set your channel id here
     this.modulo = _modulo;
     // set your channel's read api key here if necessary
@@ -50,9 +51,11 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
     if (isNaN(this.passo)) this.passo = 1;
 
     this.max_value = parseInt(_max_value);
-    if (isNaN(this.max_value)) this.max_value = 100;
+    this.max_real = parseInt(_max_value);
+    if (isNaN(_max_value) || isNaN(this.max_value)) this.max_value = 100;
     this.min_value = parseInt(_min_value);
-    if (isNaN(this.min_value)) this.min_value = 0;
+    this.min_real = parseInt(_min_value);
+    if (isNaN(_min_value) || isNaN(this.min_value)) this.min_value = 0;
 
     this.series = _series;
     this.serie = null; // numero de serie do node
@@ -65,8 +68,8 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
     this.data = null;
     this.timerID = null;
     this.vcc = null;
-    this.field_flag=null;
-    this.vcc_flag=null;
+    this.field_flag = null;
+    this.vcc_flag = null;
     this.max = new Array(10);
     this.min = new Array(10);
 
@@ -90,7 +93,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
         //            if (self.nro_pontos == self.nro_pontos_old || self.tipo==3)
         if (self.nro_pontos == contador || self.tipo == 3 || self.tipo == 0)
             return;
-    //    console.log(">ajustaData " + self.id_div + "  pontos=" + self.nro_pontos + "  new=" + contador);
+        //    console.log(">ajustaData " + self.id_div + "  pontos=" + self.nro_pontos + "  new=" + contador);
         self.nro_pontos = self.data.getNumberOfRows() - 1;
         self.data.removeRows(1, self.nro_pontos);
         self.nro_pontos = contador;
@@ -102,7 +105,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
     this.loadData = function () {
         // get the data from thingspeak
         var d, j, k, valor;
-        //   app.consoleLog(self.id_div," loadData");
+        // app.consoleLog(self.id_div," loadData");
         self.message = '';
 
         if (self.ativo == false) {
@@ -124,7 +127,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
         // confere que o numero da serie do node do feed == config
         var valdata = json_feed;
 
-        if (serie.modulo!=null && serie.modulo >= 0) {
+        if (serie.modulo != null && serie.modulo >= 0) {
             var n = self.modulo + 1;
 
             if (self.serie == null)
@@ -152,20 +155,22 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
         //   app.consoleLog("self.passo",self.passo);
         if (window.cordova && navigator.connection.type == Connection.NONE) return;
 
-       //      app.consoleLog("id_div="+self.id_div+ "  valdata",valdata);
+        //      app.consoleLog("id_div="+self.id_div+ "  valdata",valdata);
         self.vcc = null;
-        self.field_flag=0;
-        self.vcc_flag=0;
+        self.field_flag = 0;
+        self.vcc_flag = 0;
+        self.sem_dados = false;
         for (var i = 0, f = 0; i <= self.nro_pontos - 1; i = i + self.passo, f++) {
             var mensagem = false;
             if (valdata.feeds[i] === undefined) {
                 app.consoleLog("poucos dados feed i=" + i + "   id_div=" + self.id_div);
-               // self.message = 'poucos dados';
+                // self.message = 'poucos dados';
                 break;
             }
 
             if (self.modulo === null) {
-                d = new Date(valdata.feeds[i].created_at);
+                var v_str = valdata.feeds[i].created_at;
+                d = new Date(v_str);
                 self.created_at = valdata.feeds[0].created_at;
                 self.offline_at = getObjects(valdata.channel, "offline_at");
                 self.status = getObjects(valdata.channel, "status");
@@ -175,6 +180,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                 if (self.modulo >= 0) {
                     var str = self.modulo + 1;
                     var v_str = jsonPath(valdata, "$.nodes_feed" + str + "[" + i + "].created_at");
+                    if (i == 0 && v_str == false) return;
                     d = new Date(v_str);
                     self.created_at = v_str;
                     self.offline_at = jsonPath(valdata, "$.nodes" + str + ".offline_at");
@@ -192,35 +198,36 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
             k = 0;
             for (var key in self.series) {
                 var campo = self.series[key].campo;
+                var ncampo = self.series[0].campo;
                 //     app.consoleLog("campo="+campo+"modulo=",self.modulo);
                 switch (campo) {
                 case 100: // min
                     if (self.modulo === null) {
                         valor = getObjects(valdata,
-                            "field" + self.series[0].campo + "_min");
+                            "field" + ncampo + "_min");
                     } else
                     if (self.modulo >= 0) {
                         var str = self.modulo + 1;
                         var v_str = jsonPath(json_config,
-                            "$.node" + str + ".field1_min");
+                            "$.node" + str + ".field"+ncampo+"_min");
                         valor = parseFloat(v_str);
                         //   self.min[str]=undefined;
                     }
-                    if (valor == false || isNaN(parseFloat(valor))) valor = self.min_value;
+                    //if (valor == false || isNaN(parseFloat(valor))) valor = self.min_value;
                     break;
                 case 101: // max
                     if (self.modulo === null) {
                         valor = getObjects(valdata,
-                            "field" + self.series[0].campo + "_max");
+                            "field" + ncampo + "_max");
                     } else
                     if (self.modulo >= 0) {
                         var str = self.modulo + 1;
                         var v_str = jsonPath(json_config,
-                            "$.node" + str + ".field1_max");
+                            "$.node" + str + ".field"+ncampo+"_max");
                         valor = parseFloat(v_str);
                         //    self.max[str]=undefined;
                     }
-                    if (valor == false || isNaN(parseFloat(valor))) valor = self.max_value;
+                    //if (valor == false || isNaN(parseFloat(valor))) valor = self.max_value;
                     break;
                 case 1:
                 case 2:
@@ -259,23 +266,28 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
 
 
                     }
-                        if (valor == false && i==0) {
-                            self.message = 'sem dados';
-                            self.message = '';
-                        }
+                    if (valor == false && i == 0) {
+                        self.message = 'sem dados';
+                        self.message = '';
+                    }
                     break;
                 }
+                if (i == 0 && valor == false) {
+                    // console.log("sem feeds total:" + self.id_div);
+                    self.sem_dados = true;
+                }
+
+                if (isNaN(valor) || valor == false) valor = null;
                 if (self.tipo == 3) { // dounets
                     self.data.setCell(k, 0, self.series[key].nome);
                     self.data.setCell(k, 1, valor);
                     k++;
                 } else {
-            //       if (self.id_div == "chartx611_div") {
-            //            app.consoleLog(self.id_div,
-            //                           "dados f=" + f + "  j=" + j + " valor=" + valor+ "  d="+d.toString());
-            //        }
-                    if (isNaN(valor) || valor == false) valor = null;
-                    self.data.setCell(f, j++, valor);
+                    //      if (self.id_div == "chartx621_div") {
+                    //        app.consoleLog(self.id_div,
+                    //                       "dados f=" + f + "  j=" + j + " valor=" + valor+ "  d="+d.toString());
+                    //        }
+                            self.data.setCell(f, j++, valor);
                     if (self.tipo == 2 && campo <= 8) {
                         if (mensagem != false) {
                             self.data.setCell(f, j++, '+');
@@ -290,50 +302,50 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
             } // for
         }
         // se tem dados, mostra o gráfico
-        if (self.message == '') {
-            if ($("#"+self.id_div).css('display') == 'none')
-                    $("#"+self.id_div).css('display','block');
+        //      if (self.message == '') {
+        //            if ($("#"+self.id_div).css('display') == 'none')
+        //                    $("#"+self.id_div).css('display','block');
 
-            self.chart.draw(self.data, self.options);
-            // cor do fundo do gráfico em vermelho se offline
-            if (self.tipo == 0) {
-                var flag=false;
-                 //   if (self.id_div == "chartx71_div") console.log("vcc="+self.vcc_flag);
-                if (self.status == 3 || self.offline_at != false)
-                    $('#' + self.id_div + ' circle:nth-child(2)').attr('fill', '#FF0000');
-                else
-                    $('#' + self.id_div + ' circle:nth-child(2)').attr('fill', '#F7F7F7');
-                if (self.field_flag == 0) {
-                    $('#' + self.id_div + ' circle:nth-child(1)').attr('fill', '#F7F7F7');
-                } else {
-                    $('#' + self.id_div + ' circle:nth-child(1)').attr('fill', '#FF0000');
-                    flag=true;
-                }
-                if (self.vcc_flag != 0) {
-                    if (flag==true)
-                        $('#' + self.id_div + ' circle:nth-child(1)').attr('fill', '#F97700');
-                    else
-                        $('#' + self.id_div + ' circle:nth-child(1)').attr('fill', '#F7F700');
-                }
+        self.chart.draw(self.data, self.options);
+        // cor do fundo do gráfico em vermelho se offline
+        if (self.tipo == 0) {
+            var flag = false;
+               if (self.id_div == "chartx621_div") console.log("vcc="+self.vcc_flag+" status="+self.status+"   field="+self.field_flag);
+            if (self.status == 3 || self.offline_at != false)
+                $('#' + self.id_div + ' circle:nth-child(2)').attr('fill', '#FF0000');
+            else
+                $('#' + self.id_div + ' circle:nth-child(2)').attr('fill', '#F7F7F7');
+            if (self.field_flag == 0) {
+                $('#' + self.id_div + ' circle:nth-child(1)').attr('fill', '#F7F7F7');
+            } else {
+                $('#' + self.id_div + ' circle:nth-child(1)').attr('fill', '#FF0000');
+                flag = true;
             }
-        } else {
-            if ($("#"+self.id_div).css('display') == 'block') {
-                    $("#"+self.id_div).css('display','none');
+            if (self.vcc_flag != 0) {
+                if (flag == true)
+                    $('#' + self.id_div + ' circle:nth-child(1)').attr('fill', '#F97700');
+                else
+                    $('#' + self.id_div + ' circle:nth-child(1)').attr('fill', '#F7F700');
             }
         }
+        //        } else {
+        //            if ($("#"+self.id_div).css('display') == 'block') {
+        //                    $("#"+self.id_div).css('display','none');
+        //            }
+        //        }
 
-
+        //  console.log("<loadData "+self.id_div);
     };
 
     // initialize the chart
     this.initChart = function () {
-      //  app.consoleLog("initChart=" + self.tipo, "entry");
+        //  app.consoleLog("initChart=" + self.tipo, "entry");
         self.data = new google.visualization.DataTable();
         if (self.tipo == 1 || self.tipo == 2) {
             var flag = true;
             self.data.addColumn('datetime', 'Label');
             for (var key in self.series) {
-        //        app.consoleLog(self.tipo + ':key=' + key + " titulo=" + self.series[key].nome + " data=" + self.series[key].campo);
+                //        app.consoleLog(self.tipo + ':key=' + key + " titulo=" + self.series[key].nome + " data=" + self.series[key].campo);
                 self.data.addColumn('number', self.series[key].nome);
                 if (self.tipo == 2 && flag == true) { // linha
                     self.data.addColumn({
@@ -365,17 +377,53 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
             self.data.addRows(1);
             self.nro_pontos = 1;
             self.chart = new google.visualization.Gauge(document.getElementById(self.id_div));
-            self.options = {
-                width: self.largura,
-                height: self.altura,
-                min: self.min_value,
-                max: self.max_value,
-                redFrom: red_value,
-                redTo: self.max_value,
-                yellowFrom: yellow_value,
-                yellowTo: red_value,
-                minorTicks: tick_value
-            };
+            /*            self.options = {
+                            width: self.largura,
+                            height: self.altura,
+                            min: self.min_value,
+                            max: self.max_value,
+                            redFrom: red_value,
+                            redTo: self.max_value,
+                            yellowFrom: yellow_value,
+                            yellowTo: red_value,
+                            minorTicks: tick_value
+                        };
+            */
+            var diff_val = Math.ceil((self.max_value - self.min_value) / 3);
+            if (isNaN(self.min)) {
+                self.options = {
+                    width: self.largura,
+                    height: self.altura,
+                    min: 0,
+                    max: self.max_value,
+                    greenFrom: 0,
+                    greenTo: yellow_value,
+                    yellowFrom: yellow_value,
+                    yellowTo: red_value,
+                    redFrom: red_value,
+                    redTo: self.max_value + diff_val,
+                    redColor: '#DC3912',
+                    minorTicks: tick_value
+                };
+
+            } else {
+                yellow_value = self.min_value;
+                red_value = self.max_value;
+                self.options = {
+                    width: self.largura,
+                    height: self.altura,
+                    min: self.min_value - diff_val,
+                    max: self.max_value + diff_val,
+                    greenFrom: yellow_value,
+                    greenTo: red_value,
+                    yellowFrom: self.min_value - diff_val,
+                    yellowTo: yellow_value,
+                    redFrom: red_value,
+                    redTo: self.max_value + diff_val,
+                    redColor: '#FF9900',
+                    minorTicks: tick_value
+                };
+            }
             break;
         case 1: // area
             self.chart = new google.visualization.AreaChart(document.getElementById(self.id_div));

@@ -2,7 +2,6 @@
 function atualizaGrafico(objG, div, campo) {
     //console.log(">atualizaGrafico");
     objG.loadData();
-
     if (div === null) return;
     //var d= new Date(g3.created_at);
     //if (window.g3.created_at != null)
@@ -209,6 +208,10 @@ function telaTS_temperatura() {
     if (isNaN(min) == false || min < 0) {
         min = Math.floor((min - 10) / 10) * 10;
     } else min = 0;
+
+    max = parseInt(json_config.canal.field5_max);
+    min = parseInt(json_config.canal.field5_min);
+
     app.consoleLog(">telaTS_temperatura", "min=" + min + "   max=" + max);
     g1 = new runGraph(0, 'chart1_div', 'uib_page_2', 'Temperatura', 200, 200, [{
             nome: Cookies["campo5"],
@@ -272,6 +275,9 @@ function telaTS_temperatura() {
         if (min < 0) {
             min = Math.floor((min - 200) / 100) * 100;
         } else min = 0;
+
+    //max = parseInt(json_config.canal.field1_max);
+    //min = parseInt(json_config.canal.field1_min);
         g3 = new runGraph(0, 'chart' + n_div + '_div', 'uib_page_10', 'Consumo', 200, 200, [{
                 nome: Cookies["campo1"],
                 campo: 1
@@ -295,6 +301,7 @@ function telaTS_temperatura() {
             Cookies["nro_pontos"], Cookies["passo"], min, max, true);
         gtext[1] = new lerMensagensSensor(null, "text_pag_11_2");
         n_div++;
+           console.log("rec_temperatura2="+rec_temperatura2);
         if (rec_temperatura2 == false) {
           g5 = new runGraph(3, 'chart' + n_div + '_div', 'uib_page_11', 'Fases', 200, 200, [{
                         nome: Cookies["campo2"],
@@ -386,27 +393,33 @@ function createGraphx(_modulo) {
     var pagina = '';
     app.consoleLog("createGraphX=" + modulo, "entry");
     if (gm1[modulo][1] == undefined) {
-        var nome_campo, ncampo;
+        var nome_campo, ncampo, recursos;
         var n_mod = 1 + modulo;
         var num_mod = 6 + modulo;
         var max, min;
         var node;
         chart = 'chartx' + num_mod + '_div';
         node = '$.node' + n_mod;
+        recursos = jsonPath(json_config, node + ".recursos");
         for (ncampo = 1; ncampo <= MAX_NODES_SENSORES; ncampo++) {
             chartx1 = 'chartx' + num_mod + "" + ncampo + '1_div';
             chartx2 = 'chartx' + num_mod + "" + ncampo + '2_div';
             nome_campo = jsonPath(json_config, node + ".field" + ncampo);
             app.consoleLog("nome_campo=" + nome_campo + " ncampo=" + ncampo + "  chartx1=" + chartx1);
-            if (nome_campo == false)
+            if (ncampo==2 && (recursos & 0x10) != 0x10) {
                 continue;
+            }
             max = parseInt(jsonPath(json_config, node + ".field" + ncampo + "_max"));
             max = Math.ceil((max + 10) / 10) * 10;
             min = parseInt(jsonPath(json_config, node + ".field" + ncampo + "_min"));
-            if (min < 0) {
+            if (min > 0) {
+                min = 0;
+            } else
                 min = Math.floor((min - 10) / 10) * 10;
-            } else min = 0;
 
+            max = parseInt(jsonPath(json_config, node + ".field" + ncampo + "_max"));
+            min = parseInt(jsonPath(json_config, node + ".field" + ncampo + "_min"));
+console.log("max="+max+" min="+min);
             gm1[modulo][ncampo] = new runGraph(0, chartx1, pagina, nome_campo, 200, 200, [{
                     nome: nome_campo,
                     campo: ncampo

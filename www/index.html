@@ -2,6 +2,10 @@
 <html>
 
     <head>
+        <!--
+        <link rel="stylesheet" type="text/css" href="app_framework/3.0/af.ui.css">
+        <link rel="stylesheet" type="text/css" href="app_framework/3.0/icons.min.css">
+-->
         <link rel="stylesheet" type="text/css" href="app_framework/2.1/css/af.ui.min.css">
         <link rel="stylesheet" type="text/css" href="app_framework/2.1/css/icons.min.css">
 
@@ -105,6 +109,7 @@
     <script type="application/javascript" src="sidebar/js/jquery.hammer.js"></script>
     <script type="application/javascript" src="sidebar/js/swipe-hammer.js"></script>
     <script type="application/javascript" src="sidebar/js/sidebar.js"></script>
+        <script type="application/javascript" src="app_framework/3.0/appframework.ui.min.js"></script>
     -->
     </head>
 
@@ -669,8 +674,9 @@
                     </div>
                     <div class="button-grouped flex widget uib_w_90 d-margins" data-uib="app_framework/button_group" data-ver="1"><a class="button widget uib_w_91" data-uib="app_framework/button" data-ver="1" style="border-left-width: 1px; border-left-style: solid; border-left-color: rgb(102, 102, 102); border-top-left-radius: 6px; border-bottom-left-radius: 6px;"
                         id="btn_let_config_web">Ler</a>
-                        <a class="button widget uib_w_92" data-uib="app_framework/button" data-ver="1" id="btn_ler_barcode">BarCode</a><a class="button widget uib_w_93" data-uib="app_framework/button" data-ver="1" style="border-top-right-radius: 6px; border-bottom-right-radius: 6px;"
-                        id="btn-assoc-ts">+</a><a class="button widget uib_w_265 d-margins" data-uib="app_framework/button" data-ver="1" id="btn-desassoc-ts">-</a>
+                        <a class="button widget uib_w_92" data-uib="app_framework/button" data-ver="1" id="btn_ler_barcode">BarCode</a>
+                        <a class="button widget uib_w_93" data-uib="app_framework/button" data-ver="1" id="btn-assoc-ts">+</a>
+                        <a class="button widget uib_w_265 d-margins" data-uib="app_framework/button" data-ver="1" style="border-top-right-radius: 6px; border-bottom-right-radius: 6px;" id="btn-desassoc-ts">-</a>
                     </div>
                     <div class="widget uib_w_65 d-margins teste" data-uib="media/text" data-ver="0" id="text_config">
                         <div class="widget-container left-receptacle"></div>
@@ -791,7 +797,7 @@
                     </div>
                 </div>
             </div>
-            <div class="upage vertical-col left panel" id="uib_page_modulos" data-header="af-header-modulos" data-footer="af-footer-1">
+            <div class="upage vertical-col left panel" id="uib_page_modulos" data-header="af-header-modulos" data-footer="af-footer-modulos">
                 <div id="uib_page_mod1" class="upage-content vertical-col left ">
                     <div class="grid grid-pad urow uib_row_9 row-height-9" data-uib="layout/row" data-ver="0">
                         <div class="col uib_col_13 col-0_12-12" data-uib="layout/col" data-ver="0">
@@ -1025,6 +1031,7 @@
                             </div>
                             <div class="table-thing with-label widget uib_w_170 d-margins" data-uib="app_framework/input" data-ver="1">
                                 <label class="narrow-control label-inline" for="text-mod2-vcc">Vcc</label>
+
                                 <input class="wide-control" type="number" id="text-mod2-vcc">
                             </div>
                             <div class="table-thing with-label widget uib_w_185 d-margins" data-uib="app_framework/select" data-ver="1">
@@ -1133,7 +1140,7 @@
                             <input class="wide-control" type="number" id="text-mod4-max">
                         </div>
                     </div>
-                    <a class="button widget uib_w_143 d-margins" data-uib="app_framework/button" data-ver="1" id="btn-s-s-temp">Salvar</a>
+                    <a class="button widget uib_w_143 d-margins" data-uib="app_framework/button" data-ver="1" id="btn-mod-salvar">Salvar</a>
                     <div class="widget uib_w_168 d-margins" data-uib="media/text" data-ver="0" id="text-mod-text">
                         <div class="widget-container left-receptacle"></div>
                         <div class="widget-container right-receptacle"></div>
@@ -1144,7 +1151,7 @@
                 </div>
             </div>
 
-            <div class="upage vertical-col left panel" id="page_sensor" data-header="af-header-sensor" data-footer="af-footer-3">
+            <div class="upage vertical-col left panel" id="page_sensor" data-header="af-header-sensor" data-footer="af-footer-sensor">
                 <div id="sub-page-sensor-main" class="upage-content vertical-col left hidden">
                     <div class="table-thing with-label widget uib_w_147 d-margins" data-uib="app_framework/input" data-ver="1">
                         <label class="narrow-control label-top-left" for="text-s-nome">Nome</label>
@@ -1242,6 +1249,37 @@
                 </div>
                 <div id="sub-page-sensor-corrente" class="upage-content vertical-col left hidden">
 
+                    <div class="widget uib_w_289 d-margins" data-uib="app_framework/input_group" data-ver="2">
+                        <div class="formGroupHead">Corrente</div>
+                        <div class="input-group">
+                            <div class="table-thing with-label widget uib_w_290" data-uib="app_framework/input" data-ver="1">
+                                <label class="narrow-control label-inline" for="text-s-fases">Fases</label>
+                                <input class="wide-control" type="number" id="text-s-fases">
+                            </div>
+                            <div class="table-thing with-label widget uib_w_291" data-uib="app_framework/input" data-ver="1">
+                                <label class="narrow-control label-inline" for="text-s-corrente-min">Min</label>
+                                <input class="wide-control" type="number" id="text-s-corrente-min">
+                            </div>
+                            <div class="table-thing with-label widget uib_w_292" data-uib="app_framework/input" data-ver="1">
+                                <label class="narrow-control label-inline" for="text-s-corrente-max">Máx</label>
+                                <input class="wide-control" type="number" id="text-s-corrente-max">
+                            </div>
+                            <div class="table-thing with-label widget uib_w_293 d-margins" data-uib="app_framework/radio_button_group" data-ver="1" data-child-name="af-group-1">
+                                <label class="narrow-control label-inline">Tensão</label>
+
+                                <div class="wide-control">
+                                    <div class="widget uib_w_294" data-uib="app_framework/radio_button" data-ver="1">
+                                        <input type="radio" id="af-radio-s-127" name="af-group-1">
+                                        <label class="content-box" for="af-radio-s-127">127 volts</label>
+                                    </div>
+                                    <div class="widget uib_w_295" data-uib="app_framework/radio_button" data-ver="1">
+                                        <input type="radio" id="af-radio-s-220" name="af-group-1">
+                                        <label class="content-box" for="af-radio-s-220">220 volts</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <a class="button widget uib_w_142 d-margins" data-uib="app_framework/button" data-ver="1" id="btn-s-s-corrente">Salvar</a>
                     <div class="widget uib_w_146 d-margins" data-uib="media/text" data-ver="0" id="text-s-corrente">
                         <div class="widget-container left-receptacle"></div>
@@ -1305,7 +1343,7 @@
 
             </div>
 
-            <footer class="wrap-element uib_w_114" data-uib="app_framework/footer" data-ver="1" id="af-footer-3">
+            <footer class="wrap-element uib_w_114" data-uib="app_framework/footer" data-ver="1" id="af-footer-sensor">
                 <a class="widget uib_w_120 icon home" data-uib="app_framework/button" data-ver="1" style="border-left-width: 1px; border-left-style: solid; border-left-color: rgb(102, 102, 102); border-top-left-radius: 6px; border-bottom-left-radius: 6px;" id="btn_s_inicio"
                 href="#mainpage" data-transition="fade">Inicio</a><a class="widget uib_w_117 icon settings" data-uib="app_framework/button" data-ver="1" id="btn_s_config">Config</a><a class="widget uib_w_118 icon magnifier" data-uib="app_framework/button"
                 data-ver="1" style="border-top-right-radius: 6px; border-bottom-right-radius: 6px;" id="btn-s-temp">Temp</a><a class="widget uib_w_116 icon lamp" data-uib="app_framework/button" data-ver="1" style="border-left-width: 1px; border-left-style: solid; border-left-color: rgb(102, 102, 102); border-top-left-radius: 6px; border-bottom-left-radius: 6px;"
@@ -1313,7 +1351,7 @@
                 <a class="widget uib_w_130 d-margins icon pin" data-uib="app_framework/button" data-ver="1" id="btn-s-cmd">Cmd</a><a class="widget uib_w_131 d-margins icon key" data-uib="app_framework/button" data-ver="1" id="btn-s-rele">Chave</a>
             </footer>
 
-            <footer class="wrap-element uib_w_78" data-uib="app_framework/footer" data-ver="1" id="af-footer-1"><a class="widget uib_w_86 d-margins icon home" data-uib="app_framework/button" data-ver="1" id="btn_inicio_mod">Inicio</a><a class="widget uib_w_85 d-margins btn-estilo icon graph" data-uib="app_framework/button" data-ver="1" id="btn_mod1">Mod 1</a>
+            <footer class="wrap-element uib_w_78" data-uib="app_framework/footer" data-ver="1" id="af-footer-modulos"><a class="widget uib_w_86 d-margins icon home" data-uib="app_framework/button" data-ver="1" id="btn_inicio_mod">Inicio</a><a class="widget uib_w_85 d-margins btn-estilo icon graph" data-uib="app_framework/button" data-ver="1" id="btn_mod1">Mod 1</a>
                 <a class="widget uib_w_84 d-margins icon graph" data-uib="app_framework/button" data-ver="1" id="btn_mod2">Mod 2</a><a class="widget uib_w_83 d-margins icon graph" data-uib="app_framework/button" data-ver="1" id="btn_mod3">Mod 3</a>
                 <a class="widget uib_w_202 d-margins icon graph" data-uib="app_framework/button" data-ver="1" id="btn_mod4">Mod 4</a><a class="widget uib_w_155 d-margins icon settings" data-uib="app_framework/button" data-ver="1" id="btn-m-config">Config</a>
             </footer>
