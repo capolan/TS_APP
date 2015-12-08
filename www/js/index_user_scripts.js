@@ -429,7 +429,7 @@
 
             valor = parseFloat(document.getElementById("text-s-temp-max").value);
             if (isNaN(valor)) {
-                document.getElementById("text-s-temp").innerHTML = "Max invalido";
+                document.getElementById("text-s-temp").innerHTML = "Maximo invalido";
                 return;
             }
             document.getElementById("text-s-temp").innerHTML = "";
@@ -455,17 +455,12 @@
                 return;
             }
             document.getElementById("text-s-temp").innerHTML = "";
+            opt = opt + 5;
+            document.getElementById("text-s-vcc").value = jsonPath(json_config, "$.canal.ajuste"+opt);
+            $("#text-s-temp-nome").val(jsonPath(json_config,"$.canal.field"+opt));
+            document.getElementById("text-s-temp-min").value = jsonPath(json_config,"$.canal.field"+opt+"_min");
+            document.getElementById("text-s-temp-max").value = jsonPath(json_config,"$.canal.field"+opt+"_max");
 
-            if (opt == 0) {
-                document.getElementById("text-s-vcc").value = json_config.canal.vcc;
-                document.getElementById("text-s-temp-min").value = json_config.canal.field5_min;
-                document.getElementById("text-s-temp-max").value = json_config.canal.field5_max;
-            }
-            if (opt == 1) {
-                document.getElementById("text-s-vcc").value = json_config.canal.vcc;
-                document.getElementById("text-s-temp-min").value = json_config.canal.field6_min;
-                document.getElementById("text-s-temp-max").value = json_config.canal.field6_max;
-            }
         });
 
         $(document).on("change", "#sel-cmd", function (evt) {
@@ -530,6 +525,7 @@
             $("#text-mod1-min").val(v_str);
             v_str = jsonPath(json_config, node + "_max");
             $("#text-mod1-max").val(v_str);
+            $("#text-mod1-vcc").val(jsonPath(json_config, node + ".ajuste"+t));
         });
 
         // modulo 1 selecao do campo
@@ -545,6 +541,7 @@
             $("#text-mod2-min").val(v_str);
             v_str = jsonPath(json_config, node + "_max");
             $("#text-mod2-max").val(v_str);
+            $("#text-mod2-vcc").val(jsonPath(json_config, node + ".ajuste"+t));
         });
 
         // modulo 1 selecao do campo
@@ -560,7 +557,23 @@
             $("#text-mod3-min").val(v_str);
             v_str = jsonPath(json_config, node + "_max");
             $("#text-mod3-max").val(v_str);
+            $("#text-mod3-vcc").val(jsonPath(json_config, node + ".ajuste"+t));
+        });
 
+        // modulo 1 selecao do campo
+        $(document).on("change", "#sel-mod4", function (evt) {
+            var opt = $("#sel-mod4 option:selected").index();
+            var v_str;
+            var t = opt + 1;
+            var node = "$.node4.field" + t;
+            v_str = jsonPath(json_config, node);
+            if (v_str == false) return;
+            $("#text-mod4-campo").val(v_str);
+            v_str = jsonPath(json_config, node + "_min");
+            $("#text-mod4-min").val(v_str);
+            v_str = jsonPath(json_config, node + "_max");
+            $("#text-mod4-max").val(v_str);
+            $("#text-mod4-vcc").val(jsonPath(json_config, node + ".ajuste"+t));
         });
 
         /* button  #btn_s_config */
@@ -948,7 +961,19 @@
         });
 
 
-        console.log("<index_user_scripts.js");
+        /* button  Painel */
+    $(document).on("click", ".uib_w_299", function(evt)
+    {
+         /*global activate_subpage */
+       // document.getElementById("p22").html('XXX');
+        $("#p11").html("p11");
+        $("#p111").html("texto 1");
+        $("#p112").html("texto 2");
+        $("#p22").html("p22");
+         activate_subpage("#uib_page_painel");
+    });
+
+    console.log("<index_user_scripts.js");
     }
 
     document.addEventListener("app.Ready", register_event_handlers, false);

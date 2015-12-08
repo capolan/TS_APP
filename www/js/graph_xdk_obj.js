@@ -20,7 +20,7 @@ function selectHandler(e) {
     alert('A table row was selected');
 }
 /********************************************************************/
-function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _modulo, _nro_pontos, _passo, _min_value, _max_value, _isStacked) {
+function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _modulo, _nro_pontos, _passo, _min_value, _max_value, _isStacked, _div_painel) {
     // tipo
     // 0 = gauge
     // 1 = area
@@ -35,6 +35,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
     this.offline_at = false;
     this.id_div = _id_div;
     this.page = _page;
+    this.painel=_div_painel; // fomato t1v = valor  t1a=prim linha  t1b segunda linha, passar somente t1
     this.titulo = _titulo;
     this.sem_dados = true;
     // set your channel id here
@@ -105,6 +106,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
     this.loadData = function () {
         // get the data from thingspeak
         var d, j, k, valor;
+        var titulo, div_painel=null;
         // app.consoleLog(self.id_div," loadData");
         self.message = '';
 
@@ -155,7 +157,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
         //   app.consoleLog("self.passo",self.passo);
         if (window.cordova && navigator.connection.type == Connection.NONE) return;
 
-        //      app.consoleLog("id_div="+self.id_div+ "  valdata",valdata);
+         //     app.consoleLog(self.painel + " id_div="+self.id_div+ "  valdata",valdata);
         self.vcc = null;
         self.field_flag = 0;
         self.vcc_flag = 0;
@@ -176,6 +178,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                 self.status = getObjects(valdata.channel, "status");
                 if (self.vcc == null)
                     self.vcc = valdata.feeds[0].vcc;
+                titulo=valdata.channel.name;
             } else { // nodes
                 if (self.modulo >= 0) {
                     var str = self.modulo + 1;
@@ -191,6 +194,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                     v_str = jsonPath(valdata, "$.nodes" + str + ".vcc_flag");
                     if (self.vcc_flag == null || v_str != false)
                         self.vcc_flag = v_str;
+                    titulo = jsonPath(valdata, "$.nodes" + str + ".name");
                 }
             }
             if (self.tipo != 3) self.data.setCell(f, 0, d);
@@ -244,6 +248,8 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                             "min_field" + campo);
                         self.max[campo] = getObjects(valdata,
                             "max_field" + campo);
+                        v_str = jsonPath(valdata,"$.channel.field" + campo + "_flag");
+                        self.field_flag = parseInt(v_str);
                     } else
                     if (self.modulo >= 0) {
                         var str = self.modulo + 1;
@@ -287,7 +293,19 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                     //        app.consoleLog(self.id_div,
                     //                       "dados f=" + f + "  j=" + j + " valor=" + valor+ "  d="+d.toString());
                     //        }
-                            self.data.setCell(f, j++, valor);
+                    self.data.setCell(f, j++, valor);
+                    if (self.painel != undefined) {
+                        var n=Math.round(valor*100)/100;
+                        div_painel="#"+self.painel+"v";
+                        $("#"+self.painel+"v").html(n+'º');
+                        $("#"+self.painel+"a").html(titulo);
+                        $("#"+self.painel+"b").html(self.series[0].nome);
+                        if ($("#"+self.painel+'1').css('display') == 'none') {
+                            $("#"+self.painel+'1').css('display','table-row');
+                            $("#"+self.painel+'2').css('display','table-row');
+                        }
+
+                    }
                     if (self.tipo == 2 && campo <= 8) {
                         if (mensagem != false) {
                             self.data.setCell(f, j++, '+');
@@ -310,17 +328,25 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
         // cor do fundo do gráfico em vermelho se offline
         if (self.tipo == 0) {
             var flag = false;
-               if (self.id_div == "chartx621_div") console.log("vcc="+self.vcc_flag+" status="+self.status+"   field="+self.field_flag);
-            if (self.status == 3 || self.offline_at != false)
+            if (self.id_div == "chart1_div") console.log("vcc="+self.vcc_flag+" status="+self.status+"   field="+self.field_flag);
+            // offline
+            if (self.status == 3 || self.offline_at != false) {
                 $('#' + self.id_div + ' circle:nth-child(2)').attr('fill', '#FF0000');
-            else
+                $(div_painel).css('color','red');
+            } else {
                 $('#' + self.id_div + ' circle:nth-child(2)').attr('fill', '#F7F7F7');
+                $(div_painel).css('color','green');
+            }
+            // fora dos limites
             if (self.field_flag == 0) {
                 $('#' + self.id_div + ' circle:nth-child(1)').attr('fill', '#F7F7F7');
+                $(div_painel).css('color','green');
             } else {
                 $('#' + self.id_div + ' circle:nth-child(1)').attr('fill', '#FF0000');
+                $(div_painel).css('color','red');
                 flag = true;
             }
+            // bateria fraca
             if (self.vcc_flag != 0) {
                 if (flag == true)
                     $('#' + self.id_div + ' circle:nth-child(1)').attr('fill', '#F97700');

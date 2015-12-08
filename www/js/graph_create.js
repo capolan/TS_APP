@@ -218,7 +218,7 @@ function telaTS_temperatura() {
             campo: 5
         }],
         null,
-        1, 1, min, max, true);
+        1, 1, min, max, true, 't1');
     g2 = new runGraph(2, 'chart2_div', 'uib_page_2', 'Historio', 280, 200, [{
                 nome: Cookies["campo5"],
                 campo: 5
@@ -247,7 +247,7 @@ function telaTS_temperatura() {
                 campo: 6
             }],
             null,
-            1, 1, min, max, true);
+            1, 1, min, max, true,'t2');
         n_div++;
         g4 = new runGraph(2, 'chart' + n_div + '_div', 'uib_page_10', 'Historio', 280, 200, [{
                     nome: Cookies["campo6"],
@@ -283,7 +283,7 @@ function telaTS_temperatura() {
                 campo: 1
             }],
             null,
-            1, 1, min, max, true);
+            1, 1, min, max, true,'t2');
         n_div++;
         g4 = new runGraph(2, 'chart' + n_div + '_div', 'uib_page_10', 'Historio', 280, 200, [{
                     nome: Cookies["campo1"],
@@ -316,7 +316,7 @@ function telaTS_temperatura() {
                         campo: 4
             }],
                 null,
-                3, 1, 1, 1, true);
+                3, 1, 1, 1, true,'t3');
             n_div++;
             g6 = new runGraph(1, 'chart' + n_div + '_div', 'uib_page_11', 'Fases', 280, 200, [{
                        nome: Cookies["campo2"],
@@ -425,7 +425,7 @@ console.log("max="+max+" min="+min);
                     campo: ncampo
             }],
                 modulo,
-                1, 1, min, max, true);
+                1, 1, min, max, true,"n"+ncampo);
             gm2[modulo][ncampo] = new runGraph(2, chartx2, pagina, nome_campo, 280, 200, [{
                         nome: nome_campo,
                         campo: ncampo

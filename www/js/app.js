@@ -282,7 +282,7 @@ function getMainConfig(tipo) {
         window.Cookies["chave"] != undefined) {
         console.log("modelo=" + Cookies["modelo"]);
         var chave = Cookies["chave"];
-        var url = SERVER_HTTP + SERVER_IP + SERVER_PATH + "/config_ler.php?f=0&m=" + Cookies["modelo"] + "&s=" + Cookies["serie"] + "&c=" + chave.substring(0, 4) +
+        var url = SERVER_HTTP + SERVER_IP + SERVER_PATH + "/config_ler.php?f="+tipo+"&m=" + Cookies["modelo"] + "&s=" + Cookies["serie"] + "&c=" + chave.substring(0, 4) +
             '&t1=' + VERSAO.MAJOR +
             '&t2=' + VERSAO.MINOR +
             '&td=' + VERSAO.DATE;
@@ -372,15 +372,6 @@ function getMainConfig(tipo) {
                         // Cookies.create("campo1_max", json_config.canal.field1_max, 10 * 356);
                         // temp principal
                         //Cookies.create("vcc", json_config.canal.vcc, 10 * 356);
-                        $("#text-s-temp-nome").val(json_config.canal.field5);
-                        $("#af-header-0-tit").html("<h1>" + json_config.canal.nome + "</h1>");
-                        var v_str = json_config.canal.addr_serv;
-                        if (v_str != undefined && v_str != null) {
-                            // letra U
-                            var i = v_str.charCodeAt(0) - 83;
-                            $("#sel-endereco-TS").prop('selectedIndex', i);
-                        }
-
                         define_recuros();
                         console.log(data);
                     } // tipo==0
@@ -400,7 +391,7 @@ function getMainConfig(tipo) {
                             $("#text-mod" + n_mod + "-campo").val(jsonPath(json_config, node + ".field1"));
                             $("#text-mod" + n_mod + "-min").val(jsonPath(json_config, node + ".field1_min"));
                             $("#text-mod" + n_mod + "-max").val(jsonPath(json_config, node + ".field1_max"));
-                            $("#text-mod" + n_mod + "-vcc").val(jsonPath(json_config, node + ".vcc_min"));
+                            $("#text-mod" + n_mod + "-vcc").val(jsonPath(json_config, node + ".ajuste1"));
                             $("#sel-mod" + n_mod).empty();
                             for (sens = 1; sens <= MAX_NODES_SENSORES; sens++) {
                                 node = jsonPath(json_config, "$.node" + n_mod + ".field" + sens);
@@ -467,11 +458,21 @@ function writeMainConfig() {
         document.getElementById("modelo").value = Cookies["modelo"];
         document.getElementById("serie").value = Cookies["serie"];
         document.getElementById("chave").value = Cookies["chave"];
+        var v_str = json_config.canal.addr_serv;
+        if (v_str != undefined && v_str != null) {
+            // letra U
+            var i = v_str.charCodeAt(0) - 83;
+            $("#sel-endereco-TS").prop('selectedIndex', i);
+        }
+        // TITULO da PAGINA
+        $("#af-header-0-tit").html("<h1>" + json_config.canal.nome + "</h1>");
+
+
+        // TS
         document.getElementById("canal").value = Cookies["canal"];
         document.getElementById("passo").value = Cookies["passo"];
         document.getElementById("tempo_ler_corrente").value = Cookies["tempo_ler_corrente"];
         document.getElementById("contador_enviar_web").value = Cookies["contador_enviar_web"];
-        // TS
         document.getElementById("api_key").value = Cookies["api_key"];
         document.getElementById("nro_pontos").value = Cookies["nro_pontos"];
         document.getElementById("inatividade").value = Cookies["inatividade"];
@@ -492,7 +493,8 @@ function writeMainConfig() {
         document.getElementById("text-s-celular").value = Cookies["celular"];
 
         // TEMPERATURA
-        document.getElementById("text-s-vcc").value = json_config.canal.vcc;
+        document.getElementById("text-s-vcc").value = json_config.canal.ajuste5;
+        $("#text-s-temp-nome").val(json_config.canal.field5);
         document.getElementById("text-s-temp-min").value = json_config.canal.field5_min;
         document.getElementById("text-s-temp-max").value = json_config.canal.field5_max;
         // CORRENTE/REDE
@@ -501,7 +503,7 @@ function writeMainConfig() {
         else
             document.getElementById("af-radio-s-127").checked = true;
         document.getElementById("text-s-fases").value = Cookies["fases"];
-        //document.getElementById("text-s-vcc").value = Cookies["vcc"];
+        document.getElementById("text-s-corrente-ajuste").value = json_config.canal.ajuste1;
         document.getElementById("text-s-corrente-min").value = json_config.canal.field1_min;
         document.getElementById("text-s-corrente-max").value = json_config.canal.field1_max;
 
@@ -802,6 +804,7 @@ function gravarConfiguracao(pag, text_obj) {
             '&passwd=' + Cookies['passwd'] +
             '&proxy=' + Cookies['proxy'] +
             '&addr_serv=' + addr_serv;
+        addr = addr + '&updated_flag=10';
     }
     if (pag == 't') {
         // TS
@@ -811,6 +814,7 @@ function gravarConfiguracao(pag, text_obj) {
             '&nro_pontos=' + Cookies['nro_pontos'] +
             '&tempo_ler_corrente=' + Cookies['tempo_ler_corrente'] +
             '&contador_enviar_web=' + Cookies['contador_enviar_web'];
+        addr = addr + '&updated_flag=10';
     }
     if (pag == 'a') {
         // AP
@@ -818,6 +822,7 @@ function gravarConfiguracao(pag, text_obj) {
             '&ap_passwd=' + Cookies['ap_passwd'] +
             '&ap_canal=' + Cookies['ap_canal'] +
             '&ap_cripto=' + Cookies['ap_cripto'];
+        addr = addr + '&updated_flag=10';
     }
     if (pag == 'u') {
         addr = addr + '&updated_flag=10';
@@ -860,32 +865,29 @@ function gravarConfiguracaoSensor(pag, text_obj) {
     if (pag == 'r') {
         // rede/corrente
         data = data + '&tensao=' + Cookies["tensao"] +
+            '&ajuste1=' + document.getElementById("text-s-corrente-ajuste").value +
             '&fases=' + Cookies['fases'] +
             '&field1_min=' + document.getElementById("text-s-corrente-min").value +
-            '&field1_max=' + document.getElementById("text-s-corrente-max").value +
-            '&updated_flag=10';
+            '&field1_max=' + document.getElementById("text-s-corrente-max").value;
     }
     if (pag == 't') {
         // temperatura
-        data = data + '&vcc=' + document.getElementById("text-s-vcc").value +
+        data = data + '&ajuste5=' + document.getElementById("text-s-vcc").value +
             '&field5=' + encodeURIComponent(document.getElementById("text-s-temp-nome").value) +
             '&field5_min=' + document.getElementById("text-s-temp-min").value +
-            '&field5_max=' + document.getElementById("text-s-temp-max").value +
-            '&updated_flag=10';
+            '&field5_max=' + document.getElementById("text-s-temp-max").value;
     }
     if (pag == 'x') {
         // temperatura
-        data = data +
+        data = data + '&ajuste6=' + document.getElementById("text-s-vcc").value +
             '&field6=' + encodeURIComponent(document.getElementById("text-s-temp-nome").value) +
             '&field6_min=' + document.getElementById("text-s-temp-min").value +
-            '&field6_max=' + document.getElementById("text-s-temp-max").value +
-            '&updated_flag=10';
+            '&field6_max=' + document.getElementById("text-s-temp-max").value;
     }
     if (pag == 'm') {
         data = data + "&nome=" + encodeURIComponent(document.getElementById("text-s-nome").value) +
             "&email=" + encodeURIComponent(document.getElementById("text-s-email").value) +
-            "&celular=" + ncodeURIComponent(document.getElementById("text-s-celular").value) +
-            '&updated_flag=10';
+            "&celular=" + encodeURIComponent(document.getElementById("text-s-celular").value);
     }
     // nodes limites e offline_at
     if (pag == 'n') {
@@ -916,7 +918,7 @@ function gravarConfiguracaoSensor(pag, text_obj) {
                 }
                 v_str = $("#text-mod" + n_mod + "-vcc").val();
                 if (isNaN(parseInt(v_str)) == false) {
-                    data = data + node + "_vcc=" + v_str;
+                    data = data + node + "_ajuste"+campo+"=" + v_str;
                 }
             }
 
@@ -1178,25 +1180,8 @@ function atualizaGraficoConfig() {
     switch (Cookies["tela_layout"]) {
     case '0':
         // campo 5 temperatura
-        var max = Math.ceil((parseInt(json_config.canal.field5_max) + 100) / 100) * 100;
+        var max = parseInt(json_config.canal.field5_max);
         var min = parseInt(json_config.canal.field5_min);
-        if (min < 0) {
-            min = Math.floor((min - 10) / 10) * 10;
-        } else min = 0;
-
-        if (isNaN(max))
-            max = 100;
-        if (isNaN(min) == false || min < 0) {
-            min = Math.floor((min - 10) / 10) * 10;
-        } else min = 0;
-
-        var range_val = max - min;
-        var red_value = range_val - (range_val * 0.1) + min;
-        var yellow_value = range_val - (range_val * 0.25) + min;
-
-
-        max = parseInt(json_config.canal.field5_max);
-        min = parseInt(json_config.canal.field5_min);
         var diff_val = Math.ceil((max - min) / 3);
         yellow_value = min;
         red_value = max;
@@ -1207,8 +1192,8 @@ function atualizaGraficoConfig() {
             yellow_value = range_val - (range_val * 0.25) + min;
             g1.options.min = 0;
             g1.options.max = max;
-            g1.options.greenFrom= 0;
-            g1.options.greenTo= yellow_value;
+            g1.options.greenFrom = 0;
+            g1.options.greenTo = yellow_value;
             g1.options.yellowFrom = yellow_value;
             g1.options.yellowTo = red_value;
             g1.options.redFrom = red_value;
@@ -1231,10 +1216,43 @@ function atualizaGraficoConfig() {
         //g2.options.vAxis.minValue=min;
         //g2.options.vAxis.maxValue=max;
         if (window.g3 != undefined) {
-            if (rec_temperatura2 != false)
+            if (rec_temperatura2 != false) {
                 g3.data.setColumnLabel(1, Cookies["campo6"]);
-            else // corrente
+                max = parseInt(json_config.canal.field6_max);
+                min = parseInt(json_config.canal.field6_min);
+            } else { // corrente
                 g3.data.setColumnLabel(1, Cookies["campo1"]);
+                max = parseInt(json_config.canal.field1_max);
+                min = parseInt(json_config.canal.field1_min);
+            }
+            diff_val = Math.ceil((max - min) / 3);
+            yellow_value = min;
+            red_value = max;
+            g1.data.setColumnLabel(1, Cookies["campo5"]);
+            if (isNaN(min)) {
+                range_val = max;
+                red_value = range_val - (range_val * 0.1) + min;
+                yellow_value = range_val - (range_val * 0.25) + min;
+                g3.options.min = 0;
+                g3.options.max = max;
+                g3.options.greenFrom = 0;
+                g3.options.greenTo = yellow_value;
+                g3.options.yellowFrom = yellow_value;
+                g3.options.yellowTo = red_value;
+                g3.options.redFrom = red_value;
+                g3.options.redTo = max;
+                g3.options.redColor = '#DC3912';
+            } else {
+                g3.options.min = min - diff_val;
+                g3.options.max = max + diff_val;
+                g3.options.redFrom = red_value;
+                g3.options.redTo = max + diff_val;
+                g3.options.greenFrom = yellow_value;
+                g3.options.greenTo = red_value;
+                g3.options.yellowFrom = min - diff_val;
+                g3.options.yellowTo = yellow_value;
+                g3.options.redColor = '#FF9900';
+            }
         }
         break;
     case '2': // temperatura e corrente
@@ -1312,8 +1330,8 @@ function atualizaGraficoConfig() {
                     yellow_value = range_val - (range_val * 0.25);
                     gm1[m][sens].options.min = 0;
                     gm1[m][sens].options.max = max;
-                    gm1[m][sens].options.greenFrom= 0;
-                    gm1[m][sens].options.greenTo= yellow_value;
+                    gm1[m][sens].options.greenFrom = 0;
+                    gm1[m][sens].options.greenTo = yellow_value;
                     gm1[m][sens].options.yellowFrom = yellow_value;
                     gm1[m][sens].options.yellowTo = red_value;
                     gm1[m][sens].options.redFrom = red_value;
@@ -1406,13 +1424,13 @@ function lerFlagStatus() {
         txt = 'invalido';
     }
     $("#text_ips").append(txt);
-
-    if (json_feed.channel.status == "1") {
+    // =0 OK =1 tem informacao CEL(check) =2 info do TS
+    if (json_feed.channel.status != "0") {
         if ($("#btn_info").hasClass("info"))
             $("#btn_info").toggleClass("info check");
     } else
-    if ($("#btn_info").hasClass("check"))
-        $("#btn_info").toggleClass("info check");
+        if ($("#btn_info").hasClass("check"))
+            $("#btn_info").toggleClass("info check");
 
 
 }
@@ -1424,7 +1442,7 @@ function atualiza_dados() {
     get_feed(true);
 }
 
-function atualiza_modulos() {
+function c() {
     getMainConfig(1);
 }
 /***************************************************************/
@@ -1459,7 +1477,7 @@ evt_get_feed.initEvent("app.Get_Feed", false, false);
 var HREF = window.location.href;
 
 function onDeviceReadyXDK() {
-    console.log("XXXXXXXXXXXXXXXXXXXXX onDeviceReadyXDK");
+    console.log("onDeviceReadyXDK Emulator");
 }
 
 function onDeviceReady() {
@@ -1525,7 +1543,6 @@ function onDeviceReady() {
     //    createGraphs();
     //    testarBotoesModulo();
     setInterval('atualiza_dados()', 10000, true);
-    // setInterval('atualiza_modulos()', 60000, true);
     moment.locale("pt-BR");
     $('#api_key').prop('readonly', true);
     $('#canal').prop('readonly', true);
@@ -1534,6 +1551,9 @@ function onDeviceReady() {
         var s=hash.toString(CryptoJS.enc.Hex);
         document.getElementById("chave").value=s;
     */
+$("#t1v").html("7788");
+$("#t1a").html("HSL");
+$("#t1b").html("G7");
 }
 
 

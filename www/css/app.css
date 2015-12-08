@@ -42,3 +42,42 @@ body {
     background: white ;
     color: black ;
 }
+
+div.painel-b {
+    display: block;
+    border-style: solid;
+    height: 80px;
+}
+
+div.painel-ib {
+    display: inline-block;
+    border-style: solid;
+    height: 40px;
+}
+
+div.painel-i {
+    display: inline;
+    border-style: solid;
+}
+
+td.td-val {
+    max-width: 20%;
+    font-family: verdana, sans-serif;
+    font-style: oblique;
+    text-align: right;
+    font-size: 26px;
+    color: green;
+}
+
+td.td-cel {
+    padding-left: 8px;
+    font-family: verdana, sans-serif;
+    font-size: 14px;
+    width: 80%;
+}
+
+tr.tr-none {
+    display: none;
+}
+
+
