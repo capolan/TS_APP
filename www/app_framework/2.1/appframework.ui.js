@@ -513,7 +513,7 @@
     requestAnimationFrame polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
     MIT license
 
-    Adapted from https://gist.github.com/paulirish/1579671 which derived from
+    Adapted from https://gist.github.com/paulirish/1579671 which derived from 
     http://paulirish.com/2011/requestanimationframe-for-smart-animating/
     http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
 
@@ -761,7 +761,7 @@ if (!Date.now)
 })(af);
 
 /**
- * af.scroller
+ * af.scroller 
  * created by Intel with modifications by Carlos Ouro @ Badoo and Intel
  * Supports iOS native touch scrolling
  * Optimizations and bug improvements by Intel
@@ -987,7 +987,7 @@ if (!Date.now)
                         clearInterval(this.scrollTopInterval);
                         this.preventHideRefresh = !this.refreshRunning; // if it's not running why prevent it xD
                         this.moved = false;
-                        if(e.target.getAttribute("no-scroll")) return e.preventDefault();
+                        if(e.target.getAttribute("no-scroll")) return e.preventDefault();                        
                         this.onTouchStart(e);
                         if(!this.bubbles)
                             e.stopPropagation();
@@ -3126,7 +3126,7 @@ if (!Date.now)
         },
 
         onTouchStart: function(e) {
-            //setup initial touch position
+            //setup initial touch position            
             this.dX = e.touches[0].pageX;
             this.dY = e.touches[0].pageY;
             this.lastTimestamp = e.timeStamp;
@@ -3171,7 +3171,7 @@ if (!Date.now)
 
             // We allow forcing native tap in android devices (required in special cases)
             var forceNativeTap = ($.os.android && e && e.target && e.target.getAttribute && e.target.getAttribute("data-touchlayer") === "ignore");
-
+            
             //if on edit mode, allow all native touches
             //(BB10 must still be prevented, always clicks even after move)
             if (forceNativeTap || (this.isFocused_ && !$.os.blackberry10)) {
@@ -3283,7 +3283,7 @@ if (!Date.now)
             this.scrollTimeoutEl_ = null;
         },
 
-        onTouchMove: function(e) {
+        onTouchMove: function(e) {            
             //set it as moved
             var wasMoving = this.moved;
             this.moved = true;
@@ -4310,7 +4310,7 @@ if (!Date.now)
          * @param {boolean=} force
          * @param {function=} callback Callback function to execute after menu toggle is finished
          * @param {number=} time Time to run the transition
-         * @param {boolean=} aside
+         * @param {boolean=} aside 
          * @title $.ui.toggleSideMenu([force],[callback],[time])
          */
         toggleLeftSideMenu: function(force, callback, time, aside) {
@@ -4634,7 +4634,7 @@ if (!Date.now)
                 this.prevHeader = elems;
             }
         },
-        /**
+        /** 
          * @api private
          */
         previAsideMenu:null,
@@ -4779,7 +4779,7 @@ if (!Date.now)
          */
         modalReference_:null,
         /**
-         * Load a content panel in a modal window.
+         * Load a content panel in a modal window. 
            ```
            $.ui.showModal("#myDiv","fade");
            ```
@@ -4960,7 +4960,7 @@ if (!Date.now)
          * @param {string} content
          * @param {string} title
          * @param {boolean=} refresh Enable refresh on pull
-         * @param {function=} refreshFunc
+         * @param {function=} refreshFunc 
          * @title $.ui.addContentDiv(id, content, title);
          */
         addContentDiv: function(el, content, title, refresh, refreshFunc) {
@@ -5927,7 +5927,7 @@ if (!Date.now)
          * This must be called at the end of every transition to hide the old div and reset the doingTransition variable
          *
          * @param {object} oldDiv Div that transitioned out
-         * @param {object=} currDiv
+         * @param {object=} currDiv 
          * @title $.ui.finishTransition(oldDiv)
          */
         finishTransition: function(oldDiv, currDiv) {

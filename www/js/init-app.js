@@ -66,11 +66,6 @@ app.initEvents = function() {
         onDeviceReady();
     }
 
-   // $("#ssid").val('hslpucrs');
-    //$("#passwd").val('s1st3mas');
-    //$("#proxy").val('201.54.136.25:3128');
-
-
     var timer_slider=null;
 
     $( "#text_slide" ).css("text-align", "right");

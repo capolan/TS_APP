@@ -43,23 +43,6 @@ body {
     color: black ;
 }
 
-div.painel-b {
-    display: block;
-    border-style: solid;
-    height: 80px;
-}
-
-div.painel-ib {
-    display: inline-block;
-    border-style: solid;
-    height: 40px;
-}
-
-div.painel-i {
-    display: inline;
-    border-style: solid;
-}
-
 td.td-val {
     max-width: 20%;
     font-family: verdana, sans-serif;
@@ -67,6 +50,24 @@ td.td-val {
     text-align: right;
     font-size: 26px;
     color: green;
+}
+
+td.td-val-lim {
+    max-width: 20%;
+    font-family: verdana, sans-serif;
+    font-style: oblique;
+    text-align: right;
+    font-size: 26px;
+    color: yellow;
+}
+
+td.td-val-off {
+    max-width: 20%;
+    font-family: verdana, sans-serif;
+    font-style: oblique;
+    text-align: right;
+    font-size: 26px;
+    color: red;
 }
 
 td.td-cel {
@@ -80,4 +81,72 @@ tr.tr-none {
     display: none;
 }
 
+th.th-sensor {
+    padding-left: 10px;
+    font-family: verdana, sans-serif;
+    font-size: 10px;    
+    text-align: left;
+}
 
+/*****************************************************/
+/*  teste Table */
+/*****************************************************/
+  .bold-green-font {
+    font-weight: bold;
+    color: green;
+  }
+
+  .bold-font {
+    font-weight: bold;
+  }
+
+  .right-text {
+    text-align: right;
+  }
+
+  .large-font {
+    font-size: 15px;
+  }
+
+  .italic-darkblue-font {
+    font-style: italic;
+    color: darkblue;
+  }
+
+  .italic-purple-font {
+    font-style: italic;
+    color: purple;
+  }
+
+  .underline-blue-font {
+    text-decoration: underline;
+    color: blue;
+  }
+
+  .blue-font {
+    color: blue;
+  }
+
+  .gold-border {
+    border: 3px solid gold;
+  }
+
+  .deeppink-border {
+    border: 3px solid deeppink;
+  }
+
+  .orange-background {
+    background-color: orange;
+  }
+
+  .orchid-background {
+    background-color: orchid;
+  }
+
+  .beige-background {
+    background-color: beige;
+  }
+
+.white-background {
+    background-color: white;
+  }

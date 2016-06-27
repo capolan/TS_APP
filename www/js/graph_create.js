@@ -4,8 +4,8 @@ function atualizaGrafico(objG, div, campo) {
     objG.loadData();
     if (div === null) return;
     //var d= new Date(g3.created_at);
-    //if (window.g3.created_at != null)
-    //app.consoleLog("objG.id_div="+objG.id_div+"    div",div);
+    if (objG.id_div == 'chart1_div')
+       console.log(objG.options);
     var d = moment(new Date(objG.created_at));
     var txt = '';
     var minmax = '';
@@ -233,12 +233,13 @@ function telaTS_temperatura() {
             }],
         null,
         Cookies["nro_pontos"], Cookies["passo"], min, max, false);
-    gtext[0] = new lerMensagensSensor(null, "text_pag_2_2");
+    gtext[0] = new lerMensagensSensor(null, "text_pag_2_2",5);
 
-    if (rec_temperatura2 == true) {
-        console.log("rec_temperatura 2");
+    if (rec_temperatura2 == true || rec_humidade == true) {
+        console.log("rec_temperatura 2 || humidade");
         max = Math.ceil((parseInt(json_config.canal.field6_max) + 10) / 10) * 10;
         min = parseInt(json_config.canal.field6_min);
+        if (isNaN(min) == false)
         if (min < 0) {
             min = Math.floor((min - 20) / 10) * 10;
         } else min = 0;
@@ -263,21 +264,56 @@ function telaTS_temperatura() {
                 }],
             null,
             Cookies["nro_pontos"], Cookies["passo"], min, max, true);
-        gtext[1] = new lerMensagensSensor(null, "text_pag_10_2");
+        gtext[1] = new lerMensagensSensor(null, "text_pag_10_2",6);
 
         n_div++;
     }
-    n_div = 3;
+    if (rec_temperatura3 == true) {
+        console.log("rec_temperatura 3");
+        max = Math.ceil((parseInt(json_config.canal.field7_max) + 10) / 10) * 10;
+        min = parseInt(json_config.canal.field7_min);
+        if (isNaN(min) == false)
+        if (min < 0) {
+            min = Math.floor((min - 20) / 10) * 10;
+        } else min = 0;
+        g5 = new runGraph(0, 'chart' + n_div + '_div', 'uib_page_11', 'Temperatura', 200, 200, [{
+                nome: Cookies["campo7"],
+                campo: 7
+            }],
+            null,
+            1, 1, min, max, true,'t3');
+        n_div++;
+        g6 = new runGraph(2, 'chart' + n_div + '_div', 'uib_page_11', 'Historio', 280, 200, [{
+                    nome: Cookies["campo7"],
+                    campo: 7
+                },
+                {
+                    nome: "min",
+                    campo: 100
+                },
+                {
+                    nome: "max",
+                    campo: 101
+                }],
+            null,
+            Cookies["nro_pontos"], Cookies["passo"], min, max, true);
+        gtext[2] = new lerMensagensSensor(null, "text_pag_11_2",7);
+
+        n_div++;
+    }
     if (rec_corrente_30a == true || rec_corrente_100a == true) {
         console.log("rec_corrente campo1="+Cookies["campo1"]);
         max = Math.ceil((parseInt(json_config.canal.field1_max) + 100) / 100) * 100;
         min = parseInt(json_config.canal.field1_min);
+        //console.log("corrente min="+min);
+        if (isNaN(min) == false)
         if (min < 0) {
             min = Math.floor((min - 200) / 100) * 100;
         } else min = 0;
 
     //max = parseInt(json_config.canal.field1_max);
     //min = parseInt(json_config.canal.field1_min);
+        if (rec_temperatura2 == false && rec_humidade == false) {
         g3 = new runGraph(0, 'chart' + n_div + '_div', 'uib_page_10', 'Consumo', 200, 200, [{
                 nome: Cookies["campo1"],
                 campo: 1
@@ -299,10 +335,11 @@ function telaTS_temperatura() {
                 }],
             null,
             Cookies["nro_pontos"], Cookies["passo"], min, max, true);
-        gtext[1] = new lerMensagensSensor(null, "text_pag_11_2");
+        gtext[1] = new lerMensagensSensor(null, "text_pag_10_2",1);
         n_div++;
            console.log("rec_temperatura2="+rec_temperatura2);
-        if (rec_temperatura2 == false) {
+        }
+        if (rec_temperatura3 == false) {
           g5 = new runGraph(3, 'chart' + n_div + '_div', 'uib_page_11', 'Fases', 200, 200, [{
                         nome: Cookies["campo2"],
                         campo: 2
@@ -332,10 +369,10 @@ function telaTS_temperatura() {
             }],
                 null,
                 Cookies["nro_pontos"], Cookies["passo"], min, max, true);
-            gtext[2] = new lerMensagensSensor(null, "text_pag_10_2");
+            gtext[2] = new lerMensagensSensor(null, "text_pag_11_2",1);
         }
         n_div++;
-    }
+    } 
     //t_telaTS_temperatura();
     //      g1.timerID=setInterval('t_telaTS_temperatura()', 15000);
     document.addEventListener("app.Get_Feed", t_telaTS_temperatura, false);
@@ -352,11 +389,11 @@ var flag_createGraphs = false;
 function createGraphs() {
     app.consoleLog("createGraph", "entry  flag_createGraphs=" + flag_createGraphs + " flag_getMainConfig=" + flag_getMainConfig);
 
-    if (flag_createGraphs == true) return;
-    if (flag_getMainConfig &&
-        g1 == undefined &&
-        Cookies["tela_layout"] != undefined &&
-        Cookies["api_key"] != undefined) {
+  //  if (flag_createGraphs == true) return;
+  //  if (flag_getMainConfig &&
+//        g1 == undefined &&
+//        Cookies["tela_layout"] != undefined &&
+//        Cookies["api_key"] != undefined) {
         app.consoleLog("tela=" + Cookies["tela_layout"]);
         if (Cookies["tela_layout"] == undefined)
             Cookies.create("tela_layout", "1", 100);
@@ -372,7 +409,7 @@ function createGraphs() {
             break;
         } // switch
         flag_createGraphs = true;
-    } // if
+//    } // if
 }
 /********************************************************************/
 //var gx1 = [];
@@ -394,6 +431,7 @@ function createGraphx(_modulo) {
     app.consoleLog("createGraphX=" + modulo, "entry");
     if (gm1[modulo][1] == undefined) {
         var nome_campo, ncampo, recursos;
+        var acampo = null;
         var n_mod = 1 + modulo;
         var num_mod = 6 + modulo;
         var max, min;
@@ -409,6 +447,8 @@ function createGraphx(_modulo) {
             if (ncampo==2 && (recursos & 0x10) != 0x10) {
                 continue;
             }
+            
+            if (acampo == null) acampo=ncampo;
             max = parseInt(jsonPath(json_config, node + ".field" + ncampo + "_max"));
             max = Math.ceil((max + 10) / 10) * 10;
             min = parseInt(jsonPath(json_config, node + ".field" + ncampo + "_min"));
@@ -425,7 +465,7 @@ console.log("max="+max+" min="+min);
                     campo: ncampo
             }],
                 modulo,
-                1, 1, min, max, true,"n"+ncampo);
+                1, 1, min, max, true,"n"+n_mod + "" + ncampo);
             gm2[modulo][ncampo] = new runGraph(2, chartx2, pagina, nome_campo, 280, 200, [{
                         nome: nome_campo,
                         campo: ncampo
@@ -441,7 +481,7 @@ console.log("max="+max+" min="+min);
                 modulo,
                 Cookies["nro_pontos"], Cookies["passo"], 20, 1, min, max, false);
         }
-        gt[modulo] = new lerMensagensSensor(modulo, chart);
+        gt[modulo] = new lerMensagensSensor(modulo, chart, acampo);
     }
     app.consoleLog("<createGraphX=" + modulo, "entry");
 }

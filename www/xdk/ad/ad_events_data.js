@@ -1,5 +1,10 @@
+/*jshint browser:true */
+/*global $, intel, data_support, utils, console */
+
 (function()
  {
+    "use strict";
+
      if(!window.data_support)
      {
        window.data_support = {}; //namespace
@@ -35,8 +40,12 @@
       ready/late
       ---------------- */
    var ready_promises = [];
+   var service_calls  = [];
+
    data_support.ready = function(f)
    {
+     service_calls.push(f);
+
      var deferred = $.Deferred();
      ready_promises.push(deferred.promise());
      var call_f = function()
@@ -62,6 +71,14 @@
       },
       false);
    };
+
+    /* --------------
+       refresh_all_services
+      -------------- */
+    data_support.refresh_all_services = function()
+    {
+        service_calls.forEach(function(f){ f(); });
+    };
 
 
    /* ----------------
@@ -146,12 +163,12 @@
 
    //SETUP
    utils.dispatch_case("driving-on-change", "default",
-                       function(domNode, data, f){ console.log("driving-on-change, uib not matched", data.uib, data); });
+                       function(domNode, data, f){ console.log("driving-on-change, uib not matched", data.uib, data, f); });
 
    utils.dispatch_case("driving-on-change", "standard-list",
                        function(domNode, data, f){ $(document).on(data.identifier, f); });
    utils.dispatch_case("driving-get-value", "default",
-                       function(domNode, data, f){ console.log("driving-get-value, uib not matched", data.uib, data); });
+                       function(domNode, data, f){ console.log("driving-get-value, uib not matched", data.uib, data, f); });
    utils.dispatch_case("driving-get-value", "standard-list",
                        function(domNode, data)
                         {
@@ -159,7 +176,7 @@
                         });
    //setup basic
    utils.dispatch_case("driving-basic", "default",
-                       function(domNode, data, f){ console.log("driving-basic, uib not matched", data.uib, data); });
+                       function(domNode, data, f){ console.log("driving-basic, uib not matched", data.uib, data, f); });
    utils.dispatch_case("driving-basic", "standard-list",
                        function(domNode, data)
                        {
@@ -218,7 +235,7 @@
                 }
             });
         }
-        catch(er){ console.log("parse failure", str, er); }
+        catch(er){ console.log("parse failure", str, er, index); }
       });
       Object.keys(driven_services).forEach(function(service)
       {

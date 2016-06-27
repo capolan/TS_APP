@@ -3,6 +3,7 @@
     /*
       hook up event handlers
     */
+
     function register_event_handlers() {
 
         /* button  Push */
@@ -66,7 +67,6 @@
         $(document).on("click", "#btn_gravar_ts", function (evt) {
             Cookies["api_key"] = document.getElementById("api_key").value;
             Cookies["canal"] = document.getElementById("canal").value;
-            Cookies["passo"] = document.getElementById("passo").value;
             Cookies["nro_pontos"] = document.getElementById("nro_pontos").value;
             Cookies["inatividade"] = document.getElementById("inatividade").value;
             Cookies['tempo_ler_corrente'] = document.getElementById("tempo_ler_corrente").value;
@@ -93,11 +93,12 @@
 
         /* button  #btn_info */
         $(document).on("click", "#btn_info", function (evt) {
+            var recursos=parseInt( json_config.canal.recursos);
             activate_subpage("#uib_page_info");
             lerStatus('alertas', "pag_info_status");
             $("#text_info_modelo").html('APP Tsensor ' + VERSAO.MAJOR + '.' + VERSAO.MINOR + ' ' + VERSAO.DATE + "<BR>");
             if (json_config != null && json_config.canal.recursos != undefined) {
-                $("#text_info_modelo").append('Recursos:' + json_config.canal.recursos + '<BR>');
+                $("#text_info_modelo").append('Recursos:' + recursos.toString(16) + '<BR>');
             }
             for (var m = 1; m <= MAX_NODES; m++) {
                 var v_str = jsonPath(json_config, "$.node" + m + ".recursos");
@@ -106,6 +107,10 @@
                 }
 
             }
+            $("#text_info_modelo").append('AP=' + json_feed.channel.ip0 + '<br>');
+            $("#text_info_modelo").append('STA=' + json_feed.channel.ip1);
+            $("#text_info_modelo").append(json_feed.channel.updated_ip_at + '(atualizado)<br>');
+
 
             $("#text_info_modelo").append('Platform:' + device.platform + '<BR>');
             $("#text_info_modelo").append('Model:' + device.model + '<BR>');
@@ -123,20 +128,25 @@
         $(document).on("click", "#chart1_div", function (evt) {
             //     app.consoleLog("[204] rec_temperatura2",rec_temperatura2);
             if (Cookies["tela_layout"] == "0") { // Temperatura
-                if (rec_temperatura2 == true) { // Temperatura 2
+                if (rec_temperatura2 == true || rec_humidade == true) { // Temperatura 2
                     if (g3.sem_dados == true)
                         mensagemTela("Sem dados", "Temperatura 2");
-                    else
+                    else {
+                        gtext[1].loadData();
                         activate_subpage("#uib_page_10");
+                    }
                 } else
                 if (rec_corrente_30a == true || rec_corrente_100a == true) { // Temperatura 2
                     if (g3.sem_dados == true)
                         mensagemTela("Sem dados", "Corrente");
-                    else
+                    else {
+                        gtext[1].loadData();
                         activate_subpage("#uib_page_10");
+                    }
                 } else
                     click_no_gauge(0);
             } else {
+                gtext[1].loadData();
                 activate_subpage("#uib_page_10");
             }
         });
@@ -145,26 +155,38 @@
             if (Cookies["tela_layout"] == "0") // Temperatura
                 click_no_gauge(0);
             else
-            if (Cookies["tela_layout"] == "1") // TGG
+            if (Cookies["tela_layout"] == "1") {// TGG
+                gtext[1].loadData();
                 activate_subpage("#uib_page_10");
-            else {
+            } else {
                 //       atualizaGrafico(g5,"text_pag_11");
+                gtext[2].loadData();
                 activate_subpage("#uib_page_11");
             }
         });
 
         $(document).on("click", "#chart3_div", function (evt) {
             if (Cookies["tela_layout"] == "0") // Temperatura
-                if (rec_corrente_30a == true || rec_corrente_100a == true)
+                if (rec_corrente_30a == true || rec_corrente_100a == true) {
+                        gtext[2].loadData();
                     activate_subpage("#uib_page_11");
-                else {
+                }else {
+                    if (rec_temperatura3 == false) {
                     console.log("#uib_page_2");
+                    gtext[0].loadData();
                     activate_subpage("#uib_page_2");
+                    } else {
+                    console.log("#uib_page_2");
+                    gtext[2].loadData();
+                    activate_subpage("#uib_page_11");                        
+                    }
                 } else
-            if (Cookies["tela_layout"] == "1") // TGG
+            if (Cookies["tela_layout"] == "1") {// TGG
+                gtext[1].loadData();
                 activate_subpage("#uib_page_10");
-            else {
+            }else {
                 //       atualizaGrafico(g5,"text_pag_11");
+                gtext[2].loadData();
                 activate_subpage("#uib_page_11");
             }
         });
@@ -179,6 +201,7 @@
                 $("#chartx612_div").css("display", "none");
                 $("#chartx621_div").css("display", "block");
                 $("#chartx622_div").css("display", "block");
+                gt[1].loadData(gm1[0][2].series[0].campo);
             } else {
                 click_no_gauge(1);
             }
@@ -189,11 +212,12 @@
         });
 
         $(document).on("click", "#chartx621_div", function (evt) {
-            if (gm1[0][2] != undefined) {
+            if (gm1[0][1] != undefined) {
                 $("#chartx611_div").css("display", "block");
                 $("#chartx612_div").css("display", "block");
                 $("#chartx621_div").css("display", "none");
                 $("#chartx622_div").css("display", "none");
+                gt[1].loadData(gm1[0][1].series[0].campo);
             } else {
                 click_no_gauge(1);
             }
@@ -205,6 +229,7 @@
                 $("#chartx712_div").css("display", "none");
                 $("#chartx721_div").css("display", "block");
                 $("#chartx722_div").css("display", "block");
+                gt[2].loadData(gm1[1][2].series[0].campo);
             } else {
                 click_no_gauge(2);
             }
@@ -215,18 +240,27 @@
         });
 
         $(document).on("click", "#chartx721_div", function (evt) {
-            if (gm1[1][2] != undefined) {
+            if (gm1[1][1] != undefined) {
                 $("#chartx711_div").css("display", "block");
                 $("#chartx712_div").css("display", "block");
                 $("#chartx721_div").css("display", "none");
                 $("#chartx722_div").css("display", "none");
+                gt[2].loadData(gm1[1][1].series[0].campo);
             } else {
                 click_no_gauge(1);
             }
         });
 
         $(document).on("click", "#chartx811_div", function (evt) {
-            click_no_gauge(3);
+            if (gm1[2][2] != undefined) {
+                $("#chartx711_div").css("display", "none");
+                $("#chartx712_div").css("display", "none");
+                $("#chartx721_div").css("display", "block");
+                $("#chartx722_div").css("display", "block");
+                gt[3].loadData(gm1[2][2].series[0].campo);
+            } else {
+                click_no_gauge(3);
+            }
         });
 
         $(document).on("click", "#chartx812_div", function (evt) {
@@ -234,18 +268,27 @@
         });
 
         $(document).on("click", "#chartx821_div", function (evt) {
-            if (gm1[2][2] != undefined) {
+            if (gm1[2][1] != undefined) {
                 $("#chartx811_div").css("display", "block");
                 $("#chartx812_div").css("display", "block");
                 $("#chartx821_div").css("display", "none");
                 $("#chartx822_div").css("display", "none");
+                gt[3].loadData(gm1[2][1].series[0].campo);
             } else {
                 click_no_gauge(3);
             }
         });
 
         $(document).on("click", "#chartx911_div", function (evt) {
-            click_no_gauge(4);
+            if (gm1[3][2] != undefined) {
+                $("#chartx911_div").css("display", "nome");
+                $("#chartx912_div").css("display", "none");
+                $("#chartx921_div").css("display", "block");
+                $("#chartx922_div").css("display", "block");
+                gt[4].loadData(gm1[3][2].series[0].campo);
+            } else {
+                click_no_gauge(4);
+            }
         });
 
 
@@ -254,11 +297,12 @@
         });
 
         $(document).on("click", "#chartx921_div", function (evt) {
-            if (gm1[3][2] != undefined) {
+            if (gm1[3][1] != undefined) {
                 $("#chartx911_div").css("display", "block");
                 $("#chartx912_div").css("display", "block");
                 $("#chartx921_div").css("display", "none");
                 $("#chartx922_div").css("display", "none");
+                gt[4].loadData(gm1[3][1].series[0].campo);
             } else {
                 click_no_gauge(4);
             }
@@ -323,16 +367,14 @@
             var modelo = document.getElementById("modelo").value;
             var serie = document.getElementById("serie").value;
             var chave = document.getElementById("chave").value;
-            console.log("btn_let_config_web");
+            console.log("btn_let_config_web  serie=" + serie);
             document.getElementById("text_config").innerHTML = "";
             if (modelo != '' && serie != '' && chave != '') {
                 document.getElementById("text_config").innerHTML = "pesquisando servidor...";
-                Cookies.erase("modelo");
-                Cookies.erase("serie");
-                Cookies.erase("chave");
-                Cookies.create("modelo", modelo, 10 * 365);
-                Cookies.create("serie", serie, 10 * 365);
-                Cookies.create("chave", chave, 10 * 365);
+            console.log("pesquisando sercidor..." );
+                Cookies["modelo"]=modelo;
+                Cookies["serie"]= serie;
+                Cookies["chave"]=chave;
                 getMainConfig(0);
             } else
                 mensagemTela("Falta dados", "Informe modelo/serie/chave");
@@ -403,6 +445,13 @@
             document.getElementById("af-checkbox-s-rele").checked = rec_rele;
             // TEMPERATURA EXTRA DS18B20
             document.getElementById("af-checkbox-s-extra").checked = rec_temperatura2;
+            // TEMPERATURA EXTRA DS18B20 2
+            document.getElementById("af-checkbox-s-extra-2").checked = rec_temperatura3;
+            // HUMIDADE
+            document.getElementById("af-checkbox-s-humidade").checked = rec_humidade;
+            activate_subpage("#sub-page-sensor-main");
+            // WIFI
+            document.getElementById("af-checkbox-s-wifi").checked = rec_wifi;
             activate_subpage("#sub-page-sensor-main");
         });
 
@@ -422,7 +471,7 @@
             }
 
             valor = parseFloat(document.getElementById("text-s-temp-min").value);
-            if (isNaN(valor)) {
+            if (isNaN(valor) && document.getElementById("text-s-temp-min").value !='') {
                 document.getElementById("text-s-temp").innerHTML = "Minimo invalido";
                 return;
             }
@@ -438,19 +487,27 @@
                 // Cookies["vcc"] = document.getElementById("text-s-vcc").value;
                 //Cookies["campo5_min"] = document.getElementById("text-s-temp-min").value;
                 //Cookies["campo5_max"] = document.getElementById("text-s-temp-max").value;
-                gravarConfiguracaoSensor('t', document.getElementById("text-s-temp"));
+                gravarConfiguracaoSensor('t5', document.getElementById("text-s-temp"));
             }
-            // temp
+            // temp 2
             if (opt == 1) {
-                gravarConfiguracaoSensor('x', document.getElementById("text-s-temp"));
+                gravarConfiguracaoSensor('t6', document.getElementById("text-s-temp"));
+            }
+            if (opt == 2) {
+                gravarConfiguracaoSensor('t7', document.getElementById("text-s-temp"));
             }
         });
 
         $(document).on("change", "#sel-temp", function (evt) {
             /* your code goes here */
             var opt = $("#sel-temp option:selected").index();
-            if (rec_temperatura2 == false) {
+            if (opt==1 && rec_temperatura2 == false && rec_humidade == false) {
                 document.getElementById("text-s-temp").innerHTML = "Nao possui sensor extra";
+                $("#sel-temp option:eq(0)").prop('selected', true);
+                return;
+            }
+            if (opt==2 && rec_temperatura3 == false) {
+                document.getElementById("text-s-temp").innerHTML = "Nao possui sensor extra 2";
                 $("#sel-temp option:eq(0)").prop('selected', true);
                 return;
             }
@@ -504,10 +561,18 @@
 
         $(document).on("change", "#sel_horas", function (evt) {
             var opt = $("#sel_horas option:selected").index();
+            var hr = $("#sel_horas option:selected").text();
             if (opt == 0) r_horas = 2;
             if (opt == 1) r_horas = 6;
             if (opt == 2) r_horas = 24;
             if (opt == 3) r_horas = 48;
+            
+            if (isNaN(parseInt(hr)))
+                r_horas=0;
+            else
+                r_horas=parseInt(hr);
+            
+            console.log("sel_horas opt="+opt+" val="+$("#sel_horas").val()+"  text="+$("#sel_horas option:selected").text()+ " pInt="+parseInt(hr));
             atualiza_dados();
         });
 
@@ -588,13 +653,28 @@
 
         /* button  #btn-s-s-corrente */
         $(document).on("click", "#btn-s-s-corrente", function (evt) {
-            Cookies["fases"] = document.getElementById("text-s-fases").value;
+            var fases=0;
+            //Cookies["fases"] = document.getElementById("text-s-fases").value;
+            if (document.getElementById("af-checkbox-canal-1").checked == true) {
+                fases = fases | 0x01;
+            }
+            if (document.getElementById("af-checkbox-canal-2").checked) {
+                fases = fases | 0x02;
+            }
+            if (document.getElementById("af-checkbox-canal-3").checked) {
+                fases = fases | 0x04;
+            }
+            if (document.getElementById("af-checkbox-canal-auto").checked == false) {
+                fases = fases | 0x08;
+            }
+            console.log("fases="+fases);
+            Cookies["fases"] = fases;
             //Cookies["campo1_min"] = document.getElementById("text-s-corrente-min").value;
             //Cookies["campo1_max"] = document.getElementById("text-s-corrente-max").value;
             if (document.getElementById("af-radio-s-127").checked)
-                Cookies["tensao"] = '220';
-            else
                 Cookies["tensao"] = '127';
+            else
+                Cookies["tensao"] = '220';
             gravarConfiguracaoSensor('r', document.getElementById("text-s-corrente"));
         });
 
@@ -602,7 +682,7 @@
         /* button  #btn-s-s-main */
         $(document).on("click", "#btn-s-s-main", function (evt) {
             /* your code goes here */
-            gravarConfiguracaoSensor('m', document.getElementById("text-s-corrente"));
+            gravarConfiguracaoSensor('m', document.getElementById("text-s-main"));
         });
 
 
@@ -685,8 +765,8 @@
         /* button  #btn-sign-in-limpar */
         $(document).on("click", "#btn-sign-in-limpar", function (evt) {
             /* your code goes here */
-            $("#text-user-name").empty();
-            $("#text-user-passwd").empty();
+            $("#text-user-name").val('');
+            $("#text-user-passwd").val('');
         });
 
         /* button  #btn-sign-in-entrar */
@@ -826,35 +906,33 @@
             /* your code goes here */
             var txt, txt2, ret;
             if (sessao_id == null) {
-                navigator.notification.alert("Ops", alertDismissed,
-                    'Usuario nao logado.', 'Fechar');
+                mensagemTela('Erro', 'Usuario nao logado.');
             }
             txt = $("#text-senha-antiga").val();
             if (txt == '') {
-                navigator.notification.alert(ret, alertDismissed,
-                    'Senha antiga inválida.', 'Fechar');
+                mensagemTela('Error','Senha antiga inválida.');
                 return;
             }
             txt = $("#text-senha-nova").val();
             ret = validatePasswd(txt);
             if (ret != true) {
-                navigator.notification.alert(ret, alertDismissed,
-                    'Senha nova inválida.', 'Fechar');
+                mensagemTela('Senha nova inválida.',ret);
                 return;
             }
             txt2 = $("#text-senha-confirmacao").val();
             ret = validatePasswd(txt2);
             if (ret != true) {
-                navigator.notification.alert(ret, alertDismissed,
-                    'Confirmação da senha inválida.', 'Fechar');
+                mensagemTela('Confirmação da senha inválida.',ret);
                 return;
             }
             if (txt != txt2) {
-                navigator.notification.alert(ret, alertDismissed,
-                    'Senha nova e confirmação devem ser iguais.', 'Fechar');
+                mensagemTela('Erro','Senha nova e confirmação devem ser iguais.');
                 return;
             }
             signInServer('troca');
+            $("#text-senha-antiga").val('');
+            $("#text-senha-nova").val('');
+            $("#text-senha-confirmacao").val('');
         });
 
 
@@ -865,12 +943,15 @@
             document.getElementById("modelo").value = json_user.sensores[opt].modelo;
             document.getElementById("serie").value = json_user.sensores[opt].serie;
             document.getElementById("chave").value = json_user.sensores[opt].chave;
+            Cookies["modelo"] = json_user.sensores[opt].modelo;
+            Cookies["serie"] = json_user.sensores[opt].serie;
+            Cookies["chave"] = json_user.sensores[opt].chave;
+            eventFire(document.getElementById('btn_let_config_web'), 'click');
 
         });
 
-
+/*
         $(document).on("focusout", "#sel-meus-sensores", function (evt) {
-            /* your code goes here */
             if (json_user == undefined) return;
             var opt = $("#sel-meus-sensores option:selected").index();
             document.getElementById("modelo").value = json_user.sensores[opt].modelo;
@@ -878,7 +959,7 @@
             document.getElementById("chave").value = json_user.sensores[opt].chave;
 
         });
-
+*/
 
 
         /* button  #btn-login-logoff */
@@ -961,18 +1042,106 @@
         });
 
 
+        $(document).on("change", "#str_horas", function (evt) {
+            //var re = /^\#?([\d]{1,2},)*([\d]{1,2}|\#)$/;
+            var re = /^(#,)?([\d]{1,2},)*([\d]{1,2}|\#)$/;
+            console.log("horas="+this.value);
+            if (re.test(this.value) == false) {
+                mensagemTela("erro:"+this.value,"Formato: <hora,hora,hora,#> ex.: 2,6,12,48,#");
+                this.value = json_config.canal.horas;
+            }
+        });
+
+        
+        
         /* button  Painel */
     $(document).on("click", ".uib_w_299", function(evt)
     {
          /*global activate_subpage */
-       // document.getElementById("p22").html('XXX');
-        $("#p11").html("p11");
-        $("#p111").html("texto 1");
-        $("#p112").html("texto 2");
-        $("#p22").html("p22");
          activate_subpage("#uib_page_painel");
     });
 
+
+    // painel angular  
+    $(document).on("click", "#t05", function(evt)
+    {
+         activate_subpage("#uib_page_2");
+    });
+        
+    // consumo pagina 2
+    $(document).on("click", "#t01", function(evt)
+    {
+         activate_subpage("#uib_page_10");
+    });
+    // fase pagina 3
+    $(document).on("click", "#t02", function(evt)
+    {
+         activate_subpage("#uib_page_11");
+    });
+    $(document).on("click", "#t03", function(evt)
+    {
+         activate_subpage("#uib_page_11");
+    });
+    $(document).on("click", "#t04", function(evt)
+    {
+         activate_subpage("#uib_page_11");
+    });
+
+    // atalho para os modulos
+        $(document).on("click", "#n111", function (evt) {
+            activate_subpage("#uib_page_mod1");
+        });
+        $(document).on("click", "#n112", function (evt) {
+            activate_subpage("#uib_page_mod1");
+        });
+        $(document).on("click", "#n121", function (evt) {
+            activate_subpage("#uib_page_mod1");
+        });
+        $(document).on("click", "#n122", function (evt) {
+            activate_subpage("#uib_page_mod1");
+        });
+
+        /* button  #btn_mod2 */
+        $(document).on("click", "#n211", function (evt) {
+            activate_subpage("#uib_page_mod2");
+        });
+        $(document).on("click", "#n212", function (evt) {
+            activate_subpage("#uib_page_mod2");
+        });
+        $(document).on("click", "#n221", function (evt) {
+            activate_subpage("#uib_page_mod2");
+        });
+        $(document).on("click", "#n222", function (evt) {
+            activate_subpage("#uib_page_mod2");
+        });
+
+        /* button  #btn_mod3 */
+        $(document).on("click", "#n311", function (evt) {
+            activate_subpage("#uib_page_mod3");
+        });
+        $(document).on("click", "#n312", function (evt) {
+            activate_subpage("#uib_page_mod3");
+        });
+        $(document).on("click", "#n321", function (evt) {
+            activate_subpage("#uib_page_mod3");
+        });
+        $(document).on("click", "#n322", function (evt) {
+            activate_subpage("#uib_page_mod3");
+        });
+        
+        /* button  #btn_mod3 */
+        $(document).on("click", "#n411", function (evt) {
+            activate_subpage("#uib_page_mod4");
+        });
+        $(document).on("click", "#n412", function (evt) {
+            activate_subpage("#uib_page_mod4");
+        });
+        $(document).on("click", "#n421", function (evt) {
+            activate_subpage("#uib_page_mod4");
+        });
+        $(document).on("click", "#n422", function (evt) {
+            activate_subpage("#uib_page_mod4");
+        });
     console.log("<index_user_scripts.js");
     }
 

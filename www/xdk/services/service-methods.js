@@ -1,4 +1,4 @@
-/*xdk-auto-gen:service-methods:common:start:4fd47b1afa86908e966d51df6fc7c070*/
+/*xdk-auto-gen:service-methods:common:start:824295c3b3a6fa35f99a603c56d64451*/
 
 var intel;
 if (!intel) intel = {};
@@ -48,7 +48,7 @@ intel.xdk.services.iodocs_ = (function () {
 
   /* Invoke the given common function, run checks on the result, and run a filter function if provided */
   exports.bindCommon = function (functionName, commonFunc, params, runtimeParams) {
-    /*
+    /* 
      * Pull xdkFilter from runtimeParams, otherwise the filter function may run before
      * the data is returned, which could cause any number of problems
      */
@@ -224,38 +224,6 @@ intel.xdk.services.iodocs_ = (function () {
 
   return exports;
 })();;
-intel.xdk.services.iodocs_.thingSpeak = ((function (credentials, helpers) {
-  var exports = {};
-
-  exports.status = function(params) {
-    var url = 'https://api.thingspeak.com/channels/' + params.canal + '/status.json';
-//    delete params.UserId;
-//    if (params) url = url + '?' + $.param(params);
-    params["api_key"]=credentials.apiKey;
-    return $.ajax({url: url, type: 'GET'});
-  };
-
-  exports.getChannelFeed = function(params) {
-    var url = 'https://api.thingspeak.com/channels/' + params.canal + '/feeds.json';
-//    delete params.UserId;
-    if (params) url = url + '?' + $.param(params);
-    params["api_key"]=credentials.apiKey;
-    return $.ajax({url: url, type: 'GET'});
-  };
-
-
-  exports.updateChannelFeed = function(params) {
-    var url = 'https://api.thingspeak.com/update';
-    delete params.canal;
-    params["api_key"]=credentials.apiKey;
-    console.log("params=" + $.param(params));
-    return $.ajax({url: url, data: $.param(params), type: 'POST'});
-  };
-
-  return exports;
-})
-
-)(intel.xdk.services.credentials.thingSpeak,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.usatoday = ((function (credentials) {
   var exports = {};
   var baseUrl = 'http://api.usatoday.com/open/';
@@ -277,7 +245,7 @@ intel.xdk.services.iodocs_.usatoday = ((function (credentials) {
 intel.xdk.services.iodocs_.rottentomatoes = ((function (credentials) {
   var exports = {};
   var baseUrl = 'http://api.rottentomatoes.com/api/public/v1.0/';
-
+    
   function getList(path, params) {
     params = params || {};
     params.apiKey = credentials.apiKey;
@@ -292,7 +260,7 @@ intel.xdk.services.iodocs_.rottentomatoes = ((function (credentials) {
     var params_temp = {};
     for (var prop in params) {
       if((prop!='id') && Object.prototype.hasOwnProperty.call(params,prop)){
-        params_temp[prop] = params[prop];
+        params_temp[prop] = params[prop];  
       }
     }
     url = url + $.param(params_temp);
@@ -366,12 +334,12 @@ intel.xdk.services.iodocs_.sandbox = ((function (credentials) {
     var url = params.URL ;
     return $.ajax({url: url, type : 'POST'});
   };
-
+  
   return exports;
 }))(intel.xdk.services.credentials.sandbox,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.foursquare = ((function (credentials, helpers) {
   var exports = {};
-
+  
   /* helper functions */
   function jsonCleaner(x) {
     var type = typeof x;
@@ -390,7 +358,7 @@ intel.xdk.services.iodocs_.foursquare = ((function (credentials, helpers) {
       return x;
     }
   }
-
+  
   function currentDate(){
     // var d = new Date();
     // var m = d.getMonth()+1;
@@ -410,7 +378,7 @@ intel.xdk.services.iodocs_.foursquare = ((function (credentials, helpers) {
     alert(message);
     return message;
   }
-
+  
   /* Authentication */
   exports.authenticate = function(params) {
     var url = {codeUrl: 'https://foursquare.com/oauth2/authenticate?',
@@ -435,7 +403,7 @@ intel.xdk.services.iodocs_.foursquare = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   /* Users */
   exports.user = function(params) {
     var token = getToken();
@@ -458,7 +426,7 @@ intel.xdk.services.iodocs_.foursquare = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   exports.userLeaderboard = function(params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
@@ -479,7 +447,7 @@ intel.xdk.services.iodocs_.foursquare = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   exports.userRequests = function(params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
@@ -501,7 +469,7 @@ intel.xdk.services.iodocs_.foursquare = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   exports.userSearch = function(params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
@@ -523,7 +491,7 @@ intel.xdk.services.iodocs_.foursquare = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   exports.userBadges = function(params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
@@ -545,7 +513,7 @@ intel.xdk.services.iodocs_.foursquare = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   exports.userCheckins = function(params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
@@ -567,7 +535,7 @@ intel.xdk.services.iodocs_.foursquare = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   exports.userFriends = function(params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
@@ -589,7 +557,7 @@ intel.xdk.services.iodocs_.foursquare = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   exports.userLists = function(params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
@@ -611,7 +579,7 @@ intel.xdk.services.iodocs_.foursquare = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   exports.userMayorships = function(params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
@@ -633,7 +601,7 @@ intel.xdk.services.iodocs_.foursquare = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   exports.userPhotos = function(params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
@@ -655,7 +623,7 @@ intel.xdk.services.iodocs_.foursquare = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   exports.userVenueHistory = function(params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
@@ -677,7 +645,7 @@ intel.xdk.services.iodocs_.foursquare = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   exports.userApprove = function(params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
@@ -699,7 +667,7 @@ intel.xdk.services.iodocs_.foursquare = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   exports.userDeny = function(params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
@@ -721,7 +689,7 @@ intel.xdk.services.iodocs_.foursquare = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   exports.userSetPings = function(params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
@@ -743,7 +711,7 @@ intel.xdk.services.iodocs_.foursquare = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   exports.userUnfriend = function(params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
@@ -765,7 +733,7 @@ intel.xdk.services.iodocs_.foursquare = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   exports.userUpdate = function(params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
@@ -787,7 +755,7 @@ intel.xdk.services.iodocs_.foursquare = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   /* Venue */
   exports.venueDetail = function(params) {
     var token = getToken();
@@ -944,7 +912,7 @@ intel.xdk.services.iodocs_.foursquare = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   return exports;
 }))(intel.xdk.services.credentials.foursquare,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.googleplaces = ((function (credentials) {
@@ -1075,17 +1043,17 @@ intel.xdk.services.iodocs_.itunes = ((function (credentials, helpers) {
 )(intel.xdk.services.credentials.itunes,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.flickr = ((function (credentials, helpers) {
   var exports = {photos:{}, people:{}, galleries:{}, interestingness:{}, photosets:{}};
-
+    
     var utils = {};
-
+    
     utils.sprintf = function(format, etc)
     {
         var arg = arguments;
         var i = 1;
         return format.replace(/%((%)|s)/g, function (m) { return m[2] || arg[i++] ;});
     };
-
-    function jsonCleaner(x)
+  
+    function jsonCleaner(x) 
     {
         var type = typeof x;
         if (x instanceof Array) {
@@ -1103,7 +1071,7 @@ intel.xdk.services.iodocs_.flickr = ((function (credentials, helpers) {
           return x;
         }
     }
-
+    
     /*
      photo_object
         Object
@@ -1121,15 +1089,15 @@ intel.xdk.services.iodocs_.flickr = ((function (credentials, helpers) {
     {
         //https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}.jpg
         var template = "https://farm%s.staticflickr.com/%s/%s_%s.jpg";
-        return utils.sprintf(template, photo_obj.farm, photo_obj.server, photo_obj.id, photo_obj.secret);
+        return utils.sprintf(template, photo_obj.farm, photo_obj.server, photo_obj.id, photo_obj.secret);        
     }
-
+    
     function get_method_call(method_name, append_url)
     {
-        return function(params)
+        return function(params) 
                {
                 var url = 'https://api.flickr.com/services/rest/';
-                params.method = "flickr." + method_name;
+                params.method = "flickr." + method_name; 
                 params.api_key = credentials.apiKey;
                 params.format = "json";
                 if (params) url = url + '?' + $.param(jsonCleaner(params));
@@ -1149,50 +1117,50 @@ intel.xdk.services.iodocs_.flickr = ((function (credentials, helpers) {
                 }
                 else
                 {
-                    return promise;
+                    return promise; 
                 }
               };
     }
-
+  
   exports.photos_search             = get_method_call("photos.search", "photos");
-
+  
   exports.people_getPublicPhotos    = get_method_call("people.getPublicPhotos", "photos");
   exports.people_getPhotosOf        = get_method_call("people.getPhotosOf", "photos");
-
+    
   exports.galleries_getPhotos       = get_method_call("galleries.getPhotos", true);
   exports.galleries_getListForPhoto = get_method_call("galleries.getListForPhoto", false);
   exports.galleries_getList         = get_method_call("galleries.getList", false);
   exports.galleries_getInfo         = get_method_call("galleries.getInfo", false);
-
+    
   exports.interestingness_getList   = get_method_call("interestingness.getList", "photos");
-
+    
   exports.photosets_getPhotos       = get_method_call("photosets.getPhotos", "photoset");
   exports.photosets_getList         = get_method_call("photosets.getList", false);
   exports.photosets_getInfo         = get_method_call("photosets.getInfo", false);
-
+  
   return exports;
 }))(intel.xdk.services.credentials.flickr,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.MarkitOnDemand = ((function (credentials, helpers) {
   var exports = {};
-
-
+    
+    
     function get_method_call(method_name)
     {
-          return function(params)
+          return function(params) 
           {
             var url = 'http://dev.markitondemand.com/Api/v2/' + method_name + '/json';
             if (params) url = url + '?' + $.param(params);
             return $.ajax({url: url, type: 'GET', dataType:'json'});
           };
     }
-
-
+  
+  
   exports.Lookup           = get_method_call('Lookup');
   exports.Quote            = get_method_call('Quote');
-
-
-
-
+  
+  
+  
+  
   return exports;
 }))(intel.xdk.services.credentials.MarkitOnDemand,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.woot = ((function (credentials, helpers) {
@@ -1300,7 +1268,7 @@ intel.xdk.services.iodocs_.instagram = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   exports.userFeed = function(params){
     var token = getToken();
     if (!token) return showError('Need access token before making call');
@@ -1357,7 +1325,7 @@ intel.xdk.services.iodocs_.instagram = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   exports.userSearch = function(params){
     var token = getToken();
     if (!token) return showError('Need access token before making call');
@@ -1531,7 +1499,7 @@ intel.xdk.services.iodocs_.instagram = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   /* Likes */
   exports.mediaLikes = function(params){
     var token = getToken();
@@ -1551,7 +1519,7 @@ intel.xdk.services.iodocs_.instagram = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   };
-
+  
   /* Tags */
   exports.tag = function(params){
     var token = getToken();
@@ -1692,7 +1660,7 @@ intel.xdk.services.iodocs_.instagram = ((function (credentials, helpers) {
 }))(intel.xdk.services.credentials.instagram,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.db_core = ((function (credentials, helpers) {
   var exports = {};
-
+  
   function getToken() {
     return window.localStorage.getItem('dropbox_access_token');
   }
@@ -1701,7 +1669,7 @@ intel.xdk.services.iodocs_.db_core = ((function (credentials, helpers) {
     alert(message);
     return message;
   }
-
+  
   /* OAuth 2.0 */
   exports.authorize = function (params) {
     var urls = {codeUrl:'https://www.dropbox.com/1/oauth2/authorize?',
@@ -1716,11 +1684,11 @@ intel.xdk.services.iodocs_.db_core = ((function (credentials, helpers) {
                        client_secret: credentials.apiSecret
                      }
                     };
-
+    
     if (params.state !== '') urlParams.code.state = params.state;
     if (params.force_reapprove !== '') urlParams.code.force_reapprove = params.force_reapprove;
     if (params.disable_signup !== '') urlParams.code.disable_signup = params.disable_signup;
-
+    
     return helpers.oauth2AuthCode(urls, urlParams)
     .then(function(token){
       var db = window.localStorage;
@@ -1731,12 +1699,12 @@ intel.xdk.services.iodocs_.db_core = ((function (credentials, helpers) {
       alert(err.responseText);
     });
   };
-
+  
   /* Dropbox Accounts */
   exports.accountInfo = function (params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
-
+    
     var urlParams = {oauth_consumer_key: credentials.apiKey,
                      oauth_secret: credentials.apiSecret,
                      access_token: token};
@@ -1753,12 +1721,12 @@ intel.xdk.services.iodocs_.db_core = ((function (credentials, helpers) {
       return error;
     });
   };
-
+  
   /* Files and Metadata */
   exports.metadata = function (params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
-
+    
     var urlParams = $.extend({oauth_consumer_key: credentials.apiKey,
                              oauth_secret: credentials.apiSecret,
                              access_token: token}, params);
@@ -1775,11 +1743,11 @@ intel.xdk.services.iodocs_.db_core = ((function (credentials, helpers) {
       return error;
     });
   };
-
+  
   exports.delta = function (params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
-
+    
     var urlParams = $.extend({oauth_consumer_key: credentials.apiKey,
                              oauth_secret: credentials.apiSecret,
                              access_token: token}, params);
@@ -1800,7 +1768,7 @@ intel.xdk.services.iodocs_.db_core = ((function (credentials, helpers) {
   exports.longpoll_delta = function (params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
-
+    
     var urlParams = $.extend({oauth_consumer_key: credentials.apiKey,
                              oauth_secret: credentials.apiSecret,
                              access_token: token}, params);
@@ -1821,7 +1789,7 @@ intel.xdk.services.iodocs_.db_core = ((function (credentials, helpers) {
   exports.revisions = function (params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
-
+    
     var urlParams = $.extend({oauth_consumer_key: credentials.apiKey,
                              oauth_secret: credentials.apiSecret,
                              access_token: token}, params);
@@ -1842,7 +1810,7 @@ intel.xdk.services.iodocs_.db_core = ((function (credentials, helpers) {
   exports.restore = function (params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
-
+    
     var urlParams = $.extend({oauth_consumer_key: credentials.apiKey,
                              oauth_secret: credentials.apiSecret,
                              access_token: token}, params);
@@ -1863,7 +1831,7 @@ intel.xdk.services.iodocs_.db_core = ((function (credentials, helpers) {
   exports.search = function (params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
-
+    
     var urlParams = $.extend({oauth_consumer_key: credentials.apiKey,
                              oauth_secret: credentials.apiSecret,
                              access_token: token}, params);
@@ -1884,7 +1852,7 @@ intel.xdk.services.iodocs_.db_core = ((function (credentials, helpers) {
   exports.shares = function (params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
-
+    
     var urlParams = $.extend({oauth_consumer_key: credentials.apiKey,
                              oauth_secret: credentials.apiSecret,
                              access_token: token}, params);
@@ -1905,7 +1873,7 @@ intel.xdk.services.iodocs_.db_core = ((function (credentials, helpers) {
   exports.media = function (params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
-
+    
     var urlParams = $.extend({oauth_consumer_key: credentials.apiKey,
                              oauth_secret: credentials.apiSecret,
                              access_token: token}, params);
@@ -1926,7 +1894,7 @@ intel.xdk.services.iodocs_.db_core = ((function (credentials, helpers) {
   exports.copy_ref = function (params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
-
+    
     var urlParams = $.extend({oauth_consumer_key: credentials.apiKey,
                              oauth_secret: credentials.apiSecret,
                              access_token: token}, params);
@@ -1948,7 +1916,7 @@ intel.xdk.services.iodocs_.db_core = ((function (credentials, helpers) {
   exports.copy = function (params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
-
+    
     var urlParams = $.extend({oauth_consumer_key: credentials.apiKey,
                              oauth_secret: credentials.apiSecret,
                              access_token: token}, params);
@@ -1969,7 +1937,7 @@ intel.xdk.services.iodocs_.db_core = ((function (credentials, helpers) {
   exports.create_folder = function (params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
-
+    
     var urlParams = $.extend({oauth_consumer_key: credentials.apiKey,
                              oauth_secret: credentials.apiSecret,
                              access_token: token}, params);
@@ -1990,7 +1958,7 @@ intel.xdk.services.iodocs_.db_core = ((function (credentials, helpers) {
   exports.delete = function (params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
-
+    
     var urlParams = $.extend({oauth_consumer_key: credentials.apiKey,
                              oauth_secret: credentials.apiSecret,
                              access_token: token}, params);
@@ -2011,7 +1979,7 @@ intel.xdk.services.iodocs_.db_core = ((function (credentials, helpers) {
   exports.move = function (params) {
     var token = getToken();
     if (!token) return showError('Need access token before making call');
-
+    
     var urlParams = $.extend({oauth_consumer_key: credentials.apiKey,
                              oauth_secret: credentials.apiSecret,
                              access_token: token}, params);
@@ -2028,7 +1996,7 @@ intel.xdk.services.iodocs_.db_core = ((function (credentials, helpers) {
       error.responseText
     });
   };
-
+  
   exports.upload_file = function(params)
   {
       var token = getToken();
@@ -2037,15 +2005,15 @@ intel.xdk.services.iodocs_.db_core = ((function (credentials, helpers) {
       var file = params.file;
       var path = encodeURI(params.path || file.name);
       delete params.path;
-      delete params.file;
+      delete params.file; 
 
       var urlParams = $.extend({oauth_consumer_key: credentials.apiKey,
                              oauth_secret: credentials.apiSecret,
                              access_token: token}, params);
-      var url = 'https://api-content.dropbox.com/1/files_put/auto/' +
-                 path +
+      var url = 'https://api-content.dropbox.com/1/files_put/auto/' + 
+                 path + 
                  '?'  + $.param(urlParams);
-
+      
       if(file == '-')
       {
           var deferred = $.Deferred();
@@ -2068,42 +2036,74 @@ intel.xdk.services.iodocs_.db_core = ((function (credentials, helpers) {
 
   return exports;
 }))(intel.xdk.services.credentials.db_core,intel.xdk.services.iodocs_.helpers);
-intel.xdk.services.iodocs_.google_analytics = ((function (credentials) {
+intel.xdk.services.iodocs_.jambase = ((function (credentials, helpers) {
   var exports = {};
-
-  function init() {
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-    ga('create', credentials.apiKey, 'auto');
+    
+function jsonCleaner(x) {
+    var type = typeof x;
+    if (x instanceof Array) {
+      type = 'array';
+    }
+    if ((type == 'array') || (type == 'object')) {
+      for (var k in x) {
+        var v = x[k];
+        if ((v === '') && (type == 'object')) {
+          delete x[k];
+        } else {
+          jsonCleaner(v);
+        }
+      }
+      return x;
+    }
+  }
+  
+  /* Data Feed Function */
+  exports.methodA1 = function (params) {
+    var url = 'http://example.api/methodA1?api_key_var_name=' + credentials.apiKey;
+    return $.ajax({url: url});
+  };
+    
+  function get_jambase_handler(endpoint_uri)
+  {
+      return function(params) {
+        params = jsonCleaner(params);
+        var url = endpoint_uri; 
+        params.api_key = credentials.apiKey;
+        url = url + '?' + $.param(params);
+        return $.ajax({url: url, type: 'GET'});
+      };
+  }
+    
+  //all the 'eventById, eventListByZipcode, etc are just the same endpoint with different param combinations.
+  function get_eventBy_method()
+  {
+      return get_jambase_handler('http://api.jambase.com/events');
+  }
+  
+  function get_artistBy_method()
+  {
+      return get_jambase_handler('http://api.jambase.com/artists');
   }
 
-  exports.trackPageView = function(params) {
-      init();
-      var d = $.Deferred();
+  function get_venuesBy_method()
+  {
+      return get_jambase_handler('http://api.jambase.com/venues');
+  }
+  
+  exports.eventById           = get_eventBy_method();
+  exports.eventListByZipcode  = get_eventBy_method()
+  exports.eventListByArtistId = get_eventBy_method();
+  exports.eventListByVenueId  = get_eventBy_method();
 
-      if (params.Location) ga('set','location', params.Location);
-      if (params.Page) ga('set','page', params.Page);
-      if (params.Title) ga('set','title', params.Title);
-      ga('send', 'pageview');
-
-      d.resolve('Pageview sent!');
-      return d.promise();
-  };
-
-    exports.trackEvent = function(params) {
-        init();
-        var d = $.Deferred();
-        if (params.Label) ga('set','eventLabel', params.Label);
-        if (params.Value) ga('set','eventValue', params.Value);
-        ga('send', 'event', params.Category, params.Action);
-        d.resolve('Check your analytics account');
-        return d.promise();
-    };
-
+  exports.artistsByName       = get_artistBy_method();
+  exports.artistById          = get_artistBy_method();
+  
+  exports.venuesByName        = get_venuesBy_method();
+  exports.venuesByZipcode     = get_venuesBy_method();
+  exports.venueById           = get_venuesBy_method();
+    
   return exports;
-}))(intel.xdk.services.credentials.google_analytics,intel.xdk.services.iodocs_.helpers);
+}))(intel.xdk.services.credentials.jambase,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.kinvey = ((function (credentials) {
   var exports = {};
   var isInit;
@@ -2121,13 +2121,13 @@ intel.xdk.services.iodocs_.kinvey = ((function (credentials) {
       return err.name + ' : ' + err.description + '\n' + err.debug;
     });
   }
-
+  
   function emptyPromise(){
     var deferred = $.Deferred();
     deferred.resolve();
     return deferred.promise();
   }
-
+  
   /*Init and then do the passed function. isSpecial = true, if passed function is not a kinvey promise;else false.*/
   function initThenCall(func, isSpecial) {
     isSpecial = isSpecial || false;
@@ -2149,10 +2149,10 @@ intel.xdk.services.iodocs_.kinvey = ((function (credentials) {
       deferred.resolve(response || true );
     }, function(err) {
       deferred.reject(err.name + ' : ' + err.description + '\n' + err.debug);
-    });
+    }); 
     return deferred.promise();
   }
-
+  
   function getActiveUser_() {
     var user = Kinvey.getActiveUser();
     if(null !== user) { return user; }
@@ -2167,7 +2167,7 @@ intel.xdk.services.iodocs_.kinvey = ((function (credentials) {
 
   function verificationStatus_() {
     var user = Kinvey.getActiveUser();
-    if(null !== user) {
+    if(null !== user) { 
       emailStatus = new Kinvey.Metadata(user).getEmailVerification();
       return { status : emailStatus };
     }
@@ -2176,13 +2176,13 @@ intel.xdk.services.iodocs_.kinvey = ((function (credentials) {
   function exists_(params) {
     return Kinvey.User.exists(params.username)
     .then(function(exists){
-      return {result : (exists ? 'true':'false')};
+      return {result : (exists ? 'true':'false')};   
     });
   }
   function count_(params) {
     return Kinvey.DataStore.count(params.collection_name)
     .then(function(count){
-      return {result : count};
+      return {result : count};   
     });
   }
 
@@ -2285,77 +2285,45 @@ intel.xdk.services.iodocs_.kinvey = ((function (credentials) {
   };
   return exports;
 }))(intel.xdk.services.credentials.kinvey,intel.xdk.services.iodocs_.helpers);
-intel.xdk.services.iodocs_.jambase = ((function (credentials, helpers) {
+intel.xdk.services.iodocs_.google_analytics = ((function (credentials) {
   var exports = {};
-
-function jsonCleaner(x) {
-    var type = typeof x;
-    if (x instanceof Array) {
-      type = 'array';
-    }
-    if ((type == 'array') || (type == 'object')) {
-      for (var k in x) {
-        var v = x[k];
-        if ((v === '') && (type == 'object')) {
-          delete x[k];
-        } else {
-          jsonCleaner(v);
-        }
-      }
-      return x;
-    }
+    
+  function init() {
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', credentials.apiKey, 'auto');
   }
-
-  /* Data Feed Function */
-  exports.methodA1 = function (params) {
-    var url = 'http://example.api/methodA1?api_key_var_name=' + credentials.apiKey;
-    return $.ajax({url: url});
+    
+  exports.trackPageView = function(params) {
+      init();
+      var d = $.Deferred();
+      
+      if (params.Location) ga('set','location', params.Location);
+      if (params.Page) ga('set','page', params.Page);
+      if (params.Title) ga('set','title', params.Title);
+      ga('send', 'pageview');
+      
+      d.resolve('Pageview sent!');
+      return d.promise();
   };
-
-  function get_jambase_handler(endpoint_uri)
-  {
-      return function(params) {
-        params = jsonCleaner(params);
-        var url = endpoint_uri;
-        params.api_key = credentials.apiKey;
-        url = url + '?' + $.param(params);
-        return $.ajax({url: url, type: 'GET'});
-      };
-  }
-
-  //all the 'eventById, eventListByZipcode, etc are just the same endpoint with different param combinations.
-  function get_eventBy_method()
-  {
-      return get_jambase_handler('http://api.jambase.com/events');
-  }
-
-  function get_artistBy_method()
-  {
-      return get_jambase_handler('http://api.jambase.com/artists');
-  }
-
-  function get_venuesBy_method()
-  {
-      return get_jambase_handler('http://api.jambase.com/venues');
-  }
-
-  exports.eventById           = get_eventBy_method();
-  exports.eventListByZipcode  = get_eventBy_method()
-  exports.eventListByArtistId = get_eventBy_method();
-  exports.eventListByVenueId  = get_eventBy_method();
-
-  exports.artistsByName       = get_artistBy_method();
-  exports.artistById          = get_artistBy_method();
-
-  exports.venuesByName        = get_venuesBy_method();
-  exports.venuesByZipcode     = get_venuesBy_method();
-  exports.venueById           = get_venuesBy_method();
+    
+    exports.trackEvent = function(params) {
+        init();
+        var d = $.Deferred();
+        if (params.Label) ga('set','eventLabel', params.Label);
+        if (params.Value) ga('set','eventValue', params.Value);
+        ga('send', 'event', params.Category, params.Action);
+        d.resolve('Check your analytics account');
+        return d.promise();
+    };
 
   return exports;
-}))(intel.xdk.services.credentials.jambase,intel.xdk.services.iodocs_.helpers);
+}))(intel.xdk.services.credentials.google_analytics,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.tms = ((function (credentials, helpers) {
   var exports = {};
-
+  
   function jsonCleaner(x) {
     var type = typeof x;
     if (x instanceof Array) {
@@ -2373,22 +2341,22 @@ intel.xdk.services.iodocs_.tms = ((function (credentials, helpers) {
       return x;
     }
   }
-
-
+  
+  
 
   //a helper function
   exports.dateToISO8601 = function(d)
   {
       return d.toISOString().match(/[^:]*:[^:]*/)[0] + 'Z';
   };
-
+    
   get_tms_iso8601_method = function(endpoint_uri)
   {
       return function(params)
       {
         params = jsonCleaner(params);
         var url = endpoint_uri;
-        if(!params.startDateTime) //oddly, startDateTime is required.
+        if(!params.startDateTime) //oddly, startDateTime is required.  
         {
             var now = new Date();
             params.startDateTime = exports.dateToISO8601(now);
@@ -2398,11 +2366,11 @@ intel.xdk.services.iodocs_.tms = ((function (credentials, helpers) {
         return $.ajax({url: url, type: 'GET'});
       };
   };
-
+    
   exports.movieShowings = function(params) {
         params = jsonCleaner(params);
         var url = 'http://data.tmsapi.com/v1/movies/showings';
-        if(!params.startDate) //oddly, startDate is required.
+        if(!params.startDate) //oddly, startDate is required.  
         {
             var now = new Date();
             var now_str = now.toISOString();
@@ -2412,11 +2380,11 @@ intel.xdk.services.iodocs_.tms = ((function (credentials, helpers) {
         url = url + '?' + $.param(params);
         return $.ajax({url: url, type: 'GET'});
   };
-
+    
   exports.newShowAirings = get_tms_iso8601_method('http://data.tmsapi.com/v1/programs/newShowAirings');
-
+    
   exports.movieAirings = get_tms_iso8601_method('http://data.tmsapi.com/v1/movies/airings');
-
+    
 
   exports.sportEventAirings = function(params)
   {
@@ -2425,8 +2393,8 @@ intel.xdk.services.iodocs_.tms = ((function (credentials, helpers) {
     url += params.sportsId;
     delete params.sportsId;
     url += '/events/airings';
-
-    if(!params.startDateTime) //oddly, startDateTime is required.
+      
+    if(!params.startDateTime) //oddly, startDateTime is required.  
     {
         var now = new Date();
         params.startDateTime = exports.dateToISO8601(now);
@@ -2440,7 +2408,7 @@ intel.xdk.services.iodocs_.tms = ((function (credentials, helpers) {
   exports.newShowAirings = function(params) {
         params = jsonCleaner(params);
         var url = 'http://data.tmsapi.com/v1/programs/newShowAirings';
-        if(!params.startDateTime) //oddly, startDateTime is required.
+        if(!params.startDateTime) //oddly, startDateTime is required.  
         {
             var now = new Date();
             params.startDateTime = exports.dateToISO8601(now);
@@ -2450,15 +2418,15 @@ intel.xdk.services.iodocs_.tms = ((function (credentials, helpers) {
         return $.ajax({url: url, type: 'GET'});
   };
     */
-
-
-
-
+  
+  
+  
+  
   return exports;
 }))(intel.xdk.services.credentials.tms,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.soundcloud = ((function (credentials, helpers) {
   var exports = {};
-
+  
   function getToken() {
     return window.localStorage.getItem('soundcloud_access_token');
   }
@@ -2469,7 +2437,7 @@ intel.xdk.services.iodocs_.soundcloud = ((function (credentials, helpers) {
       codeUrl: 'https://soundcloud.com/connect?',
       tokenUrl: 'https://api.soundcloud.com/oauth2/token?'
     };
-
+    
     var urlParams = {
       code: {
         client_id: credentials.apiKey,
@@ -2483,7 +2451,7 @@ intel.xdk.services.iodocs_.soundcloud = ((function (credentials, helpers) {
         grant_type: 'authorization_code'
       }
     };
-
+    
     return helpers.oauth2AuthCode(url, urlParams)
     .then(function(token){
       var db = window.localStorage;
@@ -2491,52 +2459,52 @@ intel.xdk.services.iodocs_.soundcloud = ((function (credentials, helpers) {
       return token;
     });
   };
-
+  
   exports.users = function(params) {
     var url = 'http://api.soundcloud.com/users/' + params.id + '.json?client_id=' + credentials.apiKey;
-
+    
     return $.ajax({
       url: url,
       type: 'GET'
     });
   }
-
+  
   exports.tracks = function(params) {
     var url = 'http://api.soundcloud.com/tracks/' + params.id + '.json?client_id=' + credentials.apiKey;
-
+    
     return $.ajax({
       url: url,
       type: 'GET'
     });
   }
-
+  
   exports.playlists = function(params) {
     var url = 'http://api.soundcloud.com/playlists/' + params.id + '.json?client_id=' + credentials.apiKey;
-
+    
     return $.ajax({
       url: url,
       type: 'GET'
     });
   }
-
+  
   exports.groups = function(params) {
     var url = 'http://api.soundcloud.com/groups/' + params.id + '.json?client_id=' + credentials.apiKey;
-
+    
     return $.ajax({
       url: url,
       type: 'GET'
     });
   }
-
+  
   exports.comments = function(params) {
     var url = 'http://api.soundcloud.com/comments/' + params.id + '.json?client_id=' + credentials.apiKey;
-
+    
     return $.ajax({
       url: url,
       type: 'GET'
     });
   }
-
+  
   exports.me = function(params){
     var token = getToken();
     var url = 'https://api.soundcloud.com/me.json?oauth_token=' + token;
@@ -2572,31 +2540,31 @@ intel.xdk.services.iodocs_.soundcloud = ((function (credentials, helpers) {
       type: 'GET'
     });
   }
-
+  
   return exports;
 }))(intel.xdk.services.credentials.soundcloud,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.Weibo = ((function (credentials, helpers) {
   var exports = {};
-
+  
   function getCachedToken () {
     if ($.jStorage && $.jStorage.storageAvailable()) {
       return $.jStorage.get("intel_xdk_services_sina_weibo_access_token_");
     }
     return null;
   }
-
+  
   function showError(msg) {
     alert(msg);
     return msg;
   }
-
+  
   exports.get_access_token = function(params) {
     var url = {
       codeUrl: 'https://api.weibo.com/oauth2/authorize?',
       tokenUrl: 'https://api.weibo.com/oauth2/access_token?'
     };
     var deferred = $.Deferred();
-
+    
     var jStorageAvailable = false, keyName, accessToken;
     if ($.jStorage && $.jStorage.storageAvailable()) {
       jStorageAvailable = true;
@@ -2607,7 +2575,7 @@ intel.xdk.services.iodocs_.Weibo = ((function (credentials, helpers) {
         return deferred.promise();
       }
     }
-
+    
     var urlParams = {
       code: {
         client_id: credentials.apiKey,
@@ -2622,9 +2590,9 @@ intel.xdk.services.iodocs_.Weibo = ((function (credentials, helpers) {
         grant_type: 'authorization_code'
       }
     };
-
+    
     //helper oauth functions return access token. check to see if service uses authentication code or implicit oauth
-
+    
     helpers.oauth2AuthCode(url, urlParams)
     .then(function(access_token){
       if (jStorageAvailable) {
@@ -2635,10 +2603,10 @@ intel.xdk.services.iodocs_.Weibo = ((function (credentials, helpers) {
     .fail(function(err){
       deferred.reject(err);
     });
-
+    
     return deferred.promise();
   };
-
+  
   exports.update = function(params) {
     var filteredParams = {}, d = $.Deferred();
     for (var k in params) {
@@ -2646,7 +2614,7 @@ intel.xdk.services.iodocs_.Weibo = ((function (credentials, helpers) {
         filteredParams[k] = params[k];
       }
     }
-
+    
     var access_token;
     if (!filteredParams.access_token) {
       access_token= getCachedToken();
@@ -2664,7 +2632,7 @@ intel.xdk.services.iodocs_.Weibo = ((function (credentials, helpers) {
       data: filteredParams
     });
   };
-
+  
   exports.upload = function(params) {
     var d = $.Deferred();
     var access_token;
@@ -2701,7 +2669,7 @@ intel.xdk.services.iodocs_.Weibo = ((function (credentials, helpers) {
       contentType: false   // tell jQuery not to set contentType
     });
   };
-
+  
   return exports;
 }))(intel.xdk.services.credentials.Weibo,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.BaiduMap = ((function (credentials, helpers) {
@@ -2841,6 +2809,151 @@ intel.xdk.services.iodocs_.BaiduMap = ((function (credentials, helpers) {
 
     return exports;
 }))(intel.xdk.services.credentials.BaiduMap,intel.xdk.services.iodocs_.helpers);
+intel.xdk.services.iodocs_.amazon_product_search = ((function (credentials, helpers) {
+  var exports = {};
+    
+    function jsonCleaner(x) {
+    var type = typeof x;
+    if (x instanceof Array) {
+      type = 'array';
+    }
+    if ((type == 'array') || (type == 'object')) {
+      for (var k in x) {
+        var v = x[k];
+        if ((v === '') && (type == 'object')) {
+          delete x[k];
+        } else {
+          jsonCleaner(v);
+        }
+      }
+      return x;
+    }
+  }
+  
+    function sort_params(params)
+    {
+        var keys = Object.keys(params);
+        keys.sort();
+        var newparams  ={}
+        keys.forEach(function(k){ newparams[k] = params[k]; });
+        return newparams;
+    }
+    
+    function timestamp(date) {
+    //var date = new Date();
+    var y = date.getUTCFullYear().toString();
+    var m = (date.getUTCMonth() + 1).toString();
+    var d = date.getUTCDate().toString();
+    var h = date.getUTCHours().toString();
+    var min = date.getUTCMinutes().toString();
+    var s = date.getUTCSeconds().toString();
+
+    if(m.length < 2) { m = "0" + m; }
+    if(d.length < 2) { d = "0" + d; }
+    if(h.length < 2) { h = "0" + h; }
+    if(min.length < 2) { min = "0" + min; }
+    if(s.length < 2) { s = "0" + s}
+
+    var date = y + "-" + m + "-" + d;
+    var time = h + ":" + min + ":" + s;
+    return date + "T" + time + "Z";
+}
+    
+    function sha256(stringToSign, secretKey) 
+    {
+        var hex = CryptoJS.HmacSHA256(stringToSign, secretKey);
+        return hex.toString(CryptoJS.enc.Base64);
+    } 
+    
+    function date_string(now)
+    {
+        var date_str = now.toISOString().match(/[^T]*/)[0];
+        return date_str.replace(/-/g, "");
+    }
+    
+    function get_aws_cs_function(operation)
+    {
+        return function(params) {
+      
+                var url = 'http://webservices.amazon.com/onca/xml';
+                params = jsonCleaner(params);
+
+                params.Service = 'AWSECommerceService';
+                params.Operation = operation;
+                params.AWSAccessKeyId = credentials.apiKey;
+                var now = new Date();
+                params.Timestamp = timestamp(now); //now.toISOString();
+
+                params = sort_params(params);
+
+                var paramString = $.param(params);
+                var signingKey = "GET\n" + "webservices.amazon.com\n" + "/onca/xml\n" + paramString;
+                var signature = sha256(signingKey, credentials.apiSecret);
+                params.Signature = signature;
+
+                url = url + '?' +  $.param(params);
+                return $.ajax({url: url, type: 'GET'});
+              };
+    }
+    
+    exports.ItemSearch       = get_aws_cs_function('ItemSearch');
+    exports.BrowseNodeLookup = get_aws_cs_function('BrowseNodeLookup');
+    exports.ItemLookup       = get_aws_cs_function('ItemLookup');
+    exports.SimilarityLookup = get_aws_cs_function('SimilarityLookup');
+  
+    /*
+  exports.ItemSearch = function(params) {
+      
+    var url = 'http://webservices.amazon.com/onca/xml';
+    params = jsonCleaner(params);
+    
+    params.Service = 'AWSECommerceService';
+    params.Operation = 'ItemSearch';
+    params.AWSAccessKeyId = credentials.apiKey;
+    var now = new Date();
+    params.Timestamp = timestamp(now); //now.toISOString();
+      
+    params = sort_params(params);
+
+    var paramString = $.param(params);
+    var signingKey = "GET\n" + "webservices.amazon.com\n" + "/onca/xml\n" + paramString;
+    var signature = sha256(signingKey, credentials.apiSecret);
+    params.Signature = signature;
+    
+    url = url + '?' +  $.param(params);
+    return $.ajax({url: url, type: 'GET'});
+  };
+  */
+    
+    function getAmazonItemInfo(barcode) {
+    var PrivateKey = "";
+    var PublicKey = "";
+    var AssociateTag = "";
+
+    var parameters = [];
+    parameters.push("AWSAccessKeyId=" + PublicKey);
+    parameters.push("ItemId=" + barcode);
+    parameters.push("Operation=ItemLookup");
+    parameters.push("Service=AWSECommerceService");
+    parameters.push("Timestamp=" + encodeURIComponent(timestamp()));
+    parameters.push("Version=2011-08-01");
+parameters.push("AssociateTag=" + AssociateTag);
+
+    parameters.sort();
+    var paramString = parameters.join('&');
+
+    var signingKey = "GET\n" + "webservices.amazon.com\n" + "/onca/xml\n" + paramString
+
+    var signature = sha256(signingKey,PrivateKey);
+        signature = encodeURIComponent(signature);
+
+    var amazonUrl =  "http://webservices.amazon.com/onca/xml?" + paramString + "&Signature=" + signature;
+    console.log(amazonUrl);
+}
+  
+  
+  return exports;
+}))(intel.xdk.services.credentials.amazon_product_search,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.mapquest = ((function (credentials, helpers) {
   'use strict';
 
@@ -2872,151 +2985,6 @@ intel.xdk.services.iodocs_.mapquest = ((function (credentials, helpers) {
 
 })
 )(intel.xdk.services.credentials.mapquest,intel.xdk.services.iodocs_.helpers);
-intel.xdk.services.iodocs_.amazon_product_search = ((function (credentials, helpers) {
-  var exports = {};
-
-    function jsonCleaner(x) {
-    var type = typeof x;
-    if (x instanceof Array) {
-      type = 'array';
-    }
-    if ((type == 'array') || (type == 'object')) {
-      for (var k in x) {
-        var v = x[k];
-        if ((v === '') && (type == 'object')) {
-          delete x[k];
-        } else {
-          jsonCleaner(v);
-        }
-      }
-      return x;
-    }
-  }
-
-    function sort_params(params)
-    {
-        var keys = Object.keys(params);
-        keys.sort();
-        var newparams  ={}
-        keys.forEach(function(k){ newparams[k] = params[k]; });
-        return newparams;
-    }
-
-    function timestamp(date) {
-    //var date = new Date();
-    var y = date.getUTCFullYear().toString();
-    var m = (date.getUTCMonth() + 1).toString();
-    var d = date.getUTCDate().toString();
-    var h = date.getUTCHours().toString();
-    var min = date.getUTCMinutes().toString();
-    var s = date.getUTCSeconds().toString();
-
-    if(m.length < 2) { m = "0" + m; }
-    if(d.length < 2) { d = "0" + d; }
-    if(h.length < 2) { h = "0" + h; }
-    if(min.length < 2) { min = "0" + min; }
-    if(s.length < 2) { s = "0" + s}
-
-    var date = y + "-" + m + "-" + d;
-    var time = h + ":" + min + ":" + s;
-    return date + "T" + time + "Z";
-}
-
-    function sha256(stringToSign, secretKey)
-    {
-        var hex = CryptoJS.HmacSHA256(stringToSign, secretKey);
-        return hex.toString(CryptoJS.enc.Base64);
-    }
-
-    function date_string(now)
-    {
-        var date_str = now.toISOString().match(/[^T]*/)[0];
-        return date_str.replace(/-/g, "");
-    }
-
-    function get_aws_cs_function(operation)
-    {
-        return function(params) {
-
-                var url = 'http://webservices.amazon.com/onca/xml';
-                params = jsonCleaner(params);
-
-                params.Service = 'AWSECommerceService';
-                params.Operation = operation;
-                params.AWSAccessKeyId = credentials.apiKey;
-                var now = new Date();
-                params.Timestamp = timestamp(now); //now.toISOString();
-
-                params = sort_params(params);
-
-                var paramString = $.param(params);
-                var signingKey = "GET\n" + "webservices.amazon.com\n" + "/onca/xml\n" + paramString;
-                var signature = sha256(signingKey, credentials.apiSecret);
-                params.Signature = signature;
-
-                url = url + '?' +  $.param(params);
-                return $.ajax({url: url, type: 'GET'});
-              };
-    }
-
-    exports.ItemSearch       = get_aws_cs_function('ItemSearch');
-    exports.BrowseNodeLookup = get_aws_cs_function('BrowseNodeLookup');
-    exports.ItemLookup       = get_aws_cs_function('ItemLookup');
-    exports.SimilarityLookup = get_aws_cs_function('SimilarityLookup');
-
-    /*
-  exports.ItemSearch = function(params) {
-
-    var url = 'http://webservices.amazon.com/onca/xml';
-    params = jsonCleaner(params);
-
-    params.Service = 'AWSECommerceService';
-    params.Operation = 'ItemSearch';
-    params.AWSAccessKeyId = credentials.apiKey;
-    var now = new Date();
-    params.Timestamp = timestamp(now); //now.toISOString();
-
-    params = sort_params(params);
-
-    var paramString = $.param(params);
-    var signingKey = "GET\n" + "webservices.amazon.com\n" + "/onca/xml\n" + paramString;
-    var signature = sha256(signingKey, credentials.apiSecret);
-    params.Signature = signature;
-
-    url = url + '?' +  $.param(params);
-    return $.ajax({url: url, type: 'GET'});
-  };
-  */
-
-    function getAmazonItemInfo(barcode) {
-    var PrivateKey = "";
-    var PublicKey = "";
-    var AssociateTag = "";
-
-    var parameters = [];
-    parameters.push("AWSAccessKeyId=" + PublicKey);
-    parameters.push("ItemId=" + barcode);
-    parameters.push("Operation=ItemLookup");
-    parameters.push("Service=AWSECommerceService");
-    parameters.push("Timestamp=" + encodeURIComponent(timestamp()));
-    parameters.push("Version=2011-08-01");
-parameters.push("AssociateTag=" + AssociateTag);
-
-    parameters.sort();
-    var paramString = parameters.join('&');
-
-    var signingKey = "GET\n" + "webservices.amazon.com\n" + "/onca/xml\n" + paramString
-
-    var signature = sha256(signingKey,PrivateKey);
-        signature = encodeURIComponent(signature);
-
-    var amazonUrl =  "http://webservices.amazon.com/onca/xml?" + paramString + "&Signature=" + signature;
-    console.log(amazonUrl);
-}
-
-
-  return exports;
-}))(intel.xdk.services.credentials.amazon_product_search,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.youtube = ((function (credentials, helpers) {
   var exports = {};
   var aToken;
@@ -3088,7 +3056,7 @@ intel.xdk.services.iodocs_.youtube = ((function (credentials, helpers) {
       return x;
     }
   }
-
+  
   exports.authenticate = authenticate.bind(null);
   exports.rateVideos = auth_post.bind(null,'rateVideos');
   exports.listActivities = getList.bind(null,'activities');
@@ -3119,32 +3087,32 @@ intel.xdk.services.iodocs_.bing_search = ((function (credentials, helpers) {
       return x;
     }
   }
-
+  
   exports.search = function(params) {
       //http://api.bing.net/json.aspx?Appid=<Your App ID HERE!>&query=sushi&sources=web.
     params = jsonCleaner(params);
     var url = 'https://api.datamarket.azure.com/Bing/Search/';
     var searchSpace = params.SearchSpace;
     delete params.SearchSpace;
-    params.Query = "'" + params.Query + "'";
+    params.Query = "'" + params.Query + "'"; 
     url = url + searchSpace +  '?' + $.param(params) + "&$format=JSON";
     var username = "";
     var password = credentials.apiKey;
-
-    return $.ajax({url: url,
+      
+    return $.ajax({url: url, 
                    type: 'GET',
                    headers: {"Authorization":"Basic " + btoa(username + ":" + password)}
                   });
-
+                  
   };
-
-
-
+  
+  
+  
   return exports;
 }))(intel.xdk.services.credentials.bing_search,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.Etsy = ((function (credentials) {
   var exports = {};
-
+  
   function jsonCleaner(x) {
     var type = typeof x;
     if (x instanceof Array) {
@@ -3162,9 +3130,9 @@ intel.xdk.services.iodocs_.Etsy = ((function (credentials) {
       return x;
     }
   }
-
+  
   var baseUrl = 'https://openapi.etsy.com/v2/';
-
+  
   function getEtsyData(path, params){
     params = jsonCleaner(params);
     var url = baseUrl + path + '?api_key=' + credentials.apiKey + "&" + $.param(params);
@@ -3176,7 +3144,7 @@ intel.xdk.services.iodocs_.Etsy = ((function (credentials) {
   exports.shopSearch = getEtsyData.bind('null', 'shops');
   exports.treasurySearch = getEtsyData.bind('null', 'treasuries');
   exports.userSearch = getEtsyData.bind('null', 'users');
-
+  
   return exports;
 }))(intel.xdk.services.credentials.Etsy,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.EventBrite = ((function (credentials, helpers) {
@@ -3191,7 +3159,7 @@ intel.xdk.services.iodocs_.EventBrite = ((function (credentials, helpers) {
     alert(message);
     return message;
   }
-
+  
   function convertKey(params, base, updated){
     if(params[base]){
       var temp = params[base];
@@ -3200,7 +3168,7 @@ intel.xdk.services.iodocs_.EventBrite = ((function (credentials, helpers) {
     }
     return params;
   }
-
+    
   exports.authenticate = function(params) {
     var url ='https://www.eventbrite.com/oauth/authorize?';
     var urlParams = {
@@ -3208,7 +3176,7 @@ intel.xdk.services.iodocs_.EventBrite = ((function (credentials, helpers) {
         redirect_uri: params.redirect_uri,
         response_type: params.response_type
     };
-
+    
     return helpers.oauth2Implicit(url, urlParams)
     .then(function(token){
       var db = window.localStorage;
@@ -3219,14 +3187,14 @@ intel.xdk.services.iodocs_.EventBrite = ((function (credentials, helpers) {
       return showError(err.responseText);
     });
   }
-
+  
   exports.eventSearch = function(params){
     var token = getToken();
     if (!token) return showError('Need access token before making call');
 
     convertKey(params, "venue_city", "venue.city");
     convertKey(params, "start_date_keyword", "start_date.keyword");
-
+    
     var urlParams = $.extend({token: token}, params);
     var completeUrl = 'https://www.eventbriteapi.com/v3/events/search/?' +  $.param(urlParams);
     return $.ajax({
@@ -3239,13 +3207,13 @@ intel.xdk.services.iodocs_.EventBrite = ((function (credentials, helpers) {
     .fail(function(err){
       return showError(err.responseText);
     });
-  };
-
+  };  
+  
   return exports;
 }))(intel.xdk.services.credentials.EventBrite,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.OpenTable = ((function (credentials, helpers) {
   var exports = {};
-
+    
   function jsonCleaner(x) {
     var type = typeof x;
     if (x instanceof Array) {
@@ -3263,7 +3231,7 @@ intel.xdk.services.iodocs_.OpenTable = ((function (credentials, helpers) {
       return x;
     }
   }
-
+    
   exports.stats = function (params) {
     var url = 'http://opentable.herokuapp.com/api/';
     url += 'stats';
@@ -3275,7 +3243,7 @@ intel.xdk.services.iodocs_.OpenTable = ((function (credentials, helpers) {
     url += 'cities';
     return $.ajax({url: url});
   };
-
+    
   exports.restaurants = function (params) {
     params = jsonCleaner(params);
     var url = 'http://opentable.herokuapp.com/api/';
@@ -3283,7 +3251,7 @@ intel.xdk.services.iodocs_.OpenTable = ((function (credentials, helpers) {
     if (params) url = url + '?' + $.param(params);
     return $.ajax({url: url});
   };
-
+    
   exports.restaurant_by_id = function (params) {
     //params = jsonCleaner(params);
     var url = 'http://opentable.herokuapp.com/api/';
@@ -3291,106 +3259,25 @@ intel.xdk.services.iodocs_.OpenTable = ((function (credentials, helpers) {
     //if (params) url = url + '?' + $.param(params);
     return $.ajax({url: url});
   };
-
-
-
-
-
+  
+ 
+  
+  
+  
   return exports;
 }))(intel.xdk.services.credentials.OpenTable,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.RSS = ((function (credentials, helpers) {
   var exports = {};
   exports.Request = function (params) {
-
+    
     return $.ajax(params);
   };
+  
+  
 
-
-
-
+  
   return exports;
 }))(intel.xdk.services.credentials.RSS,intel.xdk.services.iodocs_.helpers);
-intel.xdk.services.iodocs_.UPS = ((function (credentials, helpers) {
-  var exports = {};
-
-  function createRequest(){
-
-  };
-  function createAccessSubstr(account_no, user_id, password){
-      return '<?xml version="1.0"?><AccessRequest xml:lang="en-US"><AccessLicenseNumber>'+ account_no + '</AccessLicenseNumber>            <UserId>'+ user_id +'</UserId><Password>' + password +'</Password></AccessRequest>';
-  };
-  function createRequestTypeSubstr(request_type, customer_context, request_action, request_option, request_details_string){
-      return '<?xml version="1.0"?><'+ request_type+ ' xml:lang="en-US"><Request><TransactionReference><CustomerContext>' + customer_context + '</CustomerContext><XpciVersion>1.0</XpciVersion></TransactionReference><RequestAction>'+ request_action +'</RequestAction><RequestOption>'+ request_option +'</RequestOption></Request>' + request_details_string + '</'+request_type+'>';
-  };
-
-
-  exports.tracking = function (params) {
-    var url = 'https://www.ups.com/ups.app/xml/Track' ;
-      var request_type = 'TrackRequest';
-      var customer_context = 'QAST Track';
-      var request_action = 'Track';
-      var request_option = 'activity';
-      var access_string = createAccessSubstr(params.account_no, params.user_id, params.password);
-      var request_details_string = '<TrackingNumber>' + params.tracking_no +'</TrackingNumber>';
-      var request_string = createRequestTypeSubstr(request_type, customer_context, request_action, request_option, request_details_string);
-      var xml_req = access_string + request_string;
-    return $.ajax({url: url,
-                   data: xml_req,
-                   type: 'POST'
-                  });
-  };
-  exports.address_validation = function (params) {
-    var url = 'https://www.ups.com/ups.app/xml/AV' ;
-    var request_type = 'AddressValidationRequest';
-    var customer_context = 'Maryam Dennis-Customer Data';
-    var request_action = 'AV';
-      var request_option = '';
-      var access_string = createAccessSubstr(params.account_no, params.user_id, params.password);
-      var request_details_string = '<Address><City>' + params.city +'</City><StateProvinceCode>' + params.StateProvinceCode + '</StateProvinceCode></Address>';
-      var request_string = createRequestTypeSubstr(request_type, customer_context, request_action, request_option, request_details_string);
-      var xml_req = access_string + request_string;
-    return $.ajax({url: url,
-                   data: xml_req,
-                   type: 'POST'
-                  });
-  };
-    exports.street_address_validation = function (params) {
-    var url = 'https://www.ups.com/ups.app/xml/XAV' ;
-    var request_type = 'AddressValidationRequest';
-    var customer_context = '';
-    var request_action = 'XAV';
-      var request_option = '3';
-      var access_string = createAccessSubstr(params.account_no, params.user_id, params.password);
-      var request_details_string = '<AddressKeyFormat><AddressLine>' + params.address_line1 +'</AddressLine><AddressLine>' + params.address_line2 +'</AddressLine><PostCodePrimaryLow>' + params.postcode_primary + '</PostCodePrimaryLow><CountryCode>'+ params.country_code +'</CountryCode></AddressKeyFormat>';
-      var request_string = createRequestTypeSubstr(request_type, customer_context, request_action, request_option, request_details_string);
-      var xml_req = access_string + request_string;
-    return $.ajax({url: url,
-                   data: xml_req,
-                   type: 'POST'
-                  });
-  };
-    exports.locator = function (params) {
-    var url = 'https://www.ups.com/ups.app/xml/Locator' ;
-    var request_type = 'LocatorRequest';
-    var customer_context = '';
-    var request_action = 'Locator';
-      var request_option = '1';
-      var access_string = createAccessSubstr(params.account_no, params.user_id, params.password);
-      var request_details_string = '<OriginAddress><AddressKeyFormat><AddressLine>' + params.address_line1 +'</AddressLine><AddressLine>' + params.address_line2 +'</AddressLine><PostCodePrimaryLow>' + params.postcode_primary + '</PostCodePrimaryLow><CountryCode>'+ params.country_code +'</CountryCode></AddressKeyFormat></OriginAddress>';
-        request_details_string = request_details_string + '<Translate><LanguageCode>ENG</LanguageCode></Translate>';
-        request_details_string = request_details_string + '<LocationSearchCriteria><SearchOption><OptionType><Code>' + params.search_criteria + '</Code></OptionType></SearchOption></LocationSearchCriteria>';
-
-      var request_string = createRequestTypeSubstr(request_type, customer_context, request_action, request_option, request_details_string);
-      var xml_req = access_string + request_string ;
-    return $.ajax({url: url,
-                   data: xml_req,
-                   type: 'POST'
-                  });
-  };
-
-
-  return exports;
-}))(intel.xdk.services.credentials.UPS,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.twitter = ((function (credentials, helpers) {
   var exports = {};
 
@@ -3411,12 +3298,12 @@ intel.xdk.services.iodocs_.twitter = ((function (credentials, helpers) {
       return x;
     }
   }
-
+  
   function getToken() {
     var db = window.localStorage;
     return db.getItem('twitter_access_token');
   }
-
+  
   exports.authenticate = function(params) {
     var url = 'https://api.twitter.com/oauth2/token';
     var rfcConsumerKey = credentials.apiKey;
@@ -3844,7 +3731,7 @@ intel.xdk.services.iodocs_.twitter = ((function (credentials, helpers) {
       return err.responseText;
     });
   };
-
+  
   return exports;
 }))(intel.xdk.services.credentials.twitter,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.github = ((function (credentials, helpers) {
@@ -3879,11 +3766,11 @@ intel.xdk.services.iodocs_.github = ((function (credentials, helpers) {
   function getNotifications(path, params){
     var token = window.localStorage.getItem('github_access_token');
     if (!token) return 'Need access token before making call';
-
+    
     var urlParams = $.extend({access_token: token}, params);
     var completeUrl = 'https://api.github.com/' + path + '?' + $.param(urlParams);
     return $.ajax({
-      headers: {
+      headers: { 
         Accept : "application/vnd.github.v3+json"
       },
       url: completeUrl,
@@ -3905,12 +3792,12 @@ intel.xdk.services.iodocs_.github = ((function (credentials, helpers) {
     var repo = params.repo;
     delete params.owner;
     delete params.repo;
-
+    
     var urlParams = $.extend({access_token: token}, params);
     var completeUrl = 'https://api.github.com/repos/' + owner + '/' + repo + '/' + path + '?' + $.param(urlParams);
 
     return $.ajax({
-      headers: {
+      headers: { 
         Accept : "application/vnd.github.v3+json"
       },
       url: completeUrl,
@@ -3923,12 +3810,12 @@ intel.xdk.services.iodocs_.github = ((function (credentials, helpers) {
       return err.responseText;
     });
   };
-
+  
   function getEvents(params){
     var completeUrl = 'https://api.github.com/events';
 
     return $.ajax({
-      headers: {
+      headers: { 
         Accept : "application/vnd.github.v3+json"
       },
       url: completeUrl,
@@ -3948,7 +3835,7 @@ intel.xdk.services.iodocs_.github = ((function (credentials, helpers) {
     var completeUrl = 'https://api.github.com/repos/' + owner + '/' + repo + '/events';
 
     return $.ajax({
-      headers: {
+      headers: { 
         Accept : "application/vnd.github.v3+json"
       },
       url: completeUrl,
@@ -3968,7 +3855,7 @@ intel.xdk.services.iodocs_.github = ((function (credentials, helpers) {
     var completeUrl = 'https://api.github.com/repos/' + owner + '/' + repo + '/issues/events';
 
     return $.ajax({
-      headers: {
+      headers: { 
         Accept : "application/vnd.github.v3+json"
       },
       url: completeUrl,
@@ -3987,7 +3874,7 @@ intel.xdk.services.iodocs_.github = ((function (credentials, helpers) {
     var completeUrl = 'https://api.github.com/users/' + username + '/received_events';
 
     return $.ajax({
-      headers: {
+      headers: { 
         Accept : "application/vnd.github.v3+json"
       },
       url: completeUrl,
@@ -4006,7 +3893,7 @@ intel.xdk.services.iodocs_.github = ((function (credentials, helpers) {
     var completeUrl = 'https://api.github.com/users/' + username + '/events';
 
     return $.ajax({
-      headers: {
+      headers: { 
         Accept : "application/vnd.github.v3+json"
       },
       url: completeUrl,
@@ -4027,7 +3914,7 @@ intel.xdk.services.iodocs_.github = ((function (credentials, helpers) {
     var urlParams = $.extend({access_token: token}, params);
     var completeUrl = 'https://api.github.com/issues' + '?' + $.param(urlParams);
     return $.ajax({
-      headers: {
+      headers: { 
         Accept : "application/vnd.github.v3+json"
       },
       url: completeUrl,
@@ -4048,7 +3935,7 @@ intel.xdk.services.iodocs_.github = ((function (credentials, helpers) {
     var urlParams = $.extend({access_token: token}, params);
     var completeUrl = 'https://api.github.com/user/repos' + '?' + $.param(urlParams);
     return $.ajax({
-      headers: {
+      headers: { 
         Accept : "application/vnd.github.v3+json"
       },
       url: completeUrl,
@@ -4066,7 +3953,7 @@ intel.xdk.services.iodocs_.github = ((function (credentials, helpers) {
     var username = params.username;
     var completeUrl = 'https://api.github.com/users/' + username + '/repos';
     return $.ajax({
-      headers: {
+      headers: { 
         Accept : "application/vnd.github.v3+json"
       },
       url: completeUrl,
@@ -4083,7 +3970,7 @@ intel.xdk.services.iodocs_.github = ((function (credentials, helpers) {
   function getAllRepos(params){
     var completeUrl = 'https://api.github.com/repositories' + '?' + $.param(params);
     return $.ajax({
-      headers: {
+      headers: { 
         Accept : "application/vnd.github.v3+json"
       },
       url: completeUrl,
@@ -4105,7 +3992,7 @@ intel.xdk.services.iodocs_.github = ((function (credentials, helpers) {
 
     var completeUrl = 'https://api.github.com/search/repositories' + '?' + $.param(params);
     return $.ajax({
-      headers: {
+      headers: { 
         Accept : "application/vnd.github.v3+json"
       },
       url: completeUrl,
@@ -4131,14 +4018,95 @@ intel.xdk.services.iodocs_.github = ((function (credentials, helpers) {
   exports.getUserRepos = getUserRepos.bind(null);
   exports.getAllRepos = getAllRepos.bind(null);
   exports.searchRepositories = searchRepositories.bind(null);
-
+  
   return exports;
 }))(intel.xdk.services.credentials.github,intel.xdk.services.iodocs_.helpers);
+intel.xdk.services.iodocs_.UPS = ((function (credentials, helpers) {
+  var exports = {};
+    
+  function createRequest(){
+      
+  };
+  function createAccessSubstr(account_no, user_id, password){
+      return '<?xml version="1.0"?><AccessRequest xml:lang="en-US"><AccessLicenseNumber>'+ account_no + '</AccessLicenseNumber>            <UserId>'+ user_id +'</UserId><Password>' + password +'</Password></AccessRequest>';
+  };
+  function createRequestTypeSubstr(request_type, customer_context, request_action, request_option, request_details_string){
+      return '<?xml version="1.0"?><'+ request_type+ ' xml:lang="en-US"><Request><TransactionReference><CustomerContext>' + customer_context + '</CustomerContext><XpciVersion>1.0</XpciVersion></TransactionReference><RequestAction>'+ request_action +'</RequestAction><RequestOption>'+ request_option +'</RequestOption></Request>' + request_details_string + '</'+request_type+'>';
+  };    
+    
+    
+  exports.tracking = function (params) {
+    var url = 'https://www.ups.com/ups.app/xml/Track' ;
+      var request_type = 'TrackRequest';
+      var customer_context = 'QAST Track';
+      var request_action = 'Track';
+      var request_option = 'activity';
+      var access_string = createAccessSubstr(params.account_no, params.user_id, params.password);
+      var request_details_string = '<TrackingNumber>' + params.tracking_no +'</TrackingNumber>';
+      var request_string = createRequestTypeSubstr(request_type, customer_context, request_action, request_option, request_details_string);
+      var xml_req = access_string + request_string;
+    return $.ajax({url: url, 
+                   data: xml_req,
+                   type: 'POST'                   
+                  });
+  };
+  exports.address_validation = function (params) {
+    var url = 'https://www.ups.com/ups.app/xml/AV' ;
+    var request_type = 'AddressValidationRequest';
+    var customer_context = 'Maryam Dennis-Customer Data';
+    var request_action = 'AV';
+      var request_option = '';
+      var access_string = createAccessSubstr(params.account_no, params.user_id, params.password);
+      var request_details_string = '<Address><City>' + params.city +'</City><StateProvinceCode>' + params.StateProvinceCode + '</StateProvinceCode></Address>';
+      var request_string = createRequestTypeSubstr(request_type, customer_context, request_action, request_option, request_details_string);
+      var xml_req = access_string + request_string;
+    return $.ajax({url: url, 
+                   data: xml_req,
+                   type: 'POST'                   
+                  });      
+  };
+    exports.street_address_validation = function (params) {
+    var url = 'https://www.ups.com/ups.app/xml/XAV' ;
+    var request_type = 'AddressValidationRequest';
+    var customer_context = '';
+    var request_action = 'XAV';
+      var request_option = '3';
+      var access_string = createAccessSubstr(params.account_no, params.user_id, params.password);
+      var request_details_string = '<AddressKeyFormat><AddressLine>' + params.address_line1 +'</AddressLine><AddressLine>' + params.address_line2 +'</AddressLine><PostCodePrimaryLow>' + params.postcode_primary + '</PostCodePrimaryLow><CountryCode>'+ params.country_code +'</CountryCode></AddressKeyFormat>';
+      var request_string = createRequestTypeSubstr(request_type, customer_context, request_action, request_option, request_details_string);
+      var xml_req = access_string + request_string;
+    return $.ajax({url: url, 
+                   data: xml_req,
+                   type: 'POST'                   
+                  });      
+  };
+    exports.locator = function (params) {
+    var url = 'https://www.ups.com/ups.app/xml/Locator' ;
+    var request_type = 'LocatorRequest';
+    var customer_context = '';
+    var request_action = 'Locator';
+      var request_option = '1';
+      var access_string = createAccessSubstr(params.account_no, params.user_id, params.password);
+      var request_details_string = '<OriginAddress><AddressKeyFormat><AddressLine>' + params.address_line1 +'</AddressLine><AddressLine>' + params.address_line2 +'</AddressLine><PostCodePrimaryLow>' + params.postcode_primary + '</PostCodePrimaryLow><CountryCode>'+ params.country_code +'</CountryCode></AddressKeyFormat></OriginAddress>';
+        request_details_string = request_details_string + '<Translate><LanguageCode>ENG</LanguageCode></Translate>';
+        request_details_string = request_details_string + '<LocationSearchCriteria><SearchOption><OptionType><Code>' + params.search_criteria + '</Code></OptionType></SearchOption></LocationSearchCriteria>';
+        
+      var request_string = createRequestTypeSubstr(request_type, customer_context, request_action, request_option, request_details_string);
+      var xml_req = access_string + request_string ;
+    return $.ajax({url: url, 
+                   data: xml_req,
+                   type: 'POST'                   
+                  });      
+  };    
+    
+  
+  return exports;
+}))(intel.xdk.services.credentials.UPS,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.centralIndex = ((function (credentials, helpers) {
   var exports = {};
-
+  
   var baseUrl = 'http://api.centralindex.com';
-
+  
   function getCentralIndexData(type, path, params) {
     alert(credentials.apiKey);
     var url = baseUrl + path + '?api_key=' + credentials.apiKey + $.param(params);
@@ -4170,7 +4138,7 @@ intel.xdk.services.iodocs_.centralIndex = ((function (credentials, helpers) {
 }))(intel.xdk.services.credentials.centralIndex,intel.xdk.services.iodocs_.helpers);
 intel.xdk.services.iodocs_.edmunds = ((function (credentials, helpers) {
   var exports = {};
-
+    
     function make_request(params, url)
     {
         params.api_key = credentials.apiKey;
@@ -4179,7 +4147,7 @@ intel.xdk.services.iodocs_.edmunds = ((function (credentials, helpers) {
         url = url + '?' +  $.param(params);
         return $.ajax({url: url, type: 'GET'});
     }
-
+    
     function by_id_function(url_str, post_url)
     {
         return function(params)
@@ -4190,7 +4158,7 @@ intel.xdk.services.iodocs_.edmunds = ((function (credentials, helpers) {
             return make_request(params, url);
         }
     }
-
+    
     function by_style_zip_function(url_str)
     {
          return function (params)
@@ -4215,11 +4183,11 @@ intel.xdk.services.iodocs_.edmunds = ((function (credentials, helpers) {
                  url += '/' + val;
              }
              url += (post_url || '');
-
+             
              return make_request(params, url);
          };
     }
-
+    
     function by_url_function(url)
     {
         return function(params)
@@ -4227,191 +4195,191 @@ intel.xdk.services.iodocs_.edmunds = ((function (credentials, helpers) {
             return make_request(params, url);
         }
     }
-
+  
   // VEHICLE MAKE
   exports.GetAllMakes = by_url_function('https://api.edmunds.com/api/vehicle/v2/makes');
-
+    
   exports.CarDetailsByName = function (params) {
     var make = params.make;
     delete params.make;
     var url = 'https://api.edmunds.com/api/vehicle/v2/' + make ;
-
+      
     return make_request(params, url);
   };
-
+  
   exports.GetMakesCount = by_url_function('https://api.edmunds.com/api/vehicle/v2/makes/count');
-
+    
   //VEHICLE MODEL
   exports.DetailsByMakeAndModel = function (params) {
     var make   = params.make;
     var model  = params.model;
-
+      
     delete params.make;
     delete params.model;
-
+      
     var url = 'https://api.edmunds.com/api/vehicle/v2/' + make + '/' + model ;
-
+      
     return make_request(params, url);
-  };
-
-
+  };  
+    
+  
   exports.GetAllCarModelsByCarMake = function (params) {
     var make   = params.make;
     delete params.make;
-
+    
     var url = 'https://api.edmunds.com/api/vehicle/v2/' + make + '/models' ;
-
+      
     return make_request(params, url);
-  };
-
+  };  
+    
   exports.GetCarModelsCount = function (params) {
     var make   = params.make;
     delete params.make;
-
+    
     var url = 'https://api.edmunds.com/api/vehicle/v2/' + make + '/models/count' ;
-
+      
     return make_request(params, url);
-  };
-
+  }; 
+    
   //VEHICLE MODEL YEAR
   exports.GetCarModelYearByCarMakeAndModel = function (params) {
     var make   = params.make;
     var model  = params.model;
-
+      
     delete params.make;
     delete params.model;
-
+      
     var url = 'https://api.edmunds.com/api/vehicle/v2/' + make + '/' + model + '/years';
-
+      
     return make_request(params, url);
-  };
-
+  };  
+    
   exports.GetInfoByCarMakeAndModelAndCarYear = function (params) {
     var make   = params.make;
     var model  = params.model;
     var year   = params.year;
-
+      
     delete params.make;
     delete params.model;
     delete params.year;
-
+      
     var url = 'https://api.edmunds.com/api/vehicle/v2/' + make + '/' + model + '/' + year;
-
+      
     return make_request(params, url);
-  };
-
+  };  
+    
   exports.GetCarModelYearsCountByMakeAndModel = function (params) {
     var make   = params.make;
     var model  = params.model;
-
+      
     delete params.make;
     delete params.model;
-
+      
     var url = 'https://api.edmunds.com/api/vehicle/v2/' + make + '/' + model + '/years/count';
-
+      
     return make_request(params, url);
-  };
-
+  };  
+    
   //VEHICLE STYLE
-  exports.GetStyleDetails = by_id_function('https://api.edmunds.com/api/vehicle/v2/styles/');
-
+  exports.GetStyleDetails = by_id_function('https://api.edmunds.com/api/vehicle/v2/styles/');  
+    
   exports.GetStyleDetailsByMakeModelYear = function (params) {
     var make   = params.make;
     var model  = params.model;
     var year   = params.year;
-
+      
     delete params.make;
     delete params.model;
     delete params.year;
-
+      
     var url = 'https://api.edmunds.com/api/vehicle/v2/' + make + '/' + model + '/' + year + '/styles';
-
+      
     return make_request(params, url);
-  };
-
+  }; 
+    
   exports.GetStylesCountByMakeModelYear = function (params) {
     var make   = params.make;
     var model  = params.model;
     var year   = params.year;
-
+      
     delete params.make;
     delete params.model;
     delete params.year;
-
+      
     var url = 'https://api.edmunds.com/api/vehicle/v2/' + make + '/' + model + '/' + year + '/styles/count';
-
+      
     return make_request(params, url);
-  };
-
+  }; 
+    
   exports.GetStylesCountByMakeModel = function (params) {
     var make   = params.make;
     var model  = params.model;
-
+      
     delete params.make;
     delete params.model;
-
+      
     var url = 'https://api.edmunds.com/api/vehicle/v2/' + make + '/' + model + '/' + '/styles/count';
-
+      
     return make_request(params, url);
-  };
-
+  }; 
+    
    exports.GetStylesCountByMake = function (params) {
     var make   = params.make;
-
+      
     delete params.make;
-
+      
     var url = 'https://api.edmunds.com/api/vehicle/v2/' + make +  '/styles/count';
-
+      
     return make_request(params, url);
-  };
-
+  }; 
+    
   exports.GetStylesCount = by_url_function('https://api.edmunds.com/api/vehicle/v2/styles/count');
-
-
+  
+    
   exports.GetStylesDetailsByVehicleChromeID = function (params) {
     var chromeid   = params.chromeid;
-
+      
     delete params.chromeid;
-
+      
     var url = 'https://api.edmunds.com/api/vehicle/v2/partners/chrome/styles/' + chromeid;
-
+      
     return make_request(params, url);
-  };
-
-  exports.GetListOfOptionsByStyleID    = by_id_function('https://api.edmunds.com/api/vehicle/v2/styles/', '/options');
+  }; 
+    
+  exports.GetListOfOptionsByStyleID    = by_id_function('https://api.edmunds.com/api/vehicle/v2/styles/', '/options');    
   exports.GetOptionsDetailsByID        = by_id_function('https://api.edmunds.com/api/vehicle/v2/options/');
   exports.GetListOfColorsByStyleID     = by_id_function('https://api.edmunds.com/api/vehicle/v2/styles/', '/colors');
   exports.GetColorDetailsByID          = by_id_function('https://api.edmunds.com/api/vehicle/v2/colors/');
   exports.GetEnginesByStyleID          = by_id_function('https://api.edmunds.com/api/vehicle/v2/styles/', '/engines');
-  exports.GetEnginesDetailsByID        = by_id_function('https://api.edmunds.com/api/vehicle/v2/engines/');
+  exports.GetEnginesDetailsByID        = by_id_function('https://api.edmunds.com/api/vehicle/v2/engines/');  
   exports.GetTransmissionsByStyleID    = by_id_function('https://api.edmunds.com/api/vehicle/v2/styles/', '/transmissions' );
   exports.GetTransmissionDetailsByID   = by_id_function('https://api.edmunds.com/api/vehicle/v2/transmissions/');
   exports.GetEquipmentDetailsByStyleID = by_id_function('https://api.edmunds.com/api/vehicle/v2/styles/', '/equipment');
   exports.GetEquipmentDetailsByID      = by_id_function('https://api.edmunds.com/api/vehicle/v2/equipment/');
   exports.GetVehicleDetailsBySquishVIN = by_id_function('https://api.edmunds.com/api/vehicle/v2/squishvins/');
-
+    
   exports.GetConfiguredVehicleByZipAndStyle = by_url_function('https://api.edmunds.com/v1/api/configurator/default');
-  exports.GetConfiguredVehicleWithOptions   = by_url_function('https://api.edmunds.com/v1/api/configurator/withOptions');
-
+  exports.GetConfiguredVehicleWithOptions   = by_url_function('https://api.edmunds.com/v1/api/configurator/withOptions');      
+    
   exports.GetPhotoByStyleID = function (params) {
-
+      
     var url = 'https://api.edmunds.com/v1/api/vehiclephoto/service/findphotosbystyleid';
     //the final request has URL partials in it. I'd love to reconstruct a full image URL from them,
     //but can't find the docs for how to do so.
     return make_request(params, url);
   };
-
+    
  exports.NewTCObyStyleAndZip             = by_style_zip_function('https://api.edmunds.com/v1/api/tco/newtruecosttoownbystyleidandzip/');
  exports.UsedTCObyStyleAndZip            = by_style_zip_function('https://api.edmunds.com/v1/api/tco/usedtruecosttoownbystyleidandzip/');
  exports.NewTotalCashPriceByStyleAndZip  = by_style_zip_function('https://api.edmunds.com/v1/api/tco/newtotalcashpricebystyleidandzip/');
  exports.UsedTotalCashPriceByStyleAndZip = by_style_zip_function('https://api.edmunds.com/v1/api/tco/usedtotalcashpricebystyleidandzip/');
- exports.GetVehicleMakesWithTCOdata      = by_url_function('https://api.edmunds.com/v1/api/tco/getmakeswithtcodata');
+ exports.GetVehicleMakesWithTCOdata      = by_url_function('https://api.edmunds.com/v1/api/tco/getmakeswithtcodata'); 
  exports.GetVehicleModelsWithTCOdata     = by_url_function('https://api.edmunds.com/v1/api/tco/getmodelswithtcodata');
- exports.GetVehicleStylesWithTCOdata     = by_url_function('https://api.edmunds.com/v1/api/tco/getstyleswithtcodatabysubmodel');
- exports.AllNewTCObyStyleAndZipAndState  = by_args_function('https://api.edmunds.com/api/tco/v1/details/allnewtcobystyleidzipandstate', ['styleid', 'zip', 'state']);
- exports.AllUsedTCObyStyleAndZipAndState = by_args_function('https://api.edmunds.com/api/tco/v1/details/allusedtcobystyleidzipandstate', ['styleid', 'zip', 'state']);
+ exports.GetVehicleStylesWithTCOdata     = by_url_function('https://api.edmunds.com/v1/api/tco/getstyleswithtcodatabysubmodel');    
+ exports.AllNewTCObyStyleAndZipAndState  = by_args_function('https://api.edmunds.com/api/tco/v1/details/allnewtcobystyleidzipandstate', ['styleid', 'zip', 'state']);   
+ exports.AllUsedTCObyStyleAndZipAndState = by_args_function('https://api.edmunds.com/api/tco/v1/details/allusedtcobystyleidzipandstate', ['styleid', 'zip', 'state']);       
  exports.TMVforNameYearMSRPandZip = by_args_function('https://api.edmunds.com/api/v1/vehicle', ['make', 'year'], '/price');
-
+    
  exports.TMVforVINandMSRPandZip   = by_args_function('https://api.edmunds.com/api/v1/vehicle/vin', ['vin'], '/price');
  exports.TMVforStyleAndZip        = by_url_function('https://api.edmunds.com/v1/api/tmv/tmvservice/calculatenewtmv');
  exports.TMVforUsed               = by_url_function('https://api.edmunds.com/v1/api/tmv/tmvservice/calculateusedtmv');
@@ -4419,10 +4387,38 @@ intel.xdk.services.iodocs_.edmunds = ((function (credentials, helpers) {
  exports.TMV_Certified            = by_url_function('https://api.edmunds.com/v1/api/tmv/tmvservice/findcertifiedpriceforstyle');
  exports.GetRatingByMakeModelYear = by_args_function('https://api.edmunds.com/api/vehicle/v2/grade', ['make', 'model', 'year']);
  exports.GetRatingByStyle         = by_args_function('https://api.edmunds.com/api/vehicle/v2/grade', ['styleid']);
-
+    
  exports.GetReviewByMakeModelYear = by_args_function('https://api.edmunds.com/api/vehiclereviews/v2/', ['make', 'model', 'year']);
  exports.GetReviewByStyle         = by_args_function('https://api.edmunds.com/api/vehiclereviews/v2/styles', ['styleid']);
-
+    
   return exports;
 }))(intel.xdk.services.credentials.edmunds,intel.xdk.services.iodocs_.helpers);
+intel.xdk.services.iodocs_.TS_ler_status = ((function (credentials, helpers) {
+  var exports = {};
+  
+  /* Data Feed Function 
+  exports.ler_alertas = function (params) {
+    var url = 'http://45.55.77.192/0/config_ler_status.php?api_key_var_name=' + credentials.apiKey;
+    return $.ajax({url: url});
+  };
+  */
+  exports.ler_alertas = function(params) {
+    var url = 'http://45.55.77.192/0/config_ler_status.php';
+//    delete params.UserId;
+    if (params) url = url + '?' + $.param(params);
+    return $.ajax({url: url, type: 'GET'});
+  }; 
+  
+  exports.ler_alertas_retorno = function(params) {
+    var url = 'http://45.55.77.192/0/config_ler_status.php';
+//    delete params.UserId;
+    if (params) url = url + '?' + $.param(params);
+    return $.ajax({url: url, type: 'GET'});
+  }; 
+  
+  return exports;
+}))(intel.xdk.services.credentials.TS_ler_status,intel.xdk.services.iodocs_.helpers);
 /*xdk-auto-gen:service-methods:common:end*/
+/*xdk-auto-gen:service-methods:TS_ler_statusler_alertas:start:52a04e85764d0b007b01918197e10895*/
+intel.xdk.services.TS_ler_statusler_alertas=intel.xdk.services.iodocs_.bindCommon.bind(null,"intel.xdk.services.TS_ler_statusler_alertas",intel.xdk.services.iodocs_.TS_ler_status.ler_alertas,{f:"1",m:"TS0",s:"6",__proto__:{}});
+/*xdk-auto-gen:service-methods:TS_ler_statusler_alertas:end*/

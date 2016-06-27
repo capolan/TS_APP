@@ -513,7 +513,7 @@
     requestAnimationFrame polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
     MIT license
 
-    Adapted from https://gist.github.com/paulirish/1579671 which derived from
+    Adapted from https://gist.github.com/paulirish/1579671 which derived from 
     http://paulirish.com/2011/requestanimationframe-for-smart-animating/
     http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
 
@@ -761,7 +761,7 @@ if (!Date.now)
 })(af);
 
 /**
- * af.scroller
+ * af.scroller 
  * created by Intel with modifications by Carlos Ouro @ Badoo and Intel
  * Supports iOS native touch scrolling
  * Optimizations and bug improvements by Intel
@@ -3125,7 +3125,7 @@ if (!Date.now)
         },
 
         onTouchStart: function(e) {
-            //setup initial touch position
+            //setup initial touch position            
             this.dX = e.touches[0].pageX;
             this.dY = e.touches[0].pageY;
             this.lastTimestamp = e.timeStamp;
@@ -4308,7 +4308,7 @@ if (!Date.now)
          * @param {boolean=} force
          * @param {function=} callback Callback function to execute after menu toggle is finished
          * @param {number=} time Time to run the transition
-         * @param {boolean=} aside
+         * @param {boolean=} aside 
          * @title $.ui.toggleSideMenu([force],[callback],[time])
          */
         toggleLeftSideMenu: function(force, callback, time, aside) {
@@ -4574,7 +4574,7 @@ if (!Date.now)
                 $.query("#header").append(elems);
                 //Do not animate - sometimes they act funky
                 if (!$.ui.animateHeaders) {
-                    if (that.prevHeader.data("parent")){
+                    if (that.prevHeader.data("parent")){                        
                         if($.feat.nativeTouchScroll||$.os.desktop || !useScroller ){
                             this.prevHeader.appendTo("#" + this.prevHeader.data("parent"));
                         }
@@ -4602,7 +4602,7 @@ if (!Date.now)
                     time: that.transitionTime,
                     delay: numOnly(that.transitionTime) / 5 + "ms",
                     complete: function() {
-                        if (that.prevHeader.data("parent")){
+                        if (that.prevHeader.data("parent")){                        
                             if($.feat.nativeTouchScroll||$.os.desktop || !useScroller ){
                                 that.prevHeader.appendTo("#" + that.prevHeader.data("parent"));
                             }
@@ -4632,7 +4632,7 @@ if (!Date.now)
                 this.prevHeader = elems;
             }
         },
-        /**
+        /** 
          * @api private
          */
         previAsideMenu:null,
@@ -4777,7 +4777,7 @@ if (!Date.now)
          */
         modalReference_:null,
         /**
-         * Load a content panel in a modal window.
+         * Load a content panel in a modal window. 
            ```
            $.ui.showModal("#myDiv","fade");
            ```
@@ -4958,7 +4958,7 @@ if (!Date.now)
          * @param {string} content
          * @param {string} title
          * @param {boolean=} refresh Enable refresh on pull
-         * @param {function=} refreshFunc
+         * @param {function=} refreshFunc 
          * @title $.ui.addContentDiv(id, content, title);
          */
         addContentDiv: function(el, content, title, refresh, refreshFunc) {
@@ -5128,7 +5128,7 @@ if (!Date.now)
             //check for custom footer
             var that = this;
             var hasFooter = what.getAttribute("data-footer");
-            var hasHeader = what.getAttribute("data-header");
+            var hasHeader = what.getAttribute("data-header");            
             //$asap removed since animations are fixed in css3animate
             if (hasFooter && hasFooter.toLowerCase() === "none") {
                 that.toggleNavMenu(false);
@@ -5136,7 +5136,7 @@ if (!Date.now)
             } else {
                 that.toggleNavMenu(true);
             }
-            if (hasFooter && that.customFooter !== hasFooter) {
+            if (hasFooter && that.customFooter !== hasFooter) {                
                 that.customFooter = hasFooter;
                 that.updateNavbarElements(hasFooter);
             } else if (hasFooter !== that.customFooter) {
@@ -5163,7 +5163,7 @@ if (!Date.now)
 
             //Load inline footers
             var inlineFooters = $(what).find("footer");
-            if (inlineFooters.length > 0) {
+            if (inlineFooters.length > 0) {                
                 that.customFooter = what.id;
                 inlineFooters.data("parent", what.id);
                 that.updateNavbarElements(inlineFooters);
@@ -5481,10 +5481,10 @@ if (!Date.now)
                             urlHash = that.addContentDiv(urlHash, xmlhttp.responseText, anchor.title ? anchor.title : target, refresh, refreshFunction);
                     } else {
 
-                        that.updatePanel("afui_ajax", xmlhttp.responseText);
+                        that.updatePanel("afui_ajax", xmlhttp.responseText);                                                
                         $.query("#afui_ajax").attr("data-title",anchor.title ? anchor.title : target);
                         that.loadContent("#afui_ajax", newTab, back, transition);
-
+                        
                         doReturn = true;
                     }
                     //Let's load the content now.
@@ -5919,7 +5919,7 @@ if (!Date.now)
          * This must be called at the end of every transition to hide the old div and reset the doingTransition variable
          *
          * @param {object} oldDiv Div that transitioned out
-         * @param {object=} currDiv
+         * @param {object=} currDiv 
          * @title $.ui.finishTransition(oldDiv)
          */
         finishTransition: function(oldDiv, currDiv) {

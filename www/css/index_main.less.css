@@ -386,12 +386,12 @@ body:not(#afui) .upage-outer {
 @media all {
   #afui .wrapping-col > .d-margins,
   #afui .wrapping-col > .afScrollPanel > .d-margins {
-    margin-left: 6px;
+    margin-left: px;
     margin-right: 6px;
   }
   #afui .wrapping-col > .d-margins,
   #afui .wrapping-col > .afScrollPanel > .d-margins {
-    margin-left: 6px;
+    margin-left: px;
     margin-right: 6px;
   }
   #afui .d-margins {
@@ -802,7 +802,7 @@ body:not(#afui) .upage-outer {
   }
 }
 @media all {
-
+  
 }
 .uib_row_11:not(.cright) > .col {
   padding-right: 20px;
@@ -2760,10 +2760,10 @@ body:not(#afui) .upage-outer {
   }
 }
 @media all {
-
+  
 }
 @media all {
-
+  
 }
 .uib_row_25:not(.cright) > .col {
   padding-right: 20px;
@@ -4874,5 +4874,28 @@ body:not(#afui) .upage-outer {
 @media all and (min-width: 320px) {
   #afui .row-height-35 > .col > .content-area {
     min-height: 87px;
+  }
+}
+.uib_row_36:not(.cright) > .col {
+  padding-right: 20px;
+}
+.uib_row_36.cright > .col {
+  padding-left: 20px;
+}
+@media all {
+  .col-0_12-12 {
+    width: auto;
+    float: none !important;
+  }
+  .urow:not(.cright) > .col-0_12-12 {
+    padding-right: 0px !important;
+  }
+  .urow.cright > .col-0_12-12 {
+    padding-left: 0px !important;
+  }
+}
+@media all and (min-width: 320px) {
+  #afui .row-height-36 > .col > .content-area {
+    min-height: 100px;
   }
 }

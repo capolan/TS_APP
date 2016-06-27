@@ -1586,7 +1586,7 @@ window.af=window.jq=jQuery;
   );
 
  */
-
+ 
 (function($) {
     "use strict";
     $.fn.actionsheet = function(opts) {
@@ -1686,7 +1686,7 @@ window.af=window.jq=jQuery;
     };
 })(jQuery);
 
-/**
+/** 
  * This plugin creates a "grow" transition using scaling and transforms
  * @author Ian Maffett
  * @copyright 2014 Intel
@@ -2166,8 +2166,8 @@ window.af=window.jq=jQuery;
 
 /**
  * af.animation
- * @copyright Intel 2014
- *
+ * @copyright Intel 2014 
+ * 
  */
 /* jshint strict:false*/
 (function ($) {
@@ -2219,7 +2219,7 @@ window.af=window.jq=jQuery;
             this.element.offsetWidth = this.element.offsetWidth;
             this.element.classList.add(item);
             this.animClass = item;
-            //check if it exists..if not trigger end
+            //check if it exists..if not trigger end 
             var computedStyle = window.getComputedStyle(this.element, null);
             var time = computedStyle.animation - duration;
             if (!time)
@@ -2320,9 +2320,9 @@ window.af=window.jq=jQuery;
 })(jQuery);
 
 /**
- * af.splashscreen
- * @copyright Intel 2014
- *
+ * af.splashscreen 
+ * @copyright Intel 2014 
+ * 
  */
 (function($){
     "use strict";
@@ -2578,7 +2578,7 @@ window.af=window.jq=jQuery;
  *
  * @param {Function} $ The appframework selector function
  */
-
+ 
 (function ($) {
     "use strict";
     var cancelClickMove = false;
@@ -2740,7 +2740,7 @@ window.af=window.jq=jQuery;
 
 
 
-
+ 
 
 (function ($) {
     "use strict";
@@ -2866,7 +2866,7 @@ window.af=window.jq=jQuery;
  * af.lockscreen - a lockscreen for html5 mobile apps
  * Copyright 2015 - Intel
  */
-
+ 
  /* global FastClick*/
 
  /* jshint camelcase:false*/
