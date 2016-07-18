@@ -2,6 +2,7 @@
 <html>
 
     <head>
+        <link rel="stylesheet" type="text/css" href="media_button_bar/css/media_button_bar.css">
         <!--
         <link rel="stylesheet" type="text/css" href="app_framework/3.0/af.ui.css">
         <link rel="stylesheet" type="text/css" href="app_framework/3.0/icons.min.css">
@@ -193,6 +194,17 @@
                     <div class="grid grid-pad urow uib_row_31 row-height-31" data-uib="layout/row" data-ver="0">
                         <div class="col uib_col_38 col-0_12-12" data-uib="layout/col" data-ver="0">
                             <div class="widget-container content-area vertical-col">
+                                <div class="tarea widget uib_w_325 d-margins teste" data-uib="media/text" data-ver="0" name="uib_w_325">
+                                    <div class="widget-container left-receptacle"></div>
+                                    <div class="widget-container right-receptacle"></div>
+                                    <div class="text-container">
+                                        <p>Email</p>
+                                    </div>
+                                </div>
+                                <div class="table-thing with-label widget uib_w_326 d-margins" data-uib="app_framework/input" data-ver="1">
+
+                                    <input class="wide-control" placeholder="<email>" type="text" id="text-sign-email">
+                                </div><a class="button widget uib_w_327 d-margins" data-uib="app_framework/button" data-ver="1" id="btn-sign-email">Salvar</a>
                                 <span class="uib_shim"></span>
                             </div>
                         </div>
@@ -1214,7 +1226,7 @@
             </div>
 
             <div class="upage vertical-col left panel" id="page_sensor" data-header="af-header-sensor" data-footer="af-footer-sensor">
-                <div id="sub-page-sensor-main" class="upage-content vertical-col left hidden">
+                <div id="sub-page-sensor-main" class="upage-content vertical-col hidden">
                     <div class="table-thing with-label widget uib_w_147 d-margins" data-uib="app_framework/input" data-ver="1">
                         <label class="narrow-control label-top-left" for="text-s-nome">Nome</label>
                         <input class="wide-control" placeholder="<nome do sensor>" type="text" id="text-s-nome">
@@ -1289,6 +1301,10 @@
                             </div>
                         </div>
                     </div>
+                    <div class="table-thing with-label widget uib_w_315 d-margins" data-uib="app_framework/input" data-ver="1">
+                        <label class="narrow-control label-inline">Threshold to alert</label>
+                        <input class="wide-control" type="text" id="count_to_alert">
+                    </div>
                     <a class="button widget uib_w_148 d-margins" data-uib="app_framework/button" data-ver="1" id="btn-s-s-main">Salvar</a>
 
                     <div class="grid grid-pad urow uib_row_36 row-height-36" data-uib="layout/row" data-ver="0">
@@ -1305,7 +1321,7 @@
                         <span class="uib_shim"></span>
                     </div>
                 </div>
-                <div id="sub-page-sensor-temp" class="upage-content vertical-col left hidden">
+                <div id="sub-page-sensor-temp" class="upage-content vertical-col hidden">
 
                     <div class="widget uib_w_280 d-margins" data-uib="app_framework/input_group" data-ver="2">
                         <div class="formGroupHead">Temperatura</div>
@@ -1350,7 +1366,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="sub-page-sensor-corrente" class="upage-content vertical-col left hidden">
+                <div id="sub-page-sensor-corrente" class="upage-content vertical-col hidden">
 
                     <div class="widget uib_w_289 d-margins" data-uib="app_framework/input_group" data-ver="2">
                         <div class="formGroupHead">Corrente</div>
@@ -1419,7 +1435,7 @@
                     </div>
                 </div>
 
-                <div id="uib-page-cmd" class="upage-content vertical-col left hidden">
+                <div id="uib-page-cmd" class="upage-content vertical-col hidden">
                     <div class="table-thing with-label widget uib_w_190 d-margins" data-uib="app_framework/select" data-ver="1">
                         <label class="narrow-control label-inline" for="sel-node">Módulo</label>
                         <select class="wide-control" id="sel-node">
@@ -1433,18 +1449,6 @@
                         <label class="narrow-control label-inline" for="sel-cmd">Select</label>
 
                         <select class="wide-control" id="sel-cmd">
-                            <option>Sleep</option>
-                            <option>Led1</option>
-                            <option>Led2</option>
-                            <option>Led3</option>
-                            <option>Vcc</option>
-                            <option>Rele</option>
-                            <option>Reboot</option>
-                            <option>Led apagados</option>
-                            <option>Led ativos</option>
-                            <option>Remover node</option>
-                            <option>Reset firmware</option>
-                            <option>Limites</option>
                         </select>
                     </div>
                     <div class="table-thing with-label widget uib_w_180 d-margins" data-uib="app_framework/input" data-ver="1">
@@ -1461,6 +1465,10 @@
 
                         <input class="wide-control" type="number" id="text-s-par3">
                     </div><a class="button widget uib_w_183 d-margins" data-uib="app_framework/button" data-ver="1" id="btn-s-enviar-cmd">Enviar</a>
+                    <div class="table-thing with-label widget uib_w_316 d-margins" data-uib="app_framework/textarea" data-ver="1">
+                        <textarea class="wide-control" placeholder="Orientacoes" rows="2" wrap="soft" id="text-cmd-orientacoes"></textarea>
+                    </div>
+
                     <div class="widget uib_w_191 d-margins" data-uib="media/text" data-ver="0" id="text-cmd-text">
                         <div class="widget-container left-receptacle"></div>
                         <div class="widget-container right-receptacle"></div>
@@ -1468,6 +1476,48 @@
                             <p class="ellipsis">&nbsp;</p>
                         </div>
                     </div>
+                </div>
+
+                <div id="sub-page-sensor-rele" class="upage-content hidden vertical-col">
+
+                    <div class="grid grid-pad urow uib_row_37 row-height-37" data-uib="layout/row" data-ver="0">
+                        <div class="col uib_col_47 col-0_12-12" data-uib="layout/col" data-ver="0">
+                            <div class="widget-container content-area vertical-col">
+                                <div class="sbs-container widget uib_w_323 d-margins" data-uib="layout/side_by_side" data-ver="0">
+                                    <div class="leftContent widget-container">
+                                        <div class="table-thing with-label widget uib_w_319 d-margins" data-uib="app_framework/flip_switch" data-ver="1">
+                                            <label class="narrow-control label-top-right">Chave</label>
+
+                                            <div class="wide-control">
+                                                <input type="checkbox" class="toggle" id="af-flipswitch-rele">
+                                                <label for="af-flipswitch-rele" data-off="No" data-on="Yes"><span></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="rightContent widget-container">
+                                        <div class="widget uib_w_324 d-margins" data-uib="app_framework/checkbox" data-ver="1">
+                                            <input type="checkbox" id="af-checkbox-cmd-limpa">
+                                            <label class="content-box" for="af-checkbox-cmd-limpa">Forçar</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a class="uib-graphic-button default-graphic-sizing default-image-sizing hover-graphic-button active-graphic-button default-graphic-button default-graphic-text widget uib_w_321 d-margins media-button-text-bottom" data-uib="media/graphic_button" data-ver="0"
+                                href="#">
+                                    <img src="images/lamp_off.png" id="img-lamp-rele">
+                                    <span class="uib-caption" id="img-lamp-rele-g">Situação</span>
+                                </a>
+                                <span class="uib_shim"></span>
+                            </div>
+                        </div>
+                        <span class="uib_shim"></span>
+                    </div>
+                    <div class="tarea widget uib_w_322 d-margins" data-uib="media/text" data-ver="0" name="uib_w_322" id="text-rele-text">
+                        <div class="widget-container left-receptacle"></div>
+                        <div class="widget-container right-receptacle"></div>
+                        <div class="text-container"></div>
+                    </div>
+
                 </div>
 
             </div>

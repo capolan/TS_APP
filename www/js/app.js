@@ -20,7 +20,6 @@
 //     "use strict" ;
 // // ...event handler code here...
 // }
-
 /******************************************************************/
 /* usage: eventFire(document.getElementById('mytest1'), 'click'); */
 /******************************************************************/
@@ -114,8 +113,14 @@ function atualizaHeaderLogin(txt, flag) {
         $("#btn-assoc-ts").hide();
         $("#btn-desassoc-ts").hide();
         $(".uib_w_263").hide(); //#sel-meus-sensores
+    //    $(".uib_w_217").css('display','block'); //login
         $(".uib_w_217").show(); //login
         $(".uib_w_218").show(); //login
+        $(".uib_w_219").show(); //sigup
+        $(".uib_w_220").show(); //sigup
+        $(".uib_row_31").hide(); //sig email
+        $("text-sign-email").val(''); //sig email
+
     } else {
         document.getElementById("text-sessao-id").innerHTML = sessao_id;
         $("#text-user-name").val(json_user.login);
@@ -128,8 +133,13 @@ function atualizaHeaderLogin(txt, flag) {
         $("#btn-assoc-ts").show();
         $("#btn-desassoc-ts").show();
         $(".uib_w_263").show(); //#sel-meus-sensores
+        //$(".uib_w_217").css('display','none'); //login
         $(".uib_w_217").hide(); //login
         $(".uib_w_218").hide(); //login
+        $(".uib_w_219").hide(); //sigup
+        $(".uib_w_220").hide(); //sigup
+        $("#text-sign-email").val(json_user.email); //sig email
+        $(".uib_row_31").show(); //sigup email
         if (flag == true) {
         Cookies["modelo"] = json_user.sensores[0].modelo;
         Cookies["serie"] = json_user.sensores[0].serie;
@@ -475,7 +485,7 @@ function getMainConfig(tipo, id_sensor) {
                             option = $('<option></option>').prop("value", 2).text("3: " + json_config.canal.field7);
                             $("#sel-temp").append(option);
                         }
-
+                        updateSelComandos(json_config);
                         console.log(data);
                     } // tipo==0
                     // modulos
@@ -625,7 +635,7 @@ function writeMainConfig() {
         document.getElementById("af-checkbox-canal-1").checked = (fases & 0x01) == 0x01;
         document.getElementById("af-checkbox-canal-2").checked = (fases & 0x02) == 0x02;
         document.getElementById("af-checkbox-canal-3").checked = (fases & 0x04) == 0x04;
-        document.getElementById("af-checkbox-canal-auto").checked = (fases & 0x08) == 0x08;
+        document.getElementById("af-checkbox-canal-auto").checked = (fases & 0x08) != 0x08;
 
 
         document.getElementById("text-s-corrente-ajuste").value = json_config.canal.ajuste1;
@@ -639,9 +649,9 @@ function writeMainConfig() {
 /**********************************************************************/
 
 /**********************************************************************/
-function gravarComandoTS(text_obj) {
+function gravarComandoTS(text_obj, _cmd) {
     var node = $("#sel-node option:selected").index();
-    var cmd = $("#sel-cmd option:selected").index();
+    var cmd_idx = $("#sel-cmd option:selected").index();
     var chave = Cookies["chave"];
     var addr = SERVER_HTTP + SERVER_IP + SERVER_PATH + '/config_ts.php';
     var data = 'f=1&m=' + Cookies['modelo'] +
@@ -649,7 +659,22 @@ function gravarComandoTS(text_obj) {
         "&c=" + chave.substring(0, 4) +
         "&nro_pontos" + Cookies["nro_pontos"];
 
-    data = data + "&node=" + node +
+    var cmd_forca='';
+    var cmd;
+    if (_cmd == undefined)
+        cmd = jsonPath(json_config, "$.comandos["+cmd_idx+"].comando");
+    else {
+        if ($("#af-flipswitch-rele").prop("checked"))
+            document.getElementById("text-s-par1").value=1;
+        else
+            document.getElementById("text-s-par1").value=0;
+        cmd='R';
+        if ($("#af-checkbox-cmd-limpa").prop("checked"))
+            cmd_forca="&forca=1";
+    }
+
+
+    data = data + "&node=" + node + cmd_forca +
         "&cmd=" + cmd +
         "&par1=" + document.getElementById("text-s-par1").value +
         "&par2=" + document.getElementById("text-s-par2").value +
@@ -666,6 +691,7 @@ function gravarComandoTS(text_obj) {
     $.ajax({
         type: 'GET',
         url: addr + '?' + data,
+        dataType: 'json',
         headers: {
             'User-Agent': 'APP Tsensor/' + VERSAO.MAJOR + '.' + VERSAO.MINOR + '/' + VERSAO.DATE
         },
@@ -676,12 +702,12 @@ function gravarComandoTS(text_obj) {
             console.log(data);
             if (text_obj == null) {
                 if (window.cordova)
-                    navigator.notification.alert(data, // message
+                    navigator.notification.alert(data.mensagem, // message
                         alertDismissed, 'Comando', 'Fechar');
                 else
-                    alert("Comando:" + data);
+                    alert("Comando:" + data.mensagem);
             } else {
-                text_obj.innerHTML = data;
+                text_obj.innerHTML = data.mensagem;
             }
         },
         error: function (data) {
@@ -724,6 +750,26 @@ function updateSelSensores(data) {
     eventFire(document.getElementById('sel-meus-sensores'), 'change');
 }
 
+/***********************************************************************/
+function updateSelComandos(data) {
+    var i, option;
+    var id,desc, comando, rec_bits;
+    var recursos = parseInt(json_config.canal.recursos);
+    $("#sel-cmd").empty();
+    i = 0;
+    id = jsonPath(data, "$.comandos["+i+"].id");
+    while (id != false) {
+        desc = jsonPath(data, "$.comandos["+i+"].descricao");
+        rec_bits = jsonPath(data, "$.comandos["+i+"].rec_bits");
+        console.log("id=" + id + " desc=" + desc+ ' rec_bits=' + rec_bits);
+        if (rec_bits == '' || (recursos & rec_bits) > 0)
+            option = $('<option></option>').prop("value", id).text(desc);
+        $("#sel-cmd").append(option);
+        i++;
+        id = jsonPath(data,"$.comandos["+i+"].id");
+    }
+    $('#sel-cmd option')[0].selected = 0;
+}
 /**********************************************************************/
 function updateSelHoras() {
     var i, option;
@@ -821,6 +867,11 @@ function signInServer(pag) {
         var etxt = GibberishAES.enc(txt, "TSensor");
         //var etxt = CryptoJS.AES.encrypt(txt, "TSensor"+user);
         addr = addr + 'f=8&u=' + user + '&v=' + encodeURIComponent(etxt);
+    }
+    // Troca emil do usuario
+    if (pag == 'email') {
+        var email= $("#text-sign-email").val();
+        addr = addr + 'f=9&u=' + json_user.login + '&e=' + encodeURIComponent(email);
     }
 
     // Associar usuario a TS
@@ -938,7 +989,7 @@ function signInServer(pag) {
                 } else
                     document.getElementById("text_config").innerHTML = "Erro:" + data.mensagem;
             } else
-                mensagemTela("Status", data.mensagem);
+                mensagemTela(data.mensagem,"Retorno");
 
         },
         error: function (data) {
@@ -1061,11 +1112,15 @@ function gravarConfiguracaoSensor(pag, text_obj) {
     if (pag == 'm') {
         var sms= document.getElementById("af-checkbox-ativar-sms").checked;
         var email= document.getElementById("af-checkbox-ativar-email").checked;
+        var val=parseInt(document.getElementById("count-to-alert").value);
         data = data + "&nome=" + encodeURIComponent(document.getElementById("text-s-nome").value) +
             "&email=" + encodeURIComponent(document.getElementById("text-s-email").value) +
             "&celular=" + encodeURIComponent(document.getElementById("text-s-celular").value)+
             "&aemail=" + email +
             "&asms=" + sms;
+
+        if (!isNaN(val) && val>=1 && val<=100)
+            data = data + "$ctoalert=" + document.getElementById("count_to_alert").value;
     }
     // nodes limites e offline_at
     if (pag == 'n') {
@@ -1708,16 +1763,18 @@ function c() {
 /***************************************************************/
 /* comandos */
 /* número de parametros obrigatórios */
-/* 0 - Sleep  ... 10-Remover 11 - reset de firmware 12-limites*/
-var ts_cmds_par = [2, 3, 3, 3, 1, 1, 0, 0, 0, 1, 0, 3];
+/* 0 - Sleep  ... 9-Remover node 10 - reset de firmware 11-limites 12-output*/
+/*           5-Rele
+/*                 0  1  2  3  4  5  6  7  8  9 10  11 12       */
+var ts_cmds_par = [2, 3, 3, 3, 1, 3, 0, 0, 0, 1, 0, 3, 3];
 
 var r_horas = 2;
 var MAX_NODES = 4;
 var MAX_NODES_SENSORES = 2;
 var VERSAO = {
     MAJOR: '1',
-    MINOR: '44',
-    DATE: '24/06/2016'
+    MINOR: '48',
+    DATE: '18/07/2016'
 };
 
 var SERVER_HTTP = 'http://';
@@ -1735,6 +1792,7 @@ var sessao_id = null;
 var evt_get_feed = document.createEvent("Event");
 evt_get_feed.initEvent("app.Get_Feed", false, false);
 var HREF = window.location.href;
+var CHAVE1=0;
 
 function onDeviceReadyXDK() {
     console.log("onDeviceReadyXDK Emulator");
@@ -1796,6 +1854,9 @@ function onDeviceReady() {
     // esconde botoes da tela info
     $("btn_status_anterior").hide();
     $("btn_status_proximo").hide();
+    $("#text-cmd-orientacoes").hide();
+    document.getElementById('img-lamp-rele-g').innerHTML='';
+
 
     document.getElementById('txt-data').value = moment().format('YYYY-MM-DD');
     document.getElementById('txt-data').min = '2015-11-01';

@@ -1,6 +1,7 @@
 /*********************************************************************/
 function atualizaGrafico(objG, div, campo) {
     //console.log(">atualizaGrafico");
+    var recursos = parseInt(json_config.canal.recursos);
     objG.loadData();
     if (div === null) return;
     //var d= new Date(g3.created_at);
@@ -36,6 +37,27 @@ function atualizaGrafico(objG, div, campo) {
     document.getElementById(div).innerHTML = txt +
         //        d.format('LLL')+
         minmax + offline + objG.message;
+    // testa se tem rele no modulo principal
+    if ((recursos & (1<<15)) > 0)
+        if (json_feed.feeds[0].chave1 !== undefined) {
+            var status=json_feed.channel.status;
+            CHAVE1=json_feed.feeds[0].chave1;
+
+            console.log("chave1=" + CHAVE1+ "  status=" + status);
+            if (status==0)
+                document.getElementById('text-rele-text').innerHTML='';
+            else {
+                document.getElementById('text-rele-text').innerHTML=json_feed.channel.status_msg;
+            }
+            document.getElementById('img-lamp-rele-g').innerHTML='Remoto';
+            if (CHAVE1 == 1)
+            {
+                document.getElementById('img-lamp-rele').src="images/lamp_on.png";
+            } else
+            if (CHAVE1 == 0) {
+                document.getElementById('img-lamp-rele').src="images/lamp_off.png";
+            }
+    }
 }
 /*********************************************************************/
 function t_TelaTGG() {

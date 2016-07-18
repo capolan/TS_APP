@@ -522,8 +522,11 @@
 
         $(document).on("change", "#sel-cmd", function (evt) {
             var opt = $("#sel-cmd option:selected").index();
-            app.consoleLog(opt, ts_cmds_par[opt]);
-            if (ts_cmds_par[opt] < 3) {
+            var npar=jsonPath(json_config, "$.comandos["+opt+"].par");
+            var texto=jsonPath(json_config, "$.comandos["+opt+"].texto");
+
+            app.consoleLog(opt, npar);
+            if (npar < 3) {
                 $("#text-s-par3").prop('disabled', true);
                 $("#text-s-par3").css({
                     'background-color': '#FFFEEE'
@@ -534,7 +537,7 @@
                     'background-color': '#FFFFFF'
                 });
             }
-            if (ts_cmds_par[opt] < 2) {
+            if (npar < 2) {
                 $("#text-s-par2").prop('disabled', true);
                 $("#text-s-par2").css({
                     'background-color': '#FFFEEE'
@@ -545,7 +548,7 @@
                     'background-color': '#FFFFFF'
                 });
             }
-            if (ts_cmds_par[opt] < 1) {
+            if (npar < 1) {
                 $("#text-s-par1").prop('disabled', true);
                 $("#text-s-par1").css({
                     'background-color': '#FFFEEE'
@@ -556,6 +559,14 @@
                     'background-color': '#FFFFFF'
                 });
             }
+
+            if (texto!=false && texto!=null) {
+                $("#text-cmd-orientacoes").val(texto);
+                $("#text-cmd-orientacoes").show();
+            } else {
+                $("#text-cmd-orientacoes").hide();
+            }
+
 
         });
 
@@ -935,6 +946,20 @@
             $("#text-senha-confirmacao").val('');
         });
 
+        /* button  #btn-sign-email */
+        $(document).on("click", "#btn-sign-email", function(evt)
+        {
+            txt = $("#text-sign-email").val();
+            if (validateEmail(txt) == false) {
+                navigator.notification.alert(txt, alertDismissed,
+                    'Email inválido.', 'Fechar');
+                return;
+            }
+            signInServer('email');
+            return false;
+        });
+
+
 
         $(document).on("change", "#sel-meus-sensores", function (evt) {
             /* your code goes here */
@@ -1087,6 +1112,30 @@
          activate_subpage("#uib_page_11");
     });
 
+    $(document).on("change", "#af-flipswitch-rele", function (env)
+    {
+        var flag = $("#af-flipswitch-rele").prop("checked") == 1;
+        var a = $("#af-flipswitch-rele").prop("checked") ? "On" : "Off";
+
+        if (CHAVE1 == flag) {
+            document.getElementById("text-rele-text").innerHTML='Chave ajustada.';
+        } else {
+
+
+        var idx=$("#sel-cmd option:eq(5)").val();
+        console.log(" rele idx=" + idx);
+        gravarComandoTS(document.getElementById("text-rele-text"),'R');
+        if (flag==1) {
+            document.getElementById('img-lamp-rele').src="images/lamp_on.png";
+        } else {
+            document.getElementById('img-lamp-rele').src="images/lamp_off.png";
+
+        }
+        document.getElementById('img-lamp-rele-g').innerHTML='chave alterada';
+        //console.log("af-flipswitch-rele = " + a);
+        }
+    });
+
     // atalho para os modulos
         $(document).on("click", "#n111", function (evt) {
             activate_subpage("#uib_page_mod1");
@@ -1143,6 +1192,14 @@
             activate_subpage("#uib_page_mod4");
         });
     console.log("<index_user_scripts.js");
+        /* button  #btn-s-rele */
+    $(document).on("click", "#btn-s-rele", function(evt)
+    {
+         /*global activate_subpage */
+         activate_subpage("#sub-page-sensor-rele");
+         return false;
+    });
+
     }
 
     document.addEventListener("app.Ready", register_event_handlers, false);
