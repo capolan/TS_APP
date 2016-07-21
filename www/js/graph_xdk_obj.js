@@ -108,7 +108,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
         // get the data from thingspeak
         var d, j, k, valor, field_msg;
         var titulo, div_painel=null;
-        app.consoleLog(self.id_div," loadData");
+        //app.consoleLog(self.id_div," loadData");
         self.message = '';
 
         if (self.id_div == 'chart1_div')
@@ -194,7 +194,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                     if (self.vcc == null && v_str != false)
                         self.vcc = v_str;
                     v_str = jsonPath(valdata, "$.nodes" + str + ".vcc_flag");
-                    if (self.vcc_flag == null || v_str != false)
+                    if (self.vcc_flag == null || v_str !== false)
                         self.vcc_flag = v_str;
                     titulo = jsonPath(valdata, "$.nodes" + str + ".name");
                 }
@@ -269,7 +269,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                             "$.nodes_feed" + str + "[" + i + "].field" + campo);
                         valor = parseFloat(v_str);
                         field_msg = getObjects(valdata,"$.nodes_feed" + str + "[" + i + "].field");
-                        if (field_msg != null && campo == field_msg) {
+                        if (field_msg != null && field_msg != false && campo == field_msg) {
                             s = "$.nodes_feed" + str + "[" + i + "].mensagem";
                             mensagem = jsonPath(valdata, s);
                         }
@@ -282,7 +282,10 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                         // status
                         v_str = jsonPath(valdata,
                             "$.nodes" + str + ".field" + campo + "_flag");
-                        self.field_flag = parseInt(v_str);
+                        if (isNaN(parseInt(v_str)))
+                            self.field_flag = 0;
+                        else
+                            self.field_flag = parseInt(v_str);
 
 
                     }

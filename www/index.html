@@ -416,6 +416,7 @@
                     </span>
                             </div>
                         </div>
+
                         <div class="widget uib_w_113 d-margins" data-uib="media/text" data-ver="0" id="text_pag_2_2">
                             <div class="widget-container left-receptacle"></div>
                             <div class="widget-container right-receptacle"></div>
@@ -432,6 +433,12 @@
 
                         <input class="wide-control" type="date" id="txt-data">
                     </div>
+
+                    <p ng-repeat="(key,value) in feeds[0]">
+                        {{key}}:{{value}}
+                        <br>
+                    </p>
+
                 </div>
                 <div id="uib_page_9" class="upage-content vertical-col hidden">
                     <div class="table-thing with-label widget uib_w_51 d-margins" data-uib="app_framework/input" data-ver="1">
@@ -879,6 +886,13 @@
                                 <span class="uib_shim">
                             <div id="chartx611_div"></div>
                             <div id="chartx621_div" style="display: none"></div>
+                            <div id="chartx631_div" style="display: none"></div>
+                            <div id="chartx641_div" style="display: none"></div>
+                            <div id="chartx651_div" style="display: none"></div>
+                            <div id="chartx661_div" style="display: none"></div>
+                            <div id="chartx671_div" style="display: none"></div>
+                            <div id="chartx681_div" style="display: none"></div>
+
 </span>
                             </div>
                         </div>
@@ -898,6 +912,12 @@
                                 <span class="uib_shim">
                         <div id="chartx612_div"></div>
                         <div id="chartx622_div" style="display: none"></div>
+                        <div id="chartx632_div" style="display: none"></div>
+                        <div id="chartx642_div" style="display: none"></div>
+                        <div id="chartx652_div" style="display: none"></div>
+                        <div id="chartx662_div" style="display: none"></div>
+                        <div id="chartx672_div" style="display: none"></div>
+                        <div id="chartx682_div" style="display: none"></div>
 </span>
                             </div>
                         </div>
@@ -914,6 +934,11 @@
                         <span class="uib_shim">
                         </span>
                     </div>
+                    <p ng-repeat="(key,value) in nodes_feed1[0]">
+                        {{key}}:{{value}}
+                        <br>
+                    </p>
+
                 </div>
                 <div id="uib_page_mod2" class="upage-content vertical-col left hidden">
                     <div class="grid grid-pad urow uib_row_11 row-height-11" data-uib="layout/row" data-ver="0">
@@ -957,6 +982,10 @@
                         </div>
                         <span class="uib_shim"></span>
                     </div>
+                    <p ng-repeat="(key,value) in nodes_feed2[0]">
+                        {{key}}:{{value}}
+                        <br>
+                    </p>
                 </div>
                 <div id="uib_page_mod3" class="upage-content vertical-col left hidden">
                     <div class="grid grid-pad urow uib_row_13 row-height-13" data-uib="layout/row" data-ver="0">
@@ -999,6 +1028,10 @@
                         </div>
                         <span class="uib_shim"></span>
                     </div>
+                    <p ng-repeat="(key,value) in nodes_feed3[0]">
+                        {{key}}:{{value}}
+                        <br>
+                    </p>
                 </div>
                 <div id="uib_page_mod4" class="upage-content vertical-col left hidden">
                     <div class="grid grid-pad urow uib_row_23 row-height-23" data-uib="layout/row" data-ver="0">
@@ -1043,6 +1076,10 @@
                         </div>
                         <span class="uib_shim"></span>
                     </div>
+                    <p ng-repeat="(key,value) in nodes_feed4[0]">
+                        {{key}}:{{value}}
+                        <br>
+                    </p>
                 </div>
                 <div id="uib_page_mod_config" class="upage-content vertical-col left hidden">
 
@@ -1374,10 +1411,24 @@
 
                             <div class="table-thing with-label widget uib_w_314 d-margins" data-uib="app_framework/input" data-ver="1">
                                 <label class="narrow-control label-inline" for="text-s-corrente-nome">Nome</label>
+
                                 <input class="wide-control" type="text" id="text-s-corrente-nome">
+                            </div>
+                            <div class="table-thing with-label widget uib_w_330 d-margins" data-uib="app_framework/input" data-ver="1">
+                                <label class="narrow-control label-inline" for="text-s-corrente-fase1">Fase R</label>
+                                <input class="wide-control" type="text" id="text-s-corrente-fase1">
+                            </div>
+                            <div class="table-thing with-label widget uib_w_329 d-margins" data-uib="app_framework/input" data-ver="1">
+                                <label class="narrow-control label-inline" for="text-s-corrente-fase2">Fase S</label>
+                                <input class="wide-control" type="text" id="text-s-corrente-fase2">
+                            </div>
+                            <div class="table-thing with-label widget uib_w_328 d-margins" data-uib="app_framework/input" data-ver="1">
+                                <label class="narrow-control label-inline" for="text-s-corrente-fase3">Fase T</label>
+                                <input class="wide-control" type="text" id="text-s-corrente-fase3">
                             </div>
                             <div class="table-thing with-label widget uib_w_301 d-margins" data-uib="app_framework/checkbox_group" data-ver="1">
                                 <label class="narrow-control label-inline">Fases</label>
+
                                 <div class="wide-control">
                                     <div class="widget uib_w_302" data-uib="app_framework/checkbox" data-ver="1">
                                         <input type="checkbox" id="af-checkbox-canal-auto">
@@ -1385,15 +1436,15 @@
                                     </div>
                                     <div class="widget uib_w_303" data-uib="app_framework/checkbox" data-ver="1">
                                         <input type="checkbox" id="af-checkbox-canal-1">
-                                        <label class="content-box" for="af-checkbox-canal-1">canal 1</label>
+                                        <label class="content-box" for="af-checkbox-canal-1">fase R</label>
                                     </div>
                                     <div class="widget uib_w_305 d-margins" data-uib="app_framework/checkbox" data-ver="1">
                                         <input type="checkbox" id="af-checkbox-canal-2">
-                                        <label class="content-box" for="af-checkbox-canal-2">canal 2</label>
+                                        <label class="content-box" for="af-checkbox-canal-2">fase S</label>
                                     </div>
                                     <div class="widget uib_w_304" data-uib="app_framework/checkbox" data-ver="1">
                                         <input type="checkbox" id="af-checkbox-canal-3">
-                                        <label class="content-box" for="af-checkbox-canal-3">canal 3</label>
+                                        <label class="content-box" for="af-checkbox-canal-3">fase T</label>
                                     </div>
                                 </div>
                             </div>
@@ -1543,7 +1594,8 @@
                 <a class="widget uib_w_16 icon download" data-uib="app_framework/button" data-ver="1">AP</a>
             </footer>
             <footer class="wrap-element uib_w_3" data-uib="app_framework/footer" data-ver="1" id="af-footer-0"><a class="widget uib_w_4 d-margins icon home" data-uib="app_framework/button" data-ver="1" id="btn_home">Home</a><a class="widget uib_w_71 d-margins btn-estilo icon target" data-uib="app_framework/button" data-ver="1" id="btn_mod_extras">Modulos</a>
-                <a class="widget uib_w_5 d-margins icon location" data-uib="app_framework/button" data-ver="1">Sensor</a><a class="widget uib_w_6 d-margins icon settings" data-uib="app_framework/button" data-ver="1" href="#uib_page_4" data-transition="fade">Config</a>
+                <a class="widget uib_w_5 d-margins icon location" data-uib="app_framework/button" data-ver="1">Sensor</a><a class="widget uib_w_6 d-margins icon settings" data-uib="app_framework/button" data-ver="1" href="#uib_page_4" data-transition="fade"
+                id="btn-config">Config</a>
                 <a class="widget uib_w_102 d-margins icon user" data-uib="app_framework/button" data-ver="1" id="btn_login">Login</a>
             </footer>
 

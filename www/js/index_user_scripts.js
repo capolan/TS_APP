@@ -194,117 +194,29 @@
         $(document).on("click", "#chart5_div", function (evt) {
             activate_subpage("#uib_page_2");
         });
+        // click no gauge
+        $('#chartx611_div, #chartx612_div, #chartx621_div, #chartx631_div, #chartx641_div, #chartx651_div, #chartx661_div, #chartx671_div, #chartx681_div, #chartx711_div, #chartx712_div, #chartx721_div, #chartx731_div, #chartx741_div, #chartx751_div, #chartx761_div, #chartx771_div, #chartx781_div, #chartx811_div, #chartx812_div, #chartx821_div, #chartx831_div, #chartx841_div, #chartx851_div, #chartx861_div, #chartx871_div, #chartx881_div, #chartx911_div, #chartx912_div, #chartx921_div, #chartx931_div, #chartx941_div, #chartx951_div, #chartx961_div, #chartx971_div, #chartx981_div').click(function() {
+            var _div=this.id;
+            var n_mod=_div.substr(6,1);    //  6
+            var modulo=parseInt(n_mod) - 6;
+            var sensor=parseInt(_div.substr(7,1));
+            var div_12=_div.substr(8,1);
+            var aux = (sensor % MAX_NODES_SENSORES) + 1;
+            var _div2 = 'chartx' + n_mod + ''+ sensor + "2_div";
 
-        $(document).on("click", "#chartx611_div", function (evt) {
-            if (gm1[0][2] != undefined) {
-                $("#chartx611_div").css("display", "none");
-                $("#chartx612_div").css("display", "none");
-                $("#chartx621_div").css("display", "block");
-                $("#chartx622_div").css("display", "block");
-                gt[1].loadData(gm1[0][2].series[0].campo);
+            if (div_12==2) {
+                click_no_gauge(modulo+1);
             } else {
-                click_no_gauge(1);
+                if (gm1[modulo][aux] != undefined) {
+                    $('#'+_div).css("display", "none");
+                    $('#'+_div2).css("display", "none");
+                    $('#chartx' + n_mod +'' + aux +"1_div").css("display", "block");
+                    $('#chartx' + n_mod +'' + aux +"2_div").css("display", "block");
+                    gt[1].loadData(gm1[modulo][aux].series[0].campo);
+                } else {
+                    click_no_gauge(modulo+1);
             }
-        });
 
-        $(document).on("click", "#chartx612_div", function (evt) {
-            click_no_gauge(1);
-        });
-
-        $(document).on("click", "#chartx621_div", function (evt) {
-            if (gm1[0][1] != undefined) {
-                $("#chartx611_div").css("display", "block");
-                $("#chartx612_div").css("display", "block");
-                $("#chartx621_div").css("display", "none");
-                $("#chartx622_div").css("display", "none");
-                gt[1].loadData(gm1[0][1].series[0].campo);
-            } else {
-                click_no_gauge(1);
-            }
-        });
-
-        $(document).on("click", "#chartx711_div", function (evt) {
-            if (gm1[1][2] != undefined) {
-                $("#chartx711_div").css("display", "none");
-                $("#chartx712_div").css("display", "none");
-                $("#chartx721_div").css("display", "block");
-                $("#chartx722_div").css("display", "block");
-                gt[2].loadData(gm1[1][2].series[0].campo);
-            } else {
-                click_no_gauge(2);
-            }
-        });
-
-        $(document).on("click", "#chartx712_div", function (evt) {
-            click_no_gauge(2);
-        });
-
-        $(document).on("click", "#chartx721_div", function (evt) {
-            if (gm1[1][1] != undefined) {
-                $("#chartx711_div").css("display", "block");
-                $("#chartx712_div").css("display", "block");
-                $("#chartx721_div").css("display", "none");
-                $("#chartx722_div").css("display", "none");
-                gt[2].loadData(gm1[1][1].series[0].campo);
-            } else {
-                click_no_gauge(1);
-            }
-        });
-
-        $(document).on("click", "#chartx811_div", function (evt) {
-            if (gm1[2][2] != undefined) {
-                $("#chartx711_div").css("display", "none");
-                $("#chartx712_div").css("display", "none");
-                $("#chartx721_div").css("display", "block");
-                $("#chartx722_div").css("display", "block");
-                gt[3].loadData(gm1[2][2].series[0].campo);
-            } else {
-                click_no_gauge(3);
-            }
-        });
-
-        $(document).on("click", "#chartx812_div", function (evt) {
-            click_no_gauge(3);
-        });
-
-        $(document).on("click", "#chartx821_div", function (evt) {
-            if (gm1[2][1] != undefined) {
-                $("#chartx811_div").css("display", "block");
-                $("#chartx812_div").css("display", "block");
-                $("#chartx821_div").css("display", "none");
-                $("#chartx822_div").css("display", "none");
-                gt[3].loadData(gm1[2][1].series[0].campo);
-            } else {
-                click_no_gauge(3);
-            }
-        });
-
-        $(document).on("click", "#chartx911_div", function (evt) {
-            if (gm1[3][2] != undefined) {
-                $("#chartx911_div").css("display", "nome");
-                $("#chartx912_div").css("display", "none");
-                $("#chartx921_div").css("display", "block");
-                $("#chartx922_div").css("display", "block");
-                gt[4].loadData(gm1[3][2].series[0].campo);
-            } else {
-                click_no_gauge(4);
-            }
-        });
-
-
-        $(document).on("click", "#chartx912_div", function (evt) {
-            click_no_gauge(4);
-        });
-
-        $(document).on("click", "#chartx921_div", function (evt) {
-            if (gm1[3][1] != undefined) {
-                $("#chartx911_div").css("display", "block");
-                $("#chartx912_div").css("display", "block");
-                $("#chartx921_div").css("display", "none");
-                $("#chartx922_div").css("display", "none");
-                gt[4].loadData(gm1[3][1].series[0].campo);
-            } else {
-                click_no_gauge(4);
             }
         });
 

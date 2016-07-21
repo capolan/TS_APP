@@ -118,7 +118,7 @@ function atualizaHeaderLogin(txt, flag) {
         $(".uib_w_218").show(); //login
         $(".uib_w_219").show(); //sigup
         $(".uib_w_220").show(); //sigup
-        $(".uib_row_31").hide(); //sig email
+        $(".uib_row_31").css('visibility','hidden'); //sig email
         $("text-sign-email").val(''); //sig email
 
     } else {
@@ -139,7 +139,7 @@ function atualizaHeaderLogin(txt, flag) {
         $(".uib_w_219").hide(); //sigup
         $(".uib_w_220").hide(); //sigup
         $("#text-sign-email").val(json_user.email); //sig email
-        $(".uib_row_31").show(); //sigup email
+        $(".uib_row_31").css('visibility','visible'); //sig email
         if (flag == true) {
         Cookies["modelo"] = json_user.sensores[0].modelo;
         Cookies["serie"] = json_user.sensores[0].serie;
@@ -1082,6 +1082,9 @@ function gravarConfiguracaoSensor(pag, text_obj) {
             '&ajuste1=' + document.getElementById("text-s-corrente-ajuste").value +
             '&fases=' + Cookies['fases'] +
             '&field1=' + encodeURIComponent(document.getElementById("text-s-corrente-nome").value) +
+            '&field2=' + encodeURIComponent(document.getElementById("text-s-corrente-fase1").value) +
+            '&field3=' + encodeURIComponent(document.getElementById("text-s-corrente-fase2").value) +
+            '&field4=' + encodeURIComponent(document.getElementById("text-s-corrente-fase3").value) +
             '&field1_min=' + document.getElementById("text-s-corrente-min").value +
             '&field1_max=' + document.getElementById("text-s-corrente-max").value;
         data = data + '&updated_flag=10';
@@ -1246,6 +1249,7 @@ function get_feed(flag_atualiza) {
             lerFlagStatus();
             //angular.element(document.getElementById('myCtrl')).scope().get();
             angular.element($("#afui")).scope().getSensores();
+            angular.element($("#afui")).scope().getFeeds();
 
         },
         error: function (data) {
@@ -1622,6 +1626,9 @@ function atualizaGraficoConfig() {
                     min = Math.floor((min - 10) / 10) * 10;
                 } else min = 0;
 
+                if (isNaN(max))
+                    max = 100;
+
                 range_val = max - min;
                 red_value = range_val - (range_val * 0.1) + min;
                 yellow_value = range_val - (range_val * 0.25) + min;
@@ -1632,13 +1639,12 @@ function atualizaGraficoConfig() {
                 v_str = jsonPath(json_config, node + ".field" + sens);
                 //                console.log("field" + sens + "=" + v_str);
 
-                max = parseInt(jsonPath(json_config, node + ".field" + sens + "_max"));
+//                max = parseInt(jsonPath(json_config, node + ".field" + sens + "_max"));
                 min = parseInt(jsonPath(json_config, node + ".field" + sens + "_min"));
                 gm1[m][sens].data.setColumnLabel(1, v_str);
                 gm2[m][sens].data.setColumnLabel(1, v_str);
                 gm2[m][sens].options.title = v_str;
-                console.log("min=" + min);
-                if (isNaN(max)) min = 100;
+//                console.log("min=" + min);
                 if (isNaN(min)) {
                     range_val = max;
                     red_value = range_val - (range_val * 0.1);
@@ -1770,11 +1776,11 @@ var ts_cmds_par = [2, 3, 3, 3, 1, 3, 0, 0, 0, 1, 0, 3, 3];
 
 var r_horas = 2;
 var MAX_NODES = 4;
-var MAX_NODES_SENSORES = 2;
+var MAX_NODES_SENSORES = 8;
 var VERSAO = {
     MAJOR: '1',
-    MINOR: '48',
-    DATE: '18/07/2016'
+    MINOR: '49',
+    DATE: '21/07/2016'
 };
 
 var SERVER_HTTP = 'http://';
@@ -2012,5 +2018,12 @@ function define_recuros() {
     if ((recursos & 1 << 17)) {
         rec_ethernet=true;
         console.log("ETHERNET");
+    }
+//#define REC_NRF24L01   19
+    if ((recursos & 1 << 19)) {
+        $("#sel-endereco-TS").show();
+    } else {
+        $("#sel-endereco-TS").hide();
+
     }
 }

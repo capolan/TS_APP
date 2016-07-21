@@ -442,9 +442,10 @@ var gm1 = new Array(4);
 var gm2 = new Array(4);
 
 for (var i = 0; i < 4; i++) {
-    gm1[i] = new Array(2);
-    gm2[i] = new Array(2);
+    gm1[i] = new Array(MAX_NODES_SENSORES);
+    gm2[i] = new Array(MAX_NODES_SENSORES);
 }
+
 
 function createGraphx(_modulo) {
     var chartx1, chartx2, chart;
@@ -465,7 +466,10 @@ function createGraphx(_modulo) {
             chartx1 = 'chartx' + num_mod + "" + ncampo + '1_div';
             chartx2 = 'chartx' + num_mod + "" + ncampo + '2_div';
             nome_campo = jsonPath(json_config, node + ".field" + ncampo);
-            app.consoleLog("nome_campo=" + nome_campo + " ncampo=" + ncampo + "  chartx1=" + chartx1);
+            if (nome_campo == null) {
+                nome_campo='sem_nome';
+            }
+           // app.consoleLog("nome_campo=" + nome_campo + " ncampo=" + ncampo + "  chartx1=" + chartx1);
             if (ncampo==2 && (recursos & 0x10) != 0x10) {
                 continue;
             }
@@ -507,4 +511,6 @@ console.log("max="+max+" min="+min);
     }
     app.consoleLog("<createGraphX=" + modulo, "entry");
 }
+/**********************************************************************/
+
 /**********************************************************************/
