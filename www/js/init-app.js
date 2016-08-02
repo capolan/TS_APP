@@ -90,7 +90,7 @@ app.initEvents = function() {
 
           clearTimeout(timer_slider);
           timer_slider=setTimeout(function() {
-            atualiza_dados();
+            atualiza_dados(false);
           },300);
 	//	}
       }

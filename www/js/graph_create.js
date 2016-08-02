@@ -208,7 +208,8 @@ function t_telaTS_temperatura() {
         //console.log(">t_telaTS_temperatura i=" + i);
         if (gm1[i][1] != undefined) {
             for (var n = 1; n <= MAX_NODES_SENSORES; n++) {
-                if (gm1[i][n] != undefined && gm1[i][n].ativo == true) {
+                if (gm1[i][n] != undefined) {
+//                if (gm1[i][n] != undefined && gm1[i][n].ativo == true) {
                     //console.log(">><< n="+n);
                     var cp = i + 1;
                     atualizaGrafico(gm1[i][n], "text-mod" + cp, 1);
@@ -469,20 +470,7 @@ function createGraphx(_modulo) {
             if (nome_campo == null) {
                 nome_campo='sem_nome';
             }
-           // app.consoleLog("nome_campo=" + nome_campo + " ncampo=" + ncampo + "  chartx1=" + chartx1);
-            if (ncampo==2 && (recursos & 0x10) != 0x10) {
-                continue;
-            }
-            
             if (acampo == null) acampo=ncampo;
-            max = parseInt(jsonPath(json_config, node + ".field" + ncampo + "_max"));
-            max = Math.ceil((max + 10) / 10) * 10;
-            min = parseInt(jsonPath(json_config, node + ".field" + ncampo + "_min"));
-            if (min > 0) {
-                min = 0;
-            } else
-                min = Math.floor((min - 10) / 10) * 10;
-
             max = parseInt(jsonPath(json_config, node + ".field" + ncampo + "_max"));
             min = parseInt(jsonPath(json_config, node + ".field" + ncampo + "_min"));
 console.log("max="+max+" min="+min);

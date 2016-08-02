@@ -208,11 +208,15 @@
                 click_no_gauge(modulo+1);
             } else {
                 if (gm1[modulo][aux] != undefined) {
+                    var ativo=gm1[modulo][aux].ativo;
+                    if (ativo == false) {
+                        aux=1;
+                    }
                     $('#'+_div).css("display", "none");
                     $('#'+_div2).css("display", "none");
                     $('#chartx' + n_mod +'' + aux +"1_div").css("display", "block");
                     $('#chartx' + n_mod +'' + aux +"2_div").css("display", "block");
-                    gt[1].loadData(gm1[modulo][aux].series[0].campo);
+                    gt[modulo].loadData(gm1[modulo][aux].series[0].campo);
                 } else {
                     click_no_gauge(modulo+1);
             }
@@ -364,6 +368,8 @@
             activate_subpage("#sub-page-sensor-main");
             // WIFI
             document.getElementById("af-checkbox-s-wifi").checked = rec_wifi;
+            // ModBus
+            document.getElementById("af-checkbox-s-modbus").checked = rec_modbus;
             activate_subpage("#sub-page-sensor-main");
         });
 
@@ -611,6 +617,16 @@
 
         /* button  #btn_mod_extras */
         $(document).on("click", "#btn_mod_extras", function (evt) {
+            var n_mod,aux;
+            for (n_mod=6 ; n_mod<=9; n_mod++) {
+            $('#chartx' + n_mod +'11_div').css("display", "block");
+            $('#chartx' + n_mod +'12_div').css("display", "block");
+              for (aux=2; aux<=MAX_NODES_SENSORES; aux++) {
+                $('#chartx' + n_mod +'' + aux +"1_div").css("display", "none");
+                $('#chartx' + n_mod +'' + aux +"2_div").css("display", "none");
+              }
+            }
+
             if ($("#btn_mod1").css("display") != "none")
                 activate_subpage("#uib_page_mod1");
             else
@@ -755,27 +771,23 @@
             }
             txt = $("#text-email").val();
             if (validateEmail(txt) == false) {
-                navigator.notification.alert(txt, alertDismissed,
-                    'Email inválido.', 'Fechar');
+                mensagemTela('Erro', 'Email invalido');
                 return;
             }
             txt = $("#text-usuario").val();
             if (validateUsuario(txt) == false) {
-                navigator.notification.alert(txt, alertDismissed,
-                    'Usuário inválido.', 'Fechar');
+                mensagemTela('Erro', 'Usuario invalido');
             }
             txt = $("#text-senha-1").val();
             ret = validatePasswd(txt);
             if (ret != true) {
-                navigator.notification.alert(ret, alertDismissed,
-                    'Senha inválida.', 'Fechar');
+                mensagemTela('Erro', 'Senha invalida');
                 return;
             }
             txt = $("#text-senha-2").val();
             ret = validatePasswd(txt);
             if (ret != true) {
-                navigator.notification.alert(ret, alertDismissed,
-                    'Senha inválida.', 'Fechar');
+                mensagemTela('Erro', 'Senha2 invalida');
                 return;
             }
             signInServer('up');
@@ -874,30 +886,40 @@
 
 
         $(document).on("change", "#sel-meus-sensores", function (evt) {
+            var opt = $("#sel-meus-sensores option:selected").index();
             /* your code goes here */
-            if (json_user == undefined) return;
-            var opt = $("#sel-meus-sensores option:selected").index();
-            document.getElementById("modelo").value = json_user.sensores[opt].modelo;
-            document.getElementById("serie").value = json_user.sensores[opt].serie;
-            document.getElementById("chave").value = json_user.sensores[opt].chave;
-            Cookies["modelo"] = json_user.sensores[opt].modelo;
-            Cookies["serie"] = json_user.sensores[opt].serie;
-            Cookies["chave"] = json_user.sensores[opt].chave;
+            if (json_sensores == null) {
+                document.getElementById("modelo").value = json_user.sensores[opt].modelo;
+                document.getElementById("serie").value = json_user.sensores[opt].serie;
+                document.getElementById("chave").value = json_user.sensores[opt].chave;
+            } else {
+                document.getElementById("modelo").value = json_sensores.sensores[opt].modelo;
+                document.getElementById("serie").value = json_sensores.sensores[opt].serie;
+                document.getElementById("chave").value = json_sensores.sensores[opt].chave;
+            }
+            Cookies["modelo"] = document.getElementById("modelo").value;
+            Cookies["serie"] = document.getElementById("serie").value;
+            Cookies["chave"] = document.getElementById("chave").value;
             eventFire(document.getElementById('btn_let_config_web'), 'click');
-
         });
 
-/*
-        $(document).on("focusout", "#sel-meus-sensores", function (evt) {
-            if (json_user == undefined) return;
-            var opt = $("#sel-meus-sensores option:selected").index();
-            document.getElementById("modelo").value = json_user.sensores[opt].modelo;
-            document.getElementById("serie").value = json_user.sensores[opt].serie;
-            document.getElementById("chave").value = json_user.sensores[opt].chave;
+        $(document).on("change", "#sel-modbus", function (evt) {
+            var opt = $("#sel-modbus option:selected").index();
+            if (json_modbus == null) {
+                document.getElementById("text-mb-slave").value = json_config.modbus[opt].slave;
+                document.getElementById("text-mb-addr").value = json_config.modbus[opt].addr;
+                document.getElementById("text-mb-cmd").value = json_config.modbus[opt].cmd;
+                document.getElementById("text-mb-qtde").value = json_config.modbus[opt].qtde;
+            } else {
+                document.getElementById("text-mb-slave").value = json_modbus.modbus[opt].slave;
+                document.getElementById("text-mb-addr").value = json_modbus.modbus[opt].addr;
+                document.getElementById("text-mb-cmd").value = json_modbus.modbus[opt].cmd;
+                document.getElementById("text-mb-qtde").value = json_modbus.modbus[opt].qtde;
 
+            }
+            if (json_config.modbus == undefined) return;
+            /* your code goes here */
         });
-*/
-
 
         /* button  #btn-login-logoff */
         $(document).on("click", "#btn-login-logoff", function (evt) {
@@ -1109,6 +1131,51 @@
     {
          /*global activate_subpage */
          activate_subpage("#sub-page-sensor-rele");
+         return false;
+    });
+
+        /* button  #btn-s-modbus */
+    $(document).on("click", "#btn-s-modbus", function(evt)
+    {
+         /*global activate_subpage */
+         activate_subpage("#sub-page-modbus");
+         return false;
+    });
+
+        /* button  #btn-mb-salvar */
+    $(document).on("click", "#btn-mb-salvar", function(evt)
+    {
+        var mb_slave = parseInt($('#text-mb-slave').val());
+        var mb_addr = parseInt($('#text-mb-addr').val());
+        var mb_cmd = parseInt($('#text-mb-cmd').val());
+        var mb_qtde = parseInt($('#text-mb-qtde').val());
+        if (isNaN(mb_slave) || mb_slave <1 || mb_slave > 254) {
+            mensagemTela('Erro', 'Slave deve ser >=1 e <=254');
+         return false;
+        }
+
+        if (isNaN(mb_addr) || mb_addr <0 || mb_addr > 10000) {
+            mensagemTela('Erro', 'Endereco deve ser >=1 e <=10000');
+         return false;
+        }
+        if (isNaN(mb_cmd) || mb_cmd<1 ||mb_cmd>4) {
+            mensagemTela('Erro', 'Comando deve ser >=1 e <=10000');
+         return false;
+        }
+        if (isNaN(mb_qtde) || mb_qtde<1 ||mb_qtde>8) {
+            mensagemTela('Erro', 'Quantidade deve ser >=1 e <=8');
+         return false;
+        }
+        signInServer('MB+');
+        /* your code goes here */
+         return false;
+    });
+
+        /* button  #btn-mb-remover */
+    $(document).on("click", "#btn-mb-remover", function(evt)
+    {
+        signInServer('MB-');
+        /* your code goes here */
          return false;
     });
 

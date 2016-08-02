@@ -11,8 +11,6 @@
 /*jslint browser:true, devel:true, white:true, vars:true */
 /*global $:false, intel:false app:false, dev:false, cordova:false */
 
-
-
 // This file contains your event handlers, the center of your application.
 // NOTE: see app.initEvents() in init-app.js for event handler initialization code.
 
@@ -332,8 +330,11 @@ function click_no_gauge(node) {
         var tensao = parseInt(jsonPath(json_feed, n + ".vcc")) / 1000;
         var serie = jsonPath(json_feed, n1 + ".serie");
         var status = jsonPath(json_feed, n1 + ".status");
-        txt = "tensão: " + tensao +
-            " às " + d.format('DD/MM/YYYY HH:mm:ss'); // message
+
+        txt=d.format('DD/MM/YYYY HH:mm:ss');
+        if (isNaN(tensao) == false) {
+            txt = "tensão: " + tensao; // message
+        }
         if (serie != false) txt = txt + ' serie=' + serie;
         txt = txt + ', amostras=' + jsonPath(json_feed, n1 + ".contador");
         if (node > 0 && status != false) txt = txt + ', status=' + status;
@@ -485,7 +486,15 @@ function getMainConfig(tipo, id_sensor) {
                             option = $('<option></option>').prop("value", 2).text("3: " + json_config.canal.field7);
                             $("#sel-temp").append(option);
                         }
+                        json_sensores=null;
+                        json_modbus=null;
                         updateSelComandos(json_config);
+                        if (rec_modbus) {
+                            $("#btn-s-modbus").show();
+                            updateSelModBus(json_config);
+                        } else {
+                            $("#btn-s-modbus").hide();
+                        }
                         console.log(data);
                     } // tipo==0
                     // modulos
@@ -508,10 +517,6 @@ function getMainConfig(tipo, id_sensor) {
                             for (sens = 1; sens <= MAX_NODES_SENSORES; sens++) {
                                 node = jsonPath(json_config, "$.node" + n_mod + ".field" + sens);
                                 console.log("sens  node=" + node);
-                                if (sens == 2 && (recursos & 0x10) != 0x10) {
-                                    continue;
-                                }
-
                                 option = $('<option></option>').prop("value", sens - 1).text(sens + ":" + node);
                                 $("#sel-mod" + n_mod).append(option);
                             }
@@ -531,13 +536,13 @@ function getMainConfig(tipo, id_sensor) {
                     updateSelHoras();
                     atualizaGraficoConfig();
                     if (json_feed == null) {
-                        atualiza_dados();
+                        atualiza_dados(tipo==0);
                         $(".uib_w_215").show();
                     }
                     // select de 2,6 e 24horas
                     // ativa pagina principal
                     
-                    if (tipo == 0) activate_subpage("#uib_page_2");
+                    //if (tipo == 0) activate_subpage("#uib_page_2");
 
                 }
             },
@@ -724,6 +729,7 @@ function gravarComandoTS(text_obj, _cmd) {
 function updateSelSensores(data) {
     var i, option;
     var n, m, s, c, canal;
+    json_sensores=data;
     $("#sel-meus-sensores").empty();
     i = 0;
     m = jsonPath(data, "$.sensores[" + i + "].modelo");
@@ -748,6 +754,32 @@ function updateSelSensores(data) {
     }
     $('#sel-meus-sensores option')[0].selected = true;
     eventFire(document.getElementById('sel-meus-sensores'), 'change');
+}
+/**********************************************************************/
+function updateSelModBus(data) {
+    var i, option;
+    var s,a,c,q;
+    $("#sel-modbus").empty();
+    i = 0;
+    s = jsonPath(data, "$.modbus[" + i + "].slave");
+    if (s != false) {
+        document.getElementById("text-mb-slave").value = '';
+        document.getElementById("text-mb-addr").value = '';
+        document.getElementById("text-mb-cmd").value = '';
+        document.getElementById("text-mb-qtde").value = '';
+    }
+    while (s != false) {
+        a = jsonPath(data, "$.modbus[" + i + "].addr");
+        c = jsonPath(data, "$.modbus[" + i + "].cmd");
+        q = jsonPath(data, "$.modbus[" + i + "].qtde");
+        console.log("Modbus s=" + s + ": a=" + a + " c=" + c + "  q=" + q);
+        option = $('<option></option>').prop("value", canal).text(s + ':'+ a);
+        $("#sel-modbus").append(option);
+        i++;
+        s = jsonPath(data, "$.modbus[" + i + "].slave");
+    }
+    $("#sel-modbus option:eq(0)").prop('selected', true);
+    eventFire(document.getElementById('sel-modbus'), 'change');
 }
 
 /***********************************************************************/
@@ -889,6 +921,39 @@ function signInServer(pag) {
             '&s=' + $("#serie").val() +
             '&c=' + $("#chave").val();
     }
+
+    // Gravar um comando MODBUS
+    if (pag == 'MB+') {
+        var mb_slave = $('#text-mb-slave').val();
+        var mb_addr = $('#text-mb-addr').val();
+        var mb_cmd = $('#text-mb-cmd').val();
+        var mb_qtde = $('#text-mb-qtde').val();
+        addr = addr + 'p=40&u=' + json_user.login +
+            '&m=' + $("#modelo").val() +
+            '&s=' + $("#serie").val() +
+            '&c=' + $("#chave").val()+
+            '&ms=' + mb_slave +
+            '&ma=' + mb_addr +
+            '&mc=' + mb_cmd +
+            '&mq=' + mb_qtde;
+        addr = addr + '&updated_flag=10';
+    }
+    if (pag == 'MB-') {
+        var mb_slave = $('#text-mb-slave').val();
+        var mb_addr = $('#text-mb-addr').val();
+        var mb_cmd = $('#text-mb-cmd').val();
+        var mb_qtde = $('#text-mb-qtde').val();
+        addr = addr + 'p=41&u=' + json_user.login +
+            '&m=' + $("#modelo").val() +
+            '&s=' + $("#serie").val() +
+            '&c=' + $("#chave").val()+
+            '&ms=' + mb_slave +
+            '&ma=' + mb_addr +
+            '&mc=' + mb_cmd +
+            '&mq=' + mb_qtde;
+        addr = addr + '&updated_flag=10';
+    }
+
     // registrar comentario
     if (pag == 'reg') {
         addr = addr + 'p=30&u=';
@@ -918,11 +983,18 @@ function signInServer(pag) {
         xhrFields: {
             withCredentials: true
         },
+        beforeSend: function () {
+            if (pag=='TS+' || pag=='TS-')
+                document.getElementById("text-s-modbus").innerHTML= "Running...";
+            if (pag=='MB+' || pag=='MB-')
+                document.getElementById("text_config").innerHTML="Running...";
+        },
         success: function (data) {
-            console.log("signInServer ajax");
+            if (data.pag != undefined)
+                pag=data.pag;
+            console.log("signInServer ajax pag="+pag);
             console.log(data);
             if (pag == 'in') {
-                console.log("data=" + data);
                 if (data.login == undefined || data.login == '') {
                     mensagemTela('Erro', "usuario/senha inválida");
                     sessao_id = null;
@@ -988,6 +1060,14 @@ function signInServer(pag) {
                     document.getElementById("text_config").innerHTML = "Sucesso na remocao.";
                 } else
                     document.getElementById("text_config").innerHTML = "Erro:" + data.mensagem;
+            } else
+            if (pag == 'MB+' || pag == 'MB-') {
+                updateSelModBus(data);
+                json_modbus=data;
+                if (data.status == "1") {
+                    document.getElementById("text-s-modbus").innerHTML = "Sucesso.";
+                } else
+                    document.getElementById("text-s-modbus").innerHTML = "Erro:" + data.mensagem;
             } else
                 mensagemTela(data.mensagem,"Retorno");
 
@@ -1244,13 +1324,13 @@ function get_feed(flag_atualiza) {
             //    json_feed = JSON.parse(data);
             json_feed = data;
             //console.log("GET FEED OK " + flag_atualiza + " canal=" + json_feed.channel.canal);
-            if (flag_atualiza)
-                document.dispatchEvent(evt_get_feed);
+            document.dispatchEvent(evt_get_feed);
             lerFlagStatus();
             //angular.element(document.getElementById('myCtrl')).scope().get();
             angular.element($("#afui")).scope().getSensores();
             angular.element($("#afui")).scope().getFeeds();
-
+            if (flag_atualiza)
+                activate_subpage("#uib_page_2");
         },
         error: function (data) {
             console.log(data);
@@ -1498,10 +1578,14 @@ function atualizaGraficoConfig() {
                 g3.data.setColumnLabel(1, Cookies["campo6"]);
                 max = parseInt(json_config.canal.field6_max);
                 min = parseInt(json_config.canal.field6_min);
+                g4.data.setColumnLabel(1, Cookies["campo6"]);
+                g4.options.title = Cookies["campo6"];
             } else { // corrente
                 g3.data.setColumnLabel(1, Cookies["campo1"]);
                 max = parseInt(json_config.canal.field1_max);
                 min = parseInt(json_config.canal.field1_min);
+                g4.data.setColumnLabel(1, Cookies["campo1"]);
+                g4.options.title = Cookies["campo1"];
             }
             diff_val = Math.ceil((max - min) / 3);
             yellow_value = min;
@@ -1532,8 +1616,6 @@ function atualizaGraficoConfig() {
                 g3.options.yellowTo = yellow_value;
                 g3.options.redColor = '#FF9900';
             }
-            g4.data.setColumnLabel(1, Cookies["campo6"]);
-            g4.options.title = Cookies["campo6"];
 
         }
         if (rec_temperatura3 == true && window.g5 != undefined) {
@@ -1613,6 +1695,7 @@ function atualizaGraficoConfig() {
     for (var m = 0; m < MAX_NODES; m++) {
         var v_str;
         var t = m + 1;
+        var n_mod, aux;
         var node = "$.node" + t;
         console.log("modulo=" + m);
         if (gm1[m] != undefined && jsonPath(json_config, node) != false) {
@@ -1675,9 +1758,17 @@ function atualizaGraficoConfig() {
                     //gm2[m][1].options.vAxis.maxValue = max;
                 }
             }
+            // posiciona no primeiro gráfico visível
+            n_mod=m+6;
+            $('#chartx' + n_mod +'11_div').css("display", "block");
+            $('#chartx' + n_mod +'12_div').css("display", "block");
+              for (aux=2; aux<=MAX_NODES_SENSORES; aux++) {
+                $('#chartx' + n_mod +'' + aux +"1_div").css("display", "none");
+                $('#chartx' + n_mod +'' + aux +"2_div").css("display", "none");
+              }
         }
-    }
-    atualiza_dados();
+    } // for
+    atualiza_dados(false);
 }
 /**********************************************************************/
 function testarBotoesModulo() {
@@ -1726,7 +1817,10 @@ function lerFlagStatus() {
     if ($("#btn_info").hasClass("close"))
         $("#btn_info").toggleClass("info close");
 
-    $("#text_ips").html('AP=' + json_feed.channel.ip0 + '<br>');
+    $("#text_ips").html('')
+    if (json_feed.channel.ip0 != undefined)
+        $("#text_ips").append('AP=' + json_feed.channel.ip0 + '<br>');
+    if (json_feed.channel.ip1 != undefined)
     $("#text_ips").append('STA=' + json_feed.channel.ip1);
     myIP_updated_at = json_feed.channel.updated_ip_at;
     $("#text_ips").append('<br>' + myIP_updated_at + '(atualizado)');
@@ -1758,9 +1852,9 @@ function lerFlagStatus() {
 
 
 /************************************************************/
-function atualiza_dados() {
+function atualiza_dados(flag) {
     //console.log(">atualiza_dados");
-    get_feed(true);
+    get_feed(flag);
 }
 
 function c() {
@@ -1779,8 +1873,8 @@ var MAX_NODES = 4;
 var MAX_NODES_SENSORES = 8;
 var VERSAO = {
     MAJOR: '1',
-    MINOR: '49',
-    DATE: '21/07/2016'
+    MINOR: '45',
+    DATE: '01/08/2016'
 };
 
 var SERVER_HTTP = 'http://';
@@ -1792,6 +1886,8 @@ var g1, g2, g3, g4, g5, g6;
 var gtext = [];
 var user = null;
 var json_user;
+var json_modbus=null;
+var json_sensores=null;
 /*********************************************************************/
 var sessao_id = null;
 
@@ -1831,6 +1927,7 @@ function onDeviceReady() {
     if (intel.xdk.isxdk == true) {
         // Application is running in XDK
         console.log("Running in Intel XDK Emulator");
+        $("#div_campos").hide();
     }
 
     // sensor principal
@@ -1888,6 +1985,10 @@ function onDeviceReady() {
         var s=hash.toString(CryptoJS.enc.Hex);
         document.getElementById("chave").value=s;
     */
+    intel.xdk.device.hideSplashScreen();
+ setTimeout(function () {
+             $.ui.launch();
+     }, 50);
 }
 
 
@@ -1919,12 +2020,14 @@ function onDeviceReady() {
 #define REC_RELE 15
 #define REC_WIFI 16
 #define REC_ETHERNET 17
+#define REC_MODBUS 18
+#define REC_NRF24L01    29
 */
 var rec_corrente_30a, rec_corrente_100a;
 var rec_lm35, rec_dht11, rec_ds18b20, rec_temperatura, rec_humidade;
 var rec_temperatura2, rec_ds18b20_extra, rec_temperatura3;
 var rec_rele, rec_led1, rec_led2, rec_led3, rec_alimentacao, rec_botao;
-var rec_ethernet, rec_wifi;
+var rec_ethernet, rec_wifi, rec_modbus;
 
 function define_recuros() {
     var recursos = parseInt(json_config.canal.recursos);
@@ -2009,21 +2112,41 @@ function define_recuros() {
     // ALIMENTACAO
     if ((recursos & 0x400) == 0x400) {
         rec_alimentacao = true;
-        $("#btn-s-aliementacao").show();
     } else {
         rec_alimentacao = false;
-        $("#btn-s-aliementacao").hide();
     }
 //#define REC_ETHERNET 17
-    if ((recursos & 1 << 17)) {
+    if (recursos & (1 << 17)) {
         rec_ethernet=true;
         console.log("ETHERNET");
+        //$("#btn-wifi-principal").hide();
+        $('#ssid,#passwd').each(function(){
+            $(this).prop('readonly', true);
+            $(this).css({'background-color': '#FFFEEE'});
+        });
+
+        } else {
+        $('#ssid,#passwd').each(function(){
+            $(this).prop('readonly', false);
+            $(this).css({'background-color': '#FFFFFF'});
+        });
+        //$("#btn-wifi-principal").show();
+    }
+//#define REC_MODBUS   18
+    if (recursos & (1 << 18)) {
+        rec_modbus=true;
+    } else {
+        rec_modbus=false;
+
     }
 //#define REC_NRF24L01   19
-    if ((recursos & 1 << 19)) {
-        $("#sel-endereco-TS").show();
+    if (recursos & (1 << 19)) {
+        $("#sel-endereco-TS").prop('disabled', false);
+        $("#sel-endereco-TS").css({'background-color': '#FFFFFF'});
     } else {
-        $("#sel-endereco-TS").hide();
+        $("#sel-endereco-TS").prop('disabled', 'disabled');
+        $("#sel-endereco-TS").css({'background-color': '#FFFEEE'});
 
     }
 }
+

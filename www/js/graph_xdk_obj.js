@@ -111,13 +111,6 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
         //app.consoleLog(self.id_div," loadData");
         self.message = '';
 
-        if (self.id_div == 'chart1_div')
-            console.log(self.options);
-        if (self.ativo == false) {
-            app.consoleLog(self.id_div, " inativo");
-            return;
-        }
-
         if (json_feed == null) {
             app.consoleLog(self.id_div, " sem feed");
             self.message = " sem feed";
@@ -150,6 +143,26 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                 return;
             }
         }
+
+        if (self.modulo == null ) {
+            var campo = self.series[0].campo;
+            var v_str= jsonPath(valdata, "$.feeds[0].field" + campo);
+            if (v_str === false) {
+                self.ativo=false;
+                return;
+            }
+        } else
+        if (self.modulo >= 0) {
+            var campo = self.series[0].campo;
+            var str = self.modulo + 1;
+            var v_str = jsonPath(valdata,
+                            "$.nodes_feed" + str + "[0].field" + campo);
+            if (v_str === false) {
+                self.ativo=false;
+                return;
+            }
+        }
+        self.ativo=true;
         //self.message='count='+self.count;
         self.count++;
         self.ajustaData();
@@ -194,7 +207,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                     if (self.vcc == null && v_str != false)
                         self.vcc = v_str;
                     v_str = jsonPath(valdata, "$.nodes" + str + ".vcc_flag");
-                    if (self.vcc_flag == null || v_str !== false)
+                    if (self.vcc_flag == null && v_str !== false)
                         self.vcc_flag = v_str;
                     titulo = jsonPath(valdata, "$.nodes" + str + ".name");
                 }
@@ -295,11 +308,11 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                     }
                     break;
                 }
-                if (i == 0 && valor === false) {
+         /*       if (i == 0 && valor === false) {
                      //console.log("sem feeds total:" + self.id_div);
                     self.sem_dados = true;
                 }
-
+*/
                 if (isNaN(valor) || valor === false) valor = null;
                 if (self.tipo == 3) { // dounets
                     self.data.setCell(k, 0, self.series[key].nome);
