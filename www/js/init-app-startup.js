@@ -135,6 +135,8 @@ dev.onDeviceReady = function() {
     document.dispatchEvent(evt) ;
 
     dev.consoleLog(fName, dev.isDeviceReady) ;
+    // Intel XDK 3491 CAP 08/08/2016 Cordova
+    onDeviceReady();
     dev.consoleLog(fName, "exit") ;
 } ;
 

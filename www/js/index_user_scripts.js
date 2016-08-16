@@ -203,14 +203,15 @@
             var div_12=_div.substr(8,1);
             var aux = (sensor % MAX_NODES_SENSORES) + 1;
             var _div2 = 'chartx' + n_mod + ''+ sensor + "2_div";
-
+            var ativo;
             if (div_12==2) {
                 click_no_gauge(modulo+1);
             } else {
                 if (gm1[modulo][aux] != undefined) {
-                    var ativo=gm1[modulo][aux].ativo;
-                    if (ativo == false) {
-                        aux=1;
+                    ativo=gm1[modulo][aux].ativo;
+                    while (ativo == false) {
+                        aux = (aux % MAX_NODES_SENSORES) + 1;
+                        ativo=gm1[modulo][aux].ativo;
                     }
                     $('#'+_div).css("display", "none");
                     $('#'+_div2).css("display", "none");

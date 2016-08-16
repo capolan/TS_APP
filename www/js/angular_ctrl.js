@@ -5,6 +5,8 @@ myApp.controller('myCtrl',  function($scope) {
 
     $scope.getFeeds = function() {
         if (json_feed == null) return;
+        delete $scope.feeds;
+        delete $scope.nodes_feed1;
         $scope.feeds = json_feed.feeds;
         $scope.nodes_feed1 = json_feed.nodes_feed1;
         //console.log(json_feed.sensor);
@@ -13,6 +15,7 @@ myApp.controller('myCtrl',  function($scope) {
 
     $scope.getSensores = function() {
         if (json_feed == null) return;
+        delete $scope.sensores;
         $scope.sensores = json_feed.sensor;
         //console.log(json_feed.sensor);
         $scope.$apply();

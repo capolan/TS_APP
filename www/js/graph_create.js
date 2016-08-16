@@ -43,7 +43,7 @@ function atualizaGrafico(objG, div, campo) {
             var status=json_feed.channel.status;
             CHAVE1=json_feed.feeds[0].chave1;
 
-            console.log("chave1=" + CHAVE1+ "  status=" + status);
+            //console.log("chave1=" + CHAVE1+ "  status=" + status);
             if (status==0)
                 document.getElementById('text-rele-text').innerHTML='';
             else {

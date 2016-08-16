@@ -180,7 +180,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
         for (var i = 0, f = 0; i <= self.nro_pontos - 1; i++, f++) {
             var mensagem = false;
             if (valdata.feeds[i] === undefined) {
-                app.consoleLog("poucos dados feed i=" + i + "   id_div=" + self.id_div);
+               // app.consoleLog("poucos dados feed i=" + i + "   id_div=" + self.id_div);
                 // self.message = 'poucos dados';
                 break;
             }

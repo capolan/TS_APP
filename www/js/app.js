@@ -459,6 +459,7 @@ function getMainConfig(tipo, id_sensor) {
                         Cookies.create("nome", json_config.canal.nome, 10 * 356);
                         Cookies.create("email", json_config.canal.email, 10 * 356);
                         Cookies.create("celular", json_config.canal.celular, 10 * 356);
+                        document.getElementById("count_to_alert").value=json_config.canal.count_to_alert;
 
                         // limites
                         // corrente
@@ -1138,6 +1139,8 @@ function gravarConfiguracao(pag, text_obj) {
         success: function (data) {
             console.log(data);
             text_obj.innerHTML = data;
+            if (data=='OK')
+                    getMainConfig(0);
             // atualiza_modulos();
         },
         error: function (data) {
@@ -1195,7 +1198,7 @@ function gravarConfiguracaoSensor(pag, text_obj) {
     if (pag == 'm') {
         var sms= document.getElementById("af-checkbox-ativar-sms").checked;
         var email= document.getElementById("af-checkbox-ativar-email").checked;
-        var val=parseInt(document.getElementById("count-to-alert").value);
+        var val=parseInt(document.getElementById("count_to_alert").value);
         data = data + "&nome=" + encodeURIComponent(document.getElementById("text-s-nome").value) +
             "&email=" + encodeURIComponent(document.getElementById("text-s-email").value) +
             "&celular=" + encodeURIComponent(document.getElementById("text-s-celular").value)+
@@ -1203,7 +1206,7 @@ function gravarConfiguracaoSensor(pag, text_obj) {
             "&asms=" + sms;
 
         if (!isNaN(val) && val>=1 && val<=100)
-            data = data + "$ctoalert=" + document.getElementById("count_to_alert").value;
+            data = data + "&ctoalert=" + document.getElementById("count_to_alert").value;
     }
     // nodes limites e offline_at
     if (pag == 'n') {
@@ -1272,6 +1275,8 @@ function gravarConfiguracaoSensor(pag, text_obj) {
                     alertDismissed, 'Modulo', 'Fechar');
             } else {
                 text_obj.innerHTML = data;
+                if (data=='OK')
+                    getMainConfig(0);
             }
             // atualiza_modulos();
         },
@@ -1873,8 +1878,8 @@ var MAX_NODES = 4;
 var MAX_NODES_SENSORES = 8;
 var VERSAO = {
     MAJOR: '1',
-    MINOR: '45',
-    DATE: '01/08/2016'
+    MINOR: '46',
+    DATE: '09/08/2016'
 };
 
 var SERVER_HTTP = 'http://';
