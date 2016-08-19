@@ -592,6 +592,7 @@ function writeMainConfig() {
         document.getElementById("canal").value = Cookies["canal"];
         document.getElementById("tempo_ler_corrente").value = Cookies["tempo_ler_corrente"];
         document.getElementById("contador_enviar_web").value = Cookies["contador_enviar_web"];
+        document.getElementById("contador_gravar_log").value = json_config.canal.contador_gravar_log;
         document.getElementById("api_key").value = Cookies["api_key"];
         document.getElementById("nro_pontos").value = Cookies["nro_pontos"];
         document.getElementById("inatividade").value = Cookies["inatividade"];
@@ -638,6 +639,9 @@ function writeMainConfig() {
         fases = parseInt(json_config.canal.fases);
         Cookies["fases"]=fases;
         $("#text-s-corrente-nome").val(json_config.canal.field1);
+        $("#text-s-corrente-fase1").val(json_config.canal.field2);
+        $("#text-s-corrente-fase2").val(json_config.canal.field3);
+        $("#text-s-corrente-fase3").val(json_config.canal.field4);
         document.getElementById("af-checkbox-canal-1").checked = (fases & 0x01) == 0x01;
         document.getElementById("af-checkbox-canal-2").checked = (fases & 0x02) == 0x02;
         document.getElementById("af-checkbox-canal-3").checked = (fases & 0x04) == 0x04;
@@ -1105,6 +1109,7 @@ function gravarConfiguracao(pag, text_obj) {
             '&nro_pontos=' + Cookies['nro_pontos'] +
             '&tempo_ler_corrente=' + Cookies['tempo_ler_corrente'] +
             '&contador_enviar_web=' + Cookies['contador_enviar_web'] +
+            '&contador_gravar_log=' + json_config.canal.contador_gravar_log +
             '&horas=' + encodeURIComponent($("#str_horas").val());
         addr = addr + '&updated_flag=10';
     }
@@ -1537,166 +1542,85 @@ Cookies.init();
 /*********************************************************************/
 function atualizaGraficoConfig() {
     console.log(">atualizaGRaficoConfig");
-    //get_feed(false);
-    //testarBotoesModulo();
-    Cookies["api_key"] = document.getElementById("api_key").value;
-    switch (Cookies["tela_layout"]) {
-    case '0':
-        // campo 5 temperatura
-        var max = parseInt(json_config.canal.field5_max);
-        var min = parseInt(json_config.canal.field5_min);
-        var diff_val = Math.ceil((max - min) / 3);
-        yellow_value = min;
-        red_value = max;
-        g1.data.setColumnLabel(1, Cookies["campo5"]);
-        if (isNaN(min)) {
-            range_val = max;
-            red_value = range_val - (range_val * 0.1) + min;
-            yellow_value = range_val - (range_val * 0.25) + min;
-            g1.options.min = 0;
-            g1.options.max = max;
-            g1.options.greenFrom = 0;
-            g1.options.greenTo = yellow_value;
-            g1.options.yellowFrom = yellow_value;
-            g1.options.yellowTo = red_value;
-            g1.options.redFrom = red_value;
-            g1.options.redTo = max;
-            g1.options.redColor = '#DC3912';
-        } else {
-            g1.options.min = min - diff_val;
-            g1.options.max = max + diff_val;
-            g1.options.redFrom = red_value;
-            g1.options.redTo = max + diff_val;
-            g1.options.greenFrom = yellow_value;
-            g1.options.greenTo = red_value;
-            g1.options.yellowFrom = min - diff_val;
-            g1.options.yellowTo = yellow_value;
-            g1.options.redColor = '#FF9900';
-        }
-        // grafico linha
-        g2.data.setColumnLabel(1, Cookies["campo5"]);
-        g2.options.title = Cookies["campo5"];
-        //g2.options.vAxis.minValue=min;
-        //g2.options.vAxis.maxValue=max;
-        if (window.g3 != undefined) {
-            if (rec_temperatura2 == true || rec_humidade==true) {
-                g3.data.setColumnLabel(1, Cookies["campo6"]);
-                max = parseInt(json_config.canal.field6_max);
-                min = parseInt(json_config.canal.field6_min);
-                g4.data.setColumnLabel(1, Cookies["campo6"]);
-                g4.options.title = Cookies["campo6"];
-            } else { // corrente
-                g3.data.setColumnLabel(1, Cookies["campo1"]);
-                max = parseInt(json_config.canal.field1_max);
-                min = parseInt(json_config.canal.field1_min);
-                g4.data.setColumnLabel(1, Cookies["campo1"]);
-                g4.options.title = Cookies["campo1"];
-            }
-            diff_val = Math.ceil((max - min) / 3);
-            yellow_value = min;
-            red_value = max;
-            if (isNaN(min)) {
-                if (isNaN(max)) max = 100;
-                range_val = max;
-                min = 0;
+    for (var sens = 1; sens <= 8; sens++) {
+        var v_str;
+        var n_mod, aux;
+        if (gg1[sens] != undefined && jsonPath(json_config, '$.canal') != false) {
+                v_str = jsonPath(json_config, "$.canal.field" + sens + "_max");
+                max = Math.ceil((parseInt(v_str) + 10) / 10) * 10;
+                v_str = jsonPath(json_config, "$.canal.field" + sens + "_min");
+                console.log("min=" + v_str);
+                min = parseInt(v_str);
+                if (min < 0) {
+                    min = Math.floor((min - 10) / 10) * 10;
+                } else min = 0;
+
+                if (isNaN(max))
+                    max = 100;
+
+                range_val = max - min;
                 red_value = range_val - (range_val * 0.1) + min;
                 yellow_value = range_val - (range_val * 0.25) + min;
-                g3.options.min = 0;
-                g3.options.max = max;
-                g3.options.greenFrom = 0;
-                g3.options.greenTo = yellow_value;
-                g3.options.yellowFrom = yellow_value;
-                g3.options.yellowTo = red_value;
-                g3.options.redFrom = red_value;
-                g3.options.redTo = max;
-                g3.options.redColor = '#DC3912';
-            } else {
-                g3.options.min = min - diff_val;
-                g3.options.max = max + diff_val;
-                g3.options.redFrom = red_value;
-                g3.options.redTo = max + diff_val;
-                g3.options.greenFrom = yellow_value;
-                g3.options.greenTo = red_value;
-                g3.options.yellowFrom = min - diff_val;
-                g3.options.yellowTo = yellow_value;
-                g3.options.redColor = '#FF9900';
+
+                v_str = gg1[sens].data.getColumnLabel(1);
+                console.log("GET field" + sens + "=" + v_str);
+
+                v_str = jsonPath(json_config, "$.canal.field" + sens);
+                //                console.log("field" + sens + "=" + v_str);
+
+//                max = parseInt(jsonPath(json_config, node + ".field" + sens + "_max"));
+                min = parseInt(jsonPath(json_config, "$.canal.field" + sens + "_min"));
+                gg1[sens].data.setColumnLabel(1, v_str);
+                gg2[sens].data.setColumnLabel(1, v_str);
+                gg2[sens].options.title = v_str;
+//                console.log("min=" + min);
+                if (isNaN(min)) {
+                    range_val = max;
+                    red_value = range_val - (range_val * 0.1);
+                    yellow_value = range_val - (range_val * 0.25);
+                    gg1[sens].options.min = 0;
+                    gg1[sens].options.max = max;
+                    gg1[sens].options.greenFrom = 0;
+                    gg1[sens].options.greenTo = yellow_value;
+                    gg1[sens].options.yellowFrom = yellow_value;
+                    gg1[sens].options.yellowTo = red_value;
+                    gg1[sens].options.redFrom = red_value;
+                    gg1[sens].options.redTo = max;
+                    gg1[sens].options.redColor = '#DC3912';
+                } else {
+                    diff_val = Math.ceil((max - min) / 3);
+                    yellow_value = min;
+                    red_value = max;
+                    gg1[sens].options.min = min - diff_val;
+                    gg1[sens].options.max = max + diff_val;
+                    gg1[sens].options.greenFrom = yellow_value;
+                    gg1[sens].options.greenTo = red_value;
+                    gg1[sens].options.yellowFrom = min - diff_val;
+                    gg1[sens].options.yellowTo = yellow_value;
+                    gg1[sens].options.redFrom = red_value;
+                    gg1[sens].options.redTo = max + diff_val;
+                    gg1[sens].options.redColor = '#FF9900';
+                    //gm2[m][1].options.vAxis.minValue = min;
+                    //gm2[m][1].options.vAxis.maxValue = max;
+                }
             }
-
+            // posiciona no primeiro gráfico visível
+    } // for
+        sens=0;
+        for (aux=1; aux<=MAX_CAIXA_SENSORES; aux++) {
+                $('#chart1' +aux +"_div").css("display", "none");
+                $('#chart2' +aux +"_div").css("display", "none");
+                $('#text_pag_' +aux).css("display", "none");
+                if (gg1[aux].ativo == true && sens==0)
+                        sens=aux;
+              }
+        if (sens > 0) {
+            $('#chart1' + sens + '_div').css("display", "block");
+            $('#chart2' + sens + '_div').css("display", "block");
+            $('#text_pag_' +sens).css("display", "block");
         }
-        if (rec_temperatura3 == true && window.g5 != undefined) {
-            g5.data.setColumnLabel(1, Cookies["campo7"]);
-            max = parseInt(json_config.canal.field7_max);
-            min = parseInt(json_config.canal.field7_min);
-            diff_val = Math.ceil((max - min) / 3);
-            yellow_value = min;
-            red_value = max;
-            g5.data.setColumnLabel(1, Cookies["campo7"]);
-            if (isNaN(min)) {
-                if (isNaN(max)) max = 100;
-                range_val = max;
-                red_value = range_val - (range_val * 0.1) + min;
-                yellow_value = range_val - (range_val * 0.25) + min;
-                g5.options.min = 0;
-                g5.options.max = max;
-                g5.options.greenFrom = 0;
-                g5.options.greenTo = yellow_value;
-                g5.options.yellowFrom = yellow_value;
-                g5.options.yellowTo = red_value;
-                g5.options.redFrom = red_value;
-                g5.options.redTo = max;
-                g5.options.redColor = '#DC3912';
-            } else {
-                g5.options.min = min - diff_val;
-                g5.options.max = max + diff_val;
-                g5.options.redFrom = red_value;
-                g5.options.redTo = max + diff_val;
-                g5.options.greenFrom = yellow_value;
-                g5.options.greenTo = red_value;
-                g5.options.yellowFrom = min - diff_val;
-                g5.options.yellowTo = yellow_value;
-                g5.options.redColor = '#FF9900';
-            }
-            g6.data.setColumnLabel(1, Cookies["campo7"]);
-            g6.options.title = Cookies["campo7"];
 
-        }
-        break;
-    case '2': // temperatura e corrente
-        // campo 1 corrente
-        var max = Math.ceil((parseInt(json_config.canal.field1_max) + 10) / 10) * 10;
-        var min = parseInt(json_config.canal.field1_min);
-        if (min < 0) {
-            min = Math.floor((min - 10) / 10) * 10;
-        } else min = 0;
-        var range_val = max - min;
-        var red_value = range_val - (range_val * 0.1) + min;
-        var yellow_value = range_val - (range_val * 0.25) + min;
-        g1.data.setColumnLabel(1, Cookies["campo1"]);
-        g1.options.min = min;
-        g1.options.max = max;
-        g1.options.redFrom = red_value;
-        g1.options.redTo = max;
-        g1.options.yellowFrom = yellow_value;
-        g1.options.yellowTo = red_value;
-        // campo 5 temperatura
-        var max = Math.ceil((parseInt(json_config.canal.field5_max) + 10) / 10) * 10;
-        var min = parseInt(json_config.canal.field5_min);
-        if (min < 0) {
-            min = Math.floor((min - 10) / 10) * 10;
-        } else min = 0;
-        range_val = max - min;
-        red_value = range_val - (range_val * 0.1) + min;
-        yellow_value = range_val - (range_val * 0.25) + min;
-        g2.data.setColumnLabel(1, Cookies["campo5"]);
-        g2.options.min = min;
-        g2.options.max = max;
-        g2.options.redFrom = red_value;
-        g2.options.redTo = max;
-        g2.options.yellowFrom = yellow_value;
-        g2.options.yellowTo = red_value;
-        break;
-    }
-
+    /* NODES */
     for (var m = 0; m < MAX_NODES; m++) {
         var v_str;
         var t = m + 1;
@@ -1773,9 +1697,11 @@ function atualizaGraficoConfig() {
               }
         }
     } // for
+
     atualiza_dados(false);
 }
 /**********************************************************************/
+/*********************************************************************/
 function testarBotoesModulo() {
     console.log(">testarBotoesModulo");
     // console.log("json_feed.nodes1.name="+json_feed.nodes1.name);
@@ -1876,10 +1802,11 @@ var ts_cmds_par = [2, 3, 3, 3, 1, 3, 0, 0, 0, 1, 0, 3, 3];
 var r_horas = 2;
 var MAX_NODES = 4;
 var MAX_NODES_SENSORES = 8;
+var MAX_CAIXA_SENSORES = 8;
 var VERSAO = {
     MAJOR: '1',
-    MINOR: '46',
-    DATE: '09/08/2016'
+    MINOR: '50',
+    DATE: '16/08/2016'
 };
 
 var SERVER_HTTP = 'http://';
@@ -1887,7 +1814,7 @@ var SERVER_IP = '45.55.77.192';
 var SERVER_PATH = '/0';
 
 /*********************************************************************/
-var g1, g2, g3, g4, g5, g6;
+var g3, g4, g5, g6;
 var gtext = [];
 var user = null;
 var json_user;

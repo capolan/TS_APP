@@ -124,47 +124,52 @@
             pagina_status = 0;
             lerStatus('alertas', "pag_info_status");
         });
-
-        $(document).on("click", "#chart1_div", function (evt) {
-            //     app.consoleLog("[204] rec_temperatura2",rec_temperatura2);
-            if (Cookies["tela_layout"] == "0") { // Temperatura
-                if (rec_temperatura2 == true || rec_humidade == true) { // Temperatura 2
-                    if (g3.sem_dados == true)
-                        mensagemTela("Sem dados", "Temperatura 2");
-                    else {
-                        gtext[1].loadData();
-                        activate_subpage("#uib_page_10");
-                    }
-                } else
-                if (rec_corrente_30a == true || rec_corrente_100a == true) { // Temperatura 2
-                    if (g3.sem_dados == true)
-                        mensagemTela("Sem dados", "Corrente");
-                    else {
-                        gtext[1].loadData();
-                        activate_subpage("#uib_page_10");
-                    }
-                } else
-                    click_no_gauge(0);
-            } else {
-                gtext[1].loadData();
-                activate_subpage("#uib_page_10");
-            }
-        });
-
-        $(document).on("click", "#chart2_div", function (evt) {
-            if (Cookies["tela_layout"] == "0") // Temperatura
+/***********************************************************************************************/
+        // click no gauge
+        $('#chart11_div, #chart12_div, #chart13_div, #chart14_div, #chart15_div, #chart16_div, #chart17_div, #chart18_div').click(function() {
+            var _div=this.id;
+            var sensor=_div.substr(6,1);    //  numero do sensor
+            var div_12=_div.substr(5,1);
+            var aux = (sensor % MAX_CAIXA_SENSORES) + 1;
+            var _div2 = 'chart2' + sensor + "_div";
+            var _text = 'text_pag_' + sensor;
+            var ativo;
+            if (div_12==2) {
                 click_no_gauge(0);
-            else
-            if (Cookies["tela_layout"] == "1") {// TGG
-                gtext[1].loadData();
-                activate_subpage("#uib_page_10");
             } else {
-                //       atualizaGrafico(g5,"text_pag_11");
-                gtext[2].loadData();
-                activate_subpage("#uib_page_11");
+                if (gg1[aux] != undefined) {
+                    ativo=gg1[aux].ativo;
+                    while (ativo == false) {
+                        aux = (aux % MAX_CAIXA_SENSORES) + 1;
+                        ativo=gg1[aux].ativo;
+                    }
+                    $('#'+_div).css("display", "none");
+                    $('#'+_div2).css("display", "none");
+                    $('#'+_text).css("display", "none");
+                    $('#chart1' + aux +"_div").css("display", "block");
+                    $('#chart2' + aux +"_div").css("display", "block");
+                    $('#text_pag_' + aux).css("display", "block");
+                    gtext[0].loadData();
+
+                    if (aux == 1) {   // voltou ao inicio
+                        if (rec_corrente_30a == true || rec_corrente_100a == true) { // Temperatura 2
+                            if (g3.sem_dados == true)
+                            mensagemTela("Sem dados", "Corrente");
+                        else {
+                            gtext[1].loadData();
+                            activate_subpage("#uib_page_10");
+                            }
+                        }
+
+                    }
+                } else {
+                    click_no_gauge(0);
+            }
+
             }
         });
 
+/***********************************************************************************/
         $(document).on("click", "#chart3_div", function (evt) {
             if (Cookies["tela_layout"] == "0") // Temperatura
                 if (rec_corrente_30a == true || rec_corrente_100a == true) {
@@ -190,10 +195,10 @@
                 activate_subpage("#uib_page_11");
             }
         });
-
         $(document).on("click", "#chart5_div", function (evt) {
             activate_subpage("#uib_page_2");
         });
+/***********************************************************************************************/
         // click no gauge
         $('#chartx611_div, #chartx612_div, #chartx621_div, #chartx631_div, #chartx641_div, #chartx651_div, #chartx661_div, #chartx671_div, #chartx681_div, #chartx711_div, #chartx712_div, #chartx721_div, #chartx731_div, #chartx741_div, #chartx751_div, #chartx761_div, #chartx771_div, #chartx781_div, #chartx811_div, #chartx812_div, #chartx821_div, #chartx831_div, #chartx841_div, #chartx851_div, #chartx861_div, #chartx871_div, #chartx881_div, #chartx911_div, #chartx912_div, #chartx921_div, #chartx931_div, #chartx941_div, #chartx951_div, #chartx961_div, #chartx971_div, #chartx981_div').click(function() {
             var _div=this.id;
@@ -224,6 +229,7 @@
 
             }
         });
+/***********************************************************************************************/
 
         /* button  #btn_home */
         $(document).on("click", "#btn_home", function (evt) {
