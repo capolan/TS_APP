@@ -31,9 +31,7 @@
         });
 
         /* button  Inicio */
-        $(document).on("click", ".uib_w_17", function (evt) {
-            activate_subpage("#uib_page_2");
-        });
+
 
         /* button  AP */
         $(document).on("click", ".uib_w_16", function (evt) {
@@ -126,22 +124,24 @@
         });
 /***********************************************************************************************/
         // click no gauge
-        $('#chart11_div, #chart12_div, #chart13_div, #chart14_div, #chart15_div, #chart16_div, #chart17_div, #chart18_div').click(function() {
+        $('#chart11_div, #chart12_div, #chart13_div, #chart14_div, #chart15_div, #chart16_div, #chart17_div, #chart18_div,#chart19_div').click(function() {
             var _div=this.id;
             var sensor=_div.substr(6,1);    //  numero do sensor
             var div_12=_div.substr(5,1);
-            var aux = (sensor % MAX_CAIXA_SENSORES) + 1;
+            var aux = (sensor % (MAX_CAIXA_SENSORES+1)) + 1;
             var _div2 = 'chart2' + sensor + "_div";
             var _text = 'text_pag_' + sensor;
             var ativo;
+
             if (div_12==2) {
                 click_no_gauge(0);
             } else {
                 if (gg1[aux] != undefined) {
                     ativo=gg1[aux].ativo;
                     while (ativo == false) {
-                        aux = (aux % MAX_CAIXA_SENSORES) + 1;
-                        ativo=gg1[aux].ativo;
+                        aux = (aux % (MAX_CAIXA_SENSORES+1)) + 1;
+                        if (gg1[aux] != undefined)
+                            ativo=gg1[aux].ativo;
                     }
                     $('#'+_div).css("display", "none");
                     $('#'+_div2).css("display", "none");
@@ -161,6 +161,9 @@
                             }
                         }
 
+                    }
+                    if (aux==sensor && rec_sensor_seco) {
+                            activate_subpage("#uib_page_seco");
                     }
                 } else {
                     click_no_gauge(0);
@@ -254,9 +257,7 @@
         });
 
         /* button  #btn_inicio_mod */
-        $(document).on("click", "#btn_inicio_mod", function (evt) {
-            activate_subpage("#uib_page_2");
-        });
+
 
         $(document).on("change", "#af-campo-6", function (evt) {
             //         Cookies.create("flag-campo6",this.checked,10*365);
@@ -282,7 +283,7 @@
 
         /* button  #btn_scan */
         $(document).on("click", "#btn_scan", function (evt) {
-            intel.xdk.device.scanBarcode();
+            barcodeScanned(evt);
         });
 
         /* button  #btn_ler_config_web */
@@ -295,9 +296,9 @@
             if (modelo != '' && serie != '' && chave != '') {
                 document.getElementById("text_config").innerHTML = "pesquisando servidor...";
             console.log("pesquisando sercidor..." );
-                Cookies["modelo"]=modelo;
-                Cookies["serie"]= serie;
-                Cookies["chave"]=chave;
+                localDB.modelo=modelo;
+                localDB.serie= serie;
+                localDB.chave=chave;
                 getMainConfig(0);
             } else
                 mensagemTela("Falta dados", "Informe modelo/serie/chave");
@@ -306,7 +307,7 @@
 
         /* button  #btn_ler_barcode */
         $(document).on("click", "#btn_ler_barcode", function (evt) {
-            intel.xdk.device.scanBarcode();
+            barcodeScanned(evt);
         });
 
         /* button  #btn_status_anterior */
@@ -377,6 +378,8 @@
             document.getElementById("af-checkbox-s-wifi").checked = rec_wifi;
             // ModBus
             document.getElementById("af-checkbox-s-modbus").checked = rec_modbus;
+            // Sensor seco
+            document.getElementById("af-checkbox-s-seco").checked = rec_sensor_seco;
             activate_subpage("#sub-page-sensor-main");
         });
 
@@ -820,10 +823,7 @@
         });
 
         /* button  #btn-login-pular */
-        $(document).on("click", "#btn-login-pular", function (evt) {
-            /*global activate_subpage */
-            activate_subpage("#uib_page_2");
-        });
+
 
         /* button  #btn-sign-out */
         $(document).on("click", "#btn-sign-out", function (evt) {
@@ -904,9 +904,9 @@
                 document.getElementById("serie").value = json_sensores.sensores[opt].serie;
                 document.getElementById("chave").value = json_sensores.sensores[opt].chave;
             }
-            Cookies["modelo"] = document.getElementById("modelo").value;
-            Cookies["serie"] = document.getElementById("serie").value;
-            Cookies["chave"] = document.getElementById("chave").value;
+            localDB.modelo = document.getElementById("modelo").value;
+            localDB.serie = document.getElementById("serie").value;
+            localDB.chave = document.getElementById("chave").value;
             eventFire(document.getElementById('btn_let_config_web'), 'click');
         });
 
@@ -940,6 +940,10 @@
 
         /* button  #btn_login */
         $(document).on("click", "#btn_login", function (evt) {
+            if (json_config == null)
+                activate_subpage("#uib_page_sign_in");
+            else
+                activate_subpage("#uib_page_13");
             /* your code goes here */
         });
 
@@ -1073,6 +1077,8 @@
 
         }
         document.getElementById('img-lamp-rele-g').innerHTML='chave alterada';
+        document.getElementById('text-ss-rele').innerHTML='chave alterada';
+
         //console.log("af-flipswitch-rele = " + a);
         }
     });
@@ -1184,6 +1190,39 @@
         signInServer('MB-');
         /* your code goes here */
          return false;
+    });
+
+        /* button  #btn-inicio */
+    $(document).on("click", "#btn-inicio", function(evt)
+    {
+        if (json_config == undefined)
+        /* your code goes here */
+             activate_subpage("#uib_page_sign_in");
+        else
+             activate_subpage("#uib_page_2");
+
+    });
+
+        /* button  #btn-login-pular */
+    $(document).on("click", "#btn-login-pular", function(evt)
+    {
+        if (json_config == undefined)
+        /* your code goes here */
+             activate_subpage("#uib_page_5");
+        else
+             activate_subpage("#uib_page_2");
+
+    });
+
+        /* button  #btn_inicio_mod */
+    $(document).on("click", "#btn_inicio_mod", function(evt)
+    {
+        if (json_config == undefined)
+        /* your code goes here */
+             activate_subpage("#uib_page_5");
+        else
+             activate_subpage("#uib_page_2");
+
     });
 
     }

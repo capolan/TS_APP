@@ -2,8 +2,8 @@
 <html>
 
     <head>
-        <link rel="stylesheet" type="text/css" href="media_button_bar/css/media_button_bar.css">
         <!--
+        <link rel="stylesheet" type="text/css" href="media_button_bar/css/media_button_bar.css">
         <link rel="stylesheet" type="text/css" href="app_framework/3.0/af.ui.css">
         <link rel="stylesheet" type="text/css" href="app_framework/3.0/icons.min.css">
 -->
@@ -52,9 +52,9 @@
         </style>
 
         <!--    <script src="intelxdk.js"></script>
+        <script src="xhr.js"></script>
       -->
         <script src="cordova.js"></script>
-        <script src="xhr.js"></script>
         <script src="xdk/init-dev.js"></script>
         <!--
       You may substitute jQuery for the App Framework selector library.
@@ -88,11 +88,12 @@
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
     <script src="//code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
--->
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+-->
 
+        <script type="application/javascript" src="lib/jquery.min.js"></script>
         <script type="application/javascript" src="lib/angular.min.js"></script>
         <script type="application/javascript" src="xdk/ad/angular_support.js"></script>
 
@@ -226,10 +227,24 @@
                         <figcaption data-position="bottom">SensorOnline @2016</figcaption>
                     </figure>
                 </div>
+
+                <div class="grid grid-pad urow uib_row_39 row-height-39" data-uib="layout/row" data-ver="0">
+                    <div class="col uib_col_49 col-0_12-12" data-uib="layout/col" data-ver="0">
+                        <div class="widget-container content-area vertical-col">
+                            <span class="uib_shim"></span>
+                        </div>
+                    </div>
+                    <span class="uib_shim"></span>
+                </div>
+                <div class="tarea widget uib_w_351 d-margins" data-uib="media/text" data-ver="0" name="uib_w_351" id="text-inicial">
+                    <div class="widget-container left-receptacle"></div>
+                    <div class="widget-container right-receptacle"></div>
+                    <div class="text-container"></div>
+                </div>
             </div>
 
             <div class="upage panel" id="uib_page_login" data-header="af-header-login" data-footer="af-footer-login">
-                <div class="upage-content ac0 content-area vertical-col hidden" id="uib_page_13">
+                <div class="upage-content ac0 content-area hidden vertical-col" id="uib_page_13">
                     <div class="grid grid-pad urow uib_row_31 row-height-31" data-uib="layout/row" data-ver="0">
                         <div class="col uib_col_38 col-0_12-12" data-uib="layout/col" data-ver="0">
                             <div class="widget-container content-area vertical-col">
@@ -297,7 +312,11 @@
                     <div class="table-thing with-label widget uib_w_224 d-margins" data-uib="app_framework/input" data-ver="1">
                         <label class="narrow-control label-inline" for="text-user-passwd">Senha</label>
 
-                        <input class="wide-control" type="password" id="text-user-passwd">
+                        <input class="wide-control" type="text" id="text-user-passwd">
+                    </div>
+                    <div class="widget uib_w_347 d-margins" data-uib="app_framework/checkbox" data-ver="1">
+                        <input type="checkbox" id="af-checkbox-credenciais">
+                        <label class="content-box" for="af-checkbox-credenciais">salvar credenciais</label>
                     </div>
                     <div class="button-grouped flex widget uib_w_225 d-margins" data-uib="app_framework/button_group" data-ver="1"><a class="button widget uib_w_226" data-uib="app_framework/button" data-ver="1" style="border-left-width: 1px; border-left-style: solid; border-left-color: rgb(102, 102, 102); border-top-left-radius: 6px; border-bottom-left-radius: 6px;"
                         id="btn-sign-in-entrar">Login</a><a class="button widget uib_w_227" data-uib="app_framework/button" data-ver="1" id="btn-sign-in-limpar">Limpar</a><a class="button widget uib_w_244 d-margins" data-uib="app_framework/button" data-ver="1"
@@ -399,6 +418,7 @@
             </div>
 
             <div class="upage vertical-col left panel" id="mainpage" data-header="af-header-0" data-footer="af-footer-0">
+                <div class="widget uib_w_354 widget-container content-area vertical-col uib-card cpad-0 d-margins" data-uib="layout/card" data-ver="0"></div>
 
                 <div class="upage-content vertical-col hidden" id="uib_page_2">
 
@@ -415,6 +435,7 @@
                                 <div id="chart16_div"></div>
                                 <div id="chart17_div"></div>
                                 <div id="chart18_div"></div>
+                                <div id="chart19_div" style="display: none"></div>
                   </span>
                             </div>
                         </div>
@@ -440,7 +461,7 @@
                                                 <div id="text_pag_6"></div>
                                                 <div id="text_pag_7"></div>
                                                 <div id="text_pag_8"></div>
-
+                                                <div id="text_pag_9"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -475,6 +496,7 @@
                                 <div id="chart26_div"></div>
                                 <div id="chart27_div"></div>
                                 <div id="chart28_div"></div>
+                                <div id="chart29_div"></div>
                     </span>
                             </div>
                         </div>
@@ -715,6 +737,36 @@
                             </div>
                         </div>
                         <span class="uib_shim"></span>
+                    </div>
+                </div>
+
+                <div id="uib_page_seco" class="upage-content vertical-col left hidden">
+                    <div class="widget uib_w_349 widget-container content-area vertical-col uib-card cpad-0 d-margins" data-uib="layout/card" data-ver="0"></div>
+
+                    <ul class="list widget uib_w_352 d-margins" data-uib="app_framework/listview" data-ver="1">
+                        <li ng-repeat="seco in sensores_seco" class="widget uib_w_353" style="{{seco.cor}}" data-uib="app_framework/listitem" data-ver="1" id="list-item-seco"><a>{{ seco.nome }}<br>{{seco.texto}}</a>
+                        </li>
+
+                    </ul>
+                    <div class="table-thing with-label widget uib_w_361 d-margins" data-uib="app_framework/flip_switch" data-ver="1">
+                        <label class="narrow-control label-inline">relé</label>
+
+                        <div class="wide-control">
+                            <input type="checkbox" class="toggle" id="af-flipswitch-rele">
+                            <label for="af-flipswitch-rele" data-off="No" data-on="Yes"><span></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="button-grouped flex widget uib_w_356 d-margins" data-uib="app_framework/button_group" data-ver="1">
+                        <a class="button widget uib_w_358" data-uib="app_framework/button" data-ver="1" id="btn-ss-click">Click</a>
+                        <a class="button widget uib_w_359 icon loading" data-uib="app_framework/button" data-ver="1" style="border-top-right-radius: 6px; border-bottom-right-radius: 6px;"
+                        id="btn-ss-rele-estado"></a>
+                    </div>
+                    <div id="text-ss-rele" class="tarea widget uib_w_360 d-margins" data-uib="media/text" data-ver="0" name="uib_w_360">
+                        <div class="widget-container left-receptacle"></div>
+                        <div class="widget-container right-receptacle"></div>
+                        <div class="text-container"></div>
                     </div>
                 </div>
             </div>
@@ -1406,6 +1458,10 @@
                                 <input type="checkbox" id="af-checkbox-s-humidade">
                                 <label class="content-box" for="af-checkbox-s-humidade">Humidade</label>
                             </div>
+                            <div class="widget uib_w_355 d-margins" data-uib="app_framework/checkbox" data-ver="1">
+                                <input type="checkbox" id="af-checkbox-s-seco">
+                                <label class="content-box" for="af-checkbox-s-seco">Sensor contato</label>
+                            </div>
                             <div class="widget uib_w_341 d-margins" data-uib="app_framework/checkbox" data-ver="1">
                                 <input type="checkbox" id="af-checkbox-s-modbus">
                                 <label class="content-box" for="af-checkbox-s-modbus">ModBus</label>
@@ -1658,7 +1714,7 @@
                                             <label class="narrow-control label-top-right">Chave</label>
 
                                             <div class="wide-control">
-                                                <input type="checkbox" class="toggle" id="af-flipswitch-rele">
+                                                <input type="checkbox" class="toggle" id="af-flipswitch-rele" checked="checked">
                                                 <label for="af-flipswitch-rele" data-off="No" data-on="Yes"><span></span>
                                                 </label>
                                             </div>
@@ -1752,20 +1808,20 @@
             </footer>
 
             <footer class="wrap-element uib_w_13" data-uib="app_framework/footer" data-ver="1" id="af-footer-5">
-                <a class="widget uib_w_17 icon home" data-uib="app_framework/button" data-ver="1" style="border-top-right-radius: 6px; border-bottom-right-radius: 6px;">Inicio</a>
+                <a class="widget uib_w_17 icon home" data-uib="app_framework/button" data-ver="1" style="border-top-right-radius: 6px; border-bottom-right-radius: 6px;" id="btn-inicio">Inicio</a>
                 <a class="widget uib_w_49 d-margins icon key" data-uib="app_framework/button" data-ver="1" id="btn-config-principal">Config</a>
                 <a class="widget uib_w_18 d-margins icon wifi" data-uib="app_framework/button" data-ver="1" id="btn-wifi-principal">WIFI</a>
                 <a class="widget uib_w_19 d-margins icon graph" data-uib="app_framework/button" data-ver="1">Cloud</a>
                 <a class="widget uib_w_16 icon download" data-uib="app_framework/button" data-ver="1">AP</a>
             </footer>
-            <footer class="wrap-element uib_w_3" data-uib="app_framework/footer" data-ver="1" id="af-footer-0"><a class="widget uib_w_4 d-margins icon home" data-uib="app_framework/button" data-ver="1" id="btn_home">Home</a><a class="widget uib_w_71 d-margins btn-estilo icon target" data-uib="app_framework/button" data-ver="1" id="btn_mod_extras">Modulos</a>
+            <footer class="wrap-element uib_w_3" data-uib="app_framework/footer" data-ver="1" id="af-footer-0"><a class="widget uib_w_4 d-margins icon home" data-uib="app_framework/button" data-ver="1" id="btn_home">Inicio</a><a class="widget uib_w_71 d-margins btn-estilo icon target" data-uib="app_framework/button" data-ver="1" id="btn_mod_extras">Modulos</a>
                 <a class="widget uib_w_5 d-margins icon location" data-uib="app_framework/button" data-ver="1">Sensor</a><a class="widget uib_w_6 d-margins icon settings" data-uib="app_framework/button" data-ver="1" href="#uib_page_4" data-transition="fade"
                 id="btn-config">Config</a>
                 <a class="widget uib_w_102 d-margins icon user" data-uib="app_framework/button" data-ver="1" id="btn_login">Login</a>
             </footer>
 
             <footer class="wrap-element uib_w_236" data-uib="app_framework/footer" data-ver="1" id="af-footer-login">
-                <a class="widget uib_w_242 d-margins icon graph" data-uib="app_framework/button" data-ver="1" id="btn-login-pular">Gráfico</a><a class="widget uib_w_299 d-margins icon calendar" data-uib="app_framework/button" data-ver="1">Painel</a>
+                <a class="widget uib_w_242 d-margins icon home" data-uib="app_framework/button" data-ver="1" id="btn-login-pular">Inicio</a><a class="widget uib_w_299 d-margins icon calendar" data-uib="app_framework/button" data-ver="1">Painel</a>
                 <a class="widget uib_w_241 d-margins icon user" data-uib="app_framework/button" data-ver="1" id="btn-login-login">Login</a>
                 <a class="widget uib_w_264 d-margins icon error" data-uib="app_framework/button" data-ver="1" id="btn-login-logoff">Logoff</a>
                 <a class="widget uib_w_250 d-margins icon key" data-uib="app_framework/button" data-ver="1" id="btn-trocar-senha">Senha</a>

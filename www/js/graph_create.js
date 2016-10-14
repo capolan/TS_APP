@@ -24,7 +24,7 @@ function atualizaGrafico(objG, div, campo) {
         offline = '<div style="color:red">[' + objG.offline_at + ']</div>';
         //$("#"+div).css('color','red');
     }
-    if (objG.min[campo] != undefined) {
+    if (campo <= MAX_CAIXA_SENSORES && objG.min[campo] != undefined) {
         var mi = parseFloat(objG.min[campo]);
         var ma = parseFloat(objG.max[campo]);
         minmax = "<br>min=" + mi.toFixed(1) +
@@ -39,7 +39,8 @@ function atualizaGrafico(objG, div, campo) {
     if ((recursos & (1<<15)) > 0)
         if (json_feed.feeds[0].chave1 !== undefined) {
             var status=json_feed.channel.status;
-            CHAVE1=json_feed.feeds[0].chave1;
+            var ch=parseInt(json_feed.feeds[0].chave1) >> 4;
+            CHAVE1=ch;
 
             //console.log("chave1=" + CHAVE1+ "  status=" + status);
             if (status==0)
@@ -48,12 +49,15 @@ function atualizaGrafico(objG, div, campo) {
                 document.getElementById('text-rele-text').innerHTML=json_feed.channel.status_msg;
             }
             document.getElementById('img-lamp-rele-g').innerHTML='Remoto';
+            document.getElementById('text-ss-rele').innerHTML='Remoto';
             if (CHAVE1 == 1)
             {
                 document.getElementById('img-lamp-rele').src="images/lamp_on.png";
+                $("#btn-ss-rele-estado").css('background','green');
             } else
             if (CHAVE1 == 0) {
                 document.getElementById('img-lamp-rele').src="images/lamp_off.png";
+                $("#btn-ss-rele-estado").css('background','white');
             }
     }
 }
@@ -63,10 +67,13 @@ function atualizaGrafico(objG, div, campo) {
 function t_telaTS_global() {
     //  console.log(">t_telaTS_global");
     var sens, aux, _div;
-    for (var i = 1; i <= MAX_CAIXA_SENSORES; i++) {
+    //lerSensorSeco("seco_div");
+    for (var i = 1; i <= MAX_CAIXA_SENSORES+1; i++) {
         //console.log(">t_telaTS_global i=" + i);
         if (gg1[i] != undefined) {
             atualizaGrafico(gg1[i], "text_pag_" + i, i);
+        }
+        if (gg2[i] != undefined) {
             gg2[i].loadData();
         }
     }
@@ -75,7 +82,7 @@ function t_telaTS_global() {
     /* BEGIN Localiza o visivel */
         sens=0;
         aux=1;
-        while (aux <=MAX_CAIXA_SENSORES && sens==0) {
+        while (aux <=MAX_CAIXA_SENSORES+1 && sens==0) {
             _div="#chart1" + aux + '_div';
             if ($(_div).css('display') == 'block') {
                 sens=aux;
@@ -84,19 +91,23 @@ function t_telaTS_global() {
         }
 
         if (sens >0) {
-            if (gg1[sens].ativo==false) {
+            if (gg1[sens] == undefined) {
+                    $('#chart1' +sens +"_div").css("display", "none");
+                    $('#chart2' +sens +"_div").css("display", "none");
+                    $('#text_pag_' +sens).css("display", "none");
+            }
+            if (gg1[sens] == undefined || gg1[sens].ativo==false) {
                 sens=0;
-                for (aux=1; aux<=MAX_CAIXA_SENSORES; aux++) {
+                for (aux=1; aux<=MAX_CAIXA_SENSORES+1; aux++) {
                     $('#chart1' +aux +"_div").css("display", "none");
                     $('#chart2' +aux +"_div").css("display", "none");
                     $('#text_pag_' +aux).css("display", "none");
-                    if (gg1[aux].ativo == true && sens==0)
+                    if (gg1[aux] != undefined && gg1[aux].ativo == true && sens==0)
                             sens=aux;
                 }
 
             }
         }
-
         if (sens > 0) {
             $('#chart1' + sens + '_div').css("display", "block");
             $('#chart2' + sens + '_div').css("display", "block");
@@ -136,8 +147,6 @@ function t_telaTS_global() {
 /**************************************************************/
 
 /**************************************************************/
-var gg1 = new Array(MAX_CAIXA_SENSORES);
-var gg2 = new Array(MAX_CAIXA_SENSORES);
 
 
 function telaTS_global() {
@@ -252,6 +261,11 @@ console.log("max="+max+" min="+min);
             gtext[2] = new lerMensagensSensor(null, "text_pag_11_2",1);
     } 
 
+
+    if (rec_sensor_seco == true)
+            gg1[9]=new lerSensorSeco("chart19_div");
+    else
+            gg1[9]=undefined;
 
     document.addEventListener("app.Get_Feed", t_telaTS_global, false);
     app.consoleLog("<telaTS_global","exit");

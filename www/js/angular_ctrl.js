@@ -13,6 +13,14 @@ myApp.controller('myCtrl',  function($scope) {
         $scope.$apply();
     }
 
+    $scope.getSeco = function() {
+        if (json_seco.length == 0) return;
+        delete $scope.sensores_seco;
+        $scope.sensores_seco = json_seco;
+        //console.log(json_feed.sensor);
+        $scope.$apply();
+    }
+
     $scope.getSensores = function() {
         if (json_feed == null) return;
         delete $scope.sensores;

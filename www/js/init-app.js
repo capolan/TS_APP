@@ -59,44 +59,13 @@ app.initEvents = function() {
     app.consoleLog("window.cordova",window.cordova);
 
     if( window.cordova ) {
-        document.addEventListener("intel.xdk.device.barcode.scan", barcodeScanned, false);
+        //document.addEventListener("intel.xdk.device.barcode.scan", barcodeScanned, false);
         document.addEventListener("deviceready",onDeviceReady,false);
     } else { // browser
         $("#btn_ler_barcode").hide();
         onDeviceReady();
     }
 
-    var timer_slider=null;
-
-    $( "#text_slide" ).css("text-align", "right");
-    $( "#text_slide" ).html(r_horas + " horas");
-
-    $(function() {
-    $("#slider").slider({
-      value:6,
-      min: 1,
-      max: 24,
-      step: 1,
-      slide: function( event, ui ) {
-		var valor=ui.value;
-        $( "#text_slide" ).html(valor + " horas");
-        $( "#text_slide" ).css("text-align", "right");
-        $( "#slider" ).slider("option", "value",valor ) ;
-		//if (horas > valor)
-//			document.dispatchEvent(event_feed) ;
-		//else {
-			r_horas=ui.value;
-//			get_feed(key, horas);
-
-          clearTimeout(timer_slider);
-          timer_slider=setTimeout(function() {
-            atualiza_dados(false);
-          },300);
-	//	}
-      }
-    });
-    $( "#amount" ).val( $( "#slider" ).slider( "value" ) );
-  });
 
 
     // NOTE: initialize your app event handlers, see app.js for a simple event handler example
@@ -181,10 +150,6 @@ app.hideSplashScreen = function() {
 
     if( navigator.splashscreen && navigator.splashscreen.hide ) {   // Cordova API detected
         navigator.splashscreen.hide() ;
-    }
-    if( window.intel && intel.xdk && intel.xdk.device ) {           // Intel XDK device API detected, but...
-        if( intel.xdk.device.hideSplashScreen )                     // ...hideSplashScreen() is inside the base plugin
-            intel.xdk.device.hideSplashScreen() ;
     }
 
     app.consoleLog(fName, "exit") ;

@@ -136,7 +136,7 @@ dev.onDeviceReady = function() {
 
     dev.consoleLog(fName, dev.isDeviceReady) ;
     // Intel XDK 3491 CAP 08/08/2016 Cordova
-    onDeviceReady();
+    //onDeviceReady();
     dev.consoleLog(fName, "exit") ;
 } ;
 
@@ -245,7 +245,7 @@ dev.initDeviceReady = function() {
 } ;
 
 
-
+if (false) {
 // Wait for document ready before looking for device ready.
 // This insures the app does not start running until DOM is ready and...
 // ...makes it easier to deal with both in-browser and on-device scenarios and...
@@ -285,3 +285,4 @@ if( window.addEventListener ) {
 
 window.setTimeout(dev.initDeviceReady, dev.FAIL_SAFE) ;     // fail-safe fail-safe, just in case we miss all events!
 dev.consoleLog("end init-dev.js:", dev.timeStamp()) ;       // debug marker to indicate finished reading init-dev.js
+}
