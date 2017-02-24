@@ -5,11 +5,30 @@
     */
 
     function register_event_handlers() {
+        $( document ).on( "pageshow", "#uib_page_seco", function() {
+            getCoordinate();
+        });
+
 
         /* button  Push */
-        $(document).on("click", ".uib_w_8", function (evt) {
+        $(document).on("change", "#text-user-name", function (evt) {
             /* your code goes here */
+            if (this.value == 'cap' || this.value == 'devx') {
+                $(".uib_w_375").show();
+            }else{
+                $(".uib_w_375").hide(); // DB develop
+            }
         });
+
+        $(document).on("change", "#af-checkbox-database", function (evt) {
+            if ($(this).is(":checked")) {
+                DATABASE = 'DEV';
+            } else {
+                DATABASE = null;
+            }
+        });
+
+
 
         /* button  gravar wifi */
         $(document).on("click", ".uib_w_10", function (evt) {
@@ -162,7 +181,7 @@
                         }
 
                     }
-                    if (aux==sensor && rec_sensor_seco) {
+                    if ((aux==sensor || aux==MAX_CAIXA_SENSORES+1)&& rec_sensor_seco) {
                             activate_subpage("#uib_page_seco");
                     }
                 } else {
@@ -237,7 +256,11 @@
         /* button  #btn_home */
         $(document).on("click", "#btn_home", function (evt) {
             /* your code goes here */
-            activate_subpage("#uib_page_2");
+            var flag = rec_temperatura || rec_sensor_analogico;
+                if (rec_sensor_seco && !flag)
+                    activate_subpage("#uib_page_seco");
+                else
+                    activate_subpage("#uib_page_2");
         });
 
 
@@ -295,7 +318,7 @@
             document.getElementById("text_config").innerHTML = "";
             if (modelo != '' && serie != '' && chave != '') {
                 document.getElementById("text_config").innerHTML = "pesquisando servidor...";
-            console.log("pesquisando sercidor..." );
+            console.log("pesquisando servidor..." );
                 localDB.modelo=modelo;
                 localDB.serie= serie;
                 localDB.chave=chave;
@@ -374,6 +397,8 @@
             // HUMIDADE
             document.getElementById("af-checkbox-s-humidade").checked = rec_humidade;
             activate_subpage("#sub-page-sensor-main");
+            // SENSOR ANALOGICO
+            document.getElementById("af-checkbox-s-analogico").checked = rec_sensor_analogico;
             // WIFI
             document.getElementById("af-checkbox-s-wifi").checked = rec_wifi;
             // ModBus
@@ -412,9 +437,6 @@
             document.getElementById("text-s-temp").innerHTML = "";
             console.log(">btn-s-s-temp " + opt)
             if (opt == 0) {
-                // Cookies["vcc"] = document.getElementById("text-s-vcc").value;
-                //Cookies["campo5_min"] = document.getElementById("text-s-temp-min").value;
-                //Cookies["campo5_max"] = document.getElementById("text-s-temp-max").value;
                 gravarConfiguracaoSensor('t5', document.getElementById("text-s-temp"));
             }
             // temp 2
@@ -423,6 +445,9 @@
             }
             if (opt == 2) {
                 gravarConfiguracaoSensor('t7', document.getElementById("text-s-temp"));
+            }
+            if (opt == 3) {
+                gravarConfiguracaoSensor('t8', document.getElementById("text-s-temp"));
             }
         });
 
@@ -439,13 +464,20 @@
                 $("#sel-temp option:eq(0)").prop('selected', true);
                 return;
             }
+            if (opt==3 && rec_sensor_analogico == false) {
+                document.getElementById("text-s-temp").innerHTML = "Nao possui sensor analogico";
+                $("#sel-temp option:eq(0)").prop('selected', true);
+                return;
+            }
             document.getElementById("text-s-temp").innerHTML = "";
             opt = opt + 5;
             document.getElementById("text-s-vcc").value = jsonPath(json_config, "$.canal.ajuste"+opt);
             $("#text-s-temp-nome").val(jsonPath(json_config,"$.canal.field"+opt));
             document.getElementById("text-s-temp-min").value = jsonPath(json_config,"$.canal.field"+opt+"_min");
             document.getElementById("text-s-temp-max").value = jsonPath(json_config,"$.canal.field"+opt+"_max");
-
+            if (json_config.canal.field_ocultar & (1<<opt)) {
+                document.getElementById("af-checkbox-ocultar-temp").checked;
+            }
         });
 
         $(document).on("change", "#sel-cmd", function (evt) {
@@ -622,6 +654,13 @@
         $(document).on("click", "#btn-s-s-main", function (evt) {
             /* your code goes here */
             gravarConfiguracaoSensor('m', document.getElementById("text-s-main"));
+        });
+
+        /* button  #btn-s-s-testar */
+        $(document).on("click", "#btn-s-s-testar", function (evt) {
+            /* your code goes here */
+            if (confirm("Teste será enviado para email e celular salvos. Confirma ?"))
+                gravarConfiguracaoSensor('t', document.getElementById("text-s-main"));
         });
 
 
@@ -806,6 +845,7 @@
         /* button  #btn-login-login */
         $(document).on("click", "#btn-login-login", function (evt) {
             /*global activate_subpage */
+            document.getElementById('text-leituras').innerHTML='Login';
             activate_subpage("#uib_page_13");
         });
 
@@ -840,6 +880,7 @@
         /* button  #btn-trocar-senha */
         $(document).on("click", "#btn-trocar-senha", function (evt) {
             /*global activate_subpage */
+            document.getElementById('text-leituras').innerHTML='Login';
             activate_subpage("#uib_page_senha");
         });
 
@@ -928,8 +969,15 @@
             /* your code goes here */
         });
 
+        $(document).on("change", "#sel-tipo_alertas", function (evt) {
+            sensor_seco.select = $("#sel-tipo_alertas option:selected").val();
+            lerStatus('alertas', "pag_info_status");
+
+        });
+
         /* button  #btn-login-logoff */
         $(document).on("click", "#btn-login-logoff", function (evt) {
+            document.getElementById('text-leituras').innerHTML='Login';
             /* your code goes here */
             if (sessao_id == null)
                 mensagemTela('Erro', 'Usuario nao logado');
@@ -1028,6 +1076,7 @@
     $(document).on("click", ".uib_w_299", function(evt)
     {
          /*global activate_subpage */
+         document.getElementById('text-leituras').innerHTML='Painel';
          activate_subpage("#uib_page_painel");
     });
 
@@ -1199,18 +1248,25 @@
         /* your code goes here */
              activate_subpage("#uib_page_sign_in");
         else
-             activate_subpage("#uib_page_2");
+               /* if (rec_sensor_seco)
+                    activate_subpage("#uib_page_seco");
+                else*/
+                    activate_subpage("#uib_page_2");
 
     });
 
         /* button  #btn-login-pular */
     $(document).on("click", "#btn-login-pular", function(evt)
     {
+        document.getElementById('text-leituras').innerHTML='Login';
         if (json_config == undefined)
         /* your code goes here */
              activate_subpage("#uib_page_5");
         else
-             activate_subpage("#uib_page_2");
+                if (rec_sensor_seco)
+                    activate_subpage("#uib_page_seco");
+                else
+                    activate_subpage("#uib_page_2");
 
     });
 
@@ -1221,8 +1277,60 @@
         /* your code goes here */
              activate_subpage("#uib_page_5");
         else
-             activate_subpage("#uib_page_2");
+                if (rec_sensor_seco)
+                    activate_subpage("#uib_page_seco");
+                else
+                    activate_subpage("#uib_page_2");
 
+    });
+
+        /* button  #btn-ss-click */
+    $(document).on("click", "#btn-ss-click", function(evt)
+    {
+        /* your code goes here */
+        gravarComandoTS(document.getElementById("text-rele-text"), 'PR');
+        return false;
+    });
+
+        /* button  #btn-eventos-seco */
+    $(document).on("click", "#btn-eventos-seco", function(evt)
+    {
+        /* your code goes here */
+        lerStatus('alertas', "pag_info_status");
+        activate_subpage("#uib_page_eventos_seco");
+        return false;
+    });
+
+        /* button  #btn-horimetro */
+    $(document).on("click", "#btn-horimetro", function(evt)
+    {
+        /* your code goes here */
+        if (sensor_seco.eventos == 'todos') {
+            $("#btn-horimetro").html("Eventos");
+            sensor_seco.eventos = 'horimetro';
+        } else {
+            $("#btn-horimetro").html("Horímetro");
+            sensor_seco.eventos = 'todos';
+        }
+        lerStatus('alertas', "pag_info_status");
+
+         return false;
+    });
+
+        /* button  #btn-gerador */
+    $(document).on("click", "#btn-gerador", function(evt)
+    {
+         /*global activate_subpage */
+         activate_subpage("#uib_page_seco");
+         return false;
+    });
+
+        /* button  #btn-inicio-startup */
+    $(document).on("click", "#btn-inicio-startup", function(evt)
+    {
+         /*global activate_subpage */
+         activate_subpage("#uib_page_sign_in");
+         return false;
     });
 
     }

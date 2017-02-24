@@ -37,7 +37,8 @@ function atualizaGrafico(objG, div, campo) {
         minmax + offline + objG.message;
     // testa se tem rele no modulo principal
     if ((recursos & (1<<15)) > 0)
-        if (json_feed.feeds[0].chave1 !== undefined) {
+        if (json_feed.feeds[0] !== undefined &&
+            json_feed.feeds[0].chave1 !== undefined) {
             var status=json_feed.channel.status;
             var ch=parseInt(json_feed.feeds[0].chave1) >> 4;
             CHAVE1=ch;
@@ -66,7 +67,7 @@ function atualizaGrafico(objG, div, campo) {
 /*********************************************************************/
 function t_telaTS_global() {
     //  console.log(">t_telaTS_global");
-    var sens, aux, _div;
+    var sens, aux, ggativo, _div;
     //lerSensorSeco("seco_div");
     for (var i = 1; i <= MAX_CAIXA_SENSORES+1; i++) {
         //console.log(">t_telaTS_global i=" + i);
@@ -79,16 +80,25 @@ function t_telaTS_global() {
     }
     gtext[0].loadData();
 
+    if (flag_getMainConfig) {
     /* BEGIN Localiza o visivel */
         sens=0;
         aux=1;
-        while (aux <=MAX_CAIXA_SENSORES+1 && sens==0) {
+        ggativo=0;
+        while (aux <=MAX_CAIXA_SENSORES && sens==0) {
             _div="#chart1" + aux + '_div';
             if ($(_div).css('display') == 'block') {
                 sens=aux;
             }
+            if (ggativo==0 && gg1[aux] != undefined && gg1[aux].ativo==true) {
+                ggativo=aux;
+            }
+
             aux++;
         }
+
+        if (sens==0 && ggativo>0)
+            sens=ggativo;
 
         if (sens >0) {
             if (gg1[sens] == undefined) {
@@ -98,7 +108,7 @@ function t_telaTS_global() {
             }
             if (gg1[sens] == undefined || gg1[sens].ativo==false) {
                 sens=0;
-                for (aux=1; aux<=MAX_CAIXA_SENSORES+1; aux++) {
+                for (aux=1; aux<=MAX_CAIXA_SENSORES; aux++) {
                     $('#chart1' +aux +"_div").css("display", "none");
                     $('#chart2' +aux +"_div").css("display", "none");
                     $('#text_pag_' +aux).css("display", "none");
@@ -112,7 +122,16 @@ function t_telaTS_global() {
             $('#chart1' + sens + '_div').css("display", "block");
             $('#chart2' + sens + '_div').css("display", "block");
             $('#text_pag_' +sens).css("display", "block");
+        } else {
+            if ($("#uib_page_seco").is(":hidden")) {
+                console.log("#uib_page_seco HIDDEN");
+            }
+            if (rec_sensor_seco)
+                activate_subpage("#uib_page_seco");
         }
+    //    flag_getMainConfig=false;
+    }
+
 
     /* END Localiza o visivel */
 
@@ -225,11 +244,21 @@ console.log("max="+max+" min="+min);
                     nome: "max",
                     campo: 101
                 }],
+
             null,
             Cookies["nro_pontos"], Cookies["passo"], min, max, true);
         gtext[1] = new lerMensagensSensor(null, "text_pag_10_2",1);
         n_div++;
-          g5 = new runGraph(3, 'chart' + n_div + '_div', 'uib_page_11', 'Fases', 200, 200, [{
+        var opt = [];
+        var field_ocultar = parseInt(json_config.canal.field_ocultar);
+        for (var ll=2 ; ll<5 ; ll++) {
+            var obj= { nome : Cookies["campo" + ll], campo: ll };
+            if ((field_ocultar & (1<<ll)) == 0) {
+                opt.push(obj);
+            }
+        }
+          g5 = new runGraph(3, 'chart' + n_div + '_div', 'uib_page_11', 'Fases', 200, 200, opt,
+                            /*[{
                         nome: Cookies["campo2"],
                         campo: 2
             },
@@ -240,11 +269,11 @@ console.log("max="+max+" min="+min);
                     {
                         nome: Cookies["campo4"],
                         campo: 4
-            }],
+            }],*/
                 null,
                 3, 1, 1, 1, true,'t3');
             n_div++;
-            g6 = new runGraph(1, 'chart' + n_div + '_div', 'uib_page_11', 'Fases', 280, 200, [{
+            g6 = new runGraph(1, 'chart' + n_div + '_div', 'uib_page_11', 'Fases', 280, 200, opt, /*[{
                        nome: Cookies["campo2"],
                         campo: 2
             },
@@ -255,7 +284,7 @@ console.log("max="+max+" min="+min);
                     {
                         nome: Cookies["campo4"],
                         campo: 4
-            }],
+            }],*/
                 null,
                 Cookies["nro_pontos"], Cookies["passo"], min, max, true);
             gtext[2] = new lerMensagensSensor(null, "text_pag_11_2",1);

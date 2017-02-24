@@ -14,7 +14,9 @@
 // This file contains your event handlers, the center of your application.
 // NOTE: see app.initEvents() in init-app.js for event handler initialization code.
 
-
+function dateChanged() {
+    alert('sss');
+}
 /********************************************************/
 function getLocalStorage() {
 try {
@@ -92,21 +94,22 @@ function mensagemTela(titulo, msg) {
 function atualizaHeaderLogin(txt, flag) {
     var acesso = jsonPath(json_config, "$.canal.acesso")
     console.log(">atualizaHeaderLogin " + txt + ' acesso=' + acesso);
-    document.getElementById("text-user-login").innerHTML = txt;
-    document.getElementById("text-user-mainpage").innerHTML = txt;
-    document.getElementById("text-user-config").innerHTML = txt;
-    document.getElementById("text-user-modulo").innerHTML = txt;
-    document.getElementById("text-user-sensor").innerHTML = txt;
+    // REVER
+    //document.getElementById("text-user-login").innerHTML = txt;
+    //document.getElementById("text-user-mainpage").innerHTML = txt;
+    //document.getElementById("text-user-config").innerHTML = txt;
+    //document.getElementById("text-user-modulo").innerHTML = txt;
+    //document.getElementById("text-user-sensor").innerHTML = txt;
     if (acesso != false) {
         var color = 'white';
         if (acesso == "r") color = 'yellow';
         if (acesso == "w") color = 'green';
         if (acesso == "a") color = 'blue';
-        document.getElementById("text-user-login").style.color = color;
-        document.getElementById("text-user-mainpage").style.color = color;
-        document.getElementById("text-user-config").style.color = color;
-        document.getElementById("text-user-modulo").style.color = color;
-        document.getElementById("text-user-sensor").style.color = color;
+//        document.getElementById("text-user-login").style.color = color;
+      ///  document.getElementById("text-user-mainpage").style.color = color;
+  //      document.getElementById("text-user-config").style.color = color;
+    //    document.getElementById("text-user-modulo").style.color = color;
+      //  document.getElementById("text-user-sensor").style.color = color;
     }
 
     console.log(json_user);
@@ -150,6 +153,7 @@ function atualizaHeaderLogin(txt, flag) {
         $("#text-sign-email").val(json_user.email); //sig email
         $(".uib_row_31").css('visibility','visible'); //sig email
         if (flag == true) {
+            console.log("======" + localDB.serie);
         localDB.modelo = json_user.sensores[0].modelo;
         localDB.serie = json_user.sensores[0].serie;
         localDB.chave = json_user.sensores[0].chave;
@@ -348,21 +352,27 @@ function lerSensorSeco(_dd_div) {
 
     this.loadData = function () {
         var data, nome, valor,param,flag, ordem, cor, updated_at;
-        var texto,trocou, html, html0, html1;
+        var texto,trocou, html, html0, html1, texto0, texto1;
         console.log(json_feed);
         data= jsonPath(json_feed,"$.feeds[0].created_at");
-        if (data != false)
+        if (data != false) {
             self.created_at = data;
+        }
+
+        data= jsonPath(json_feed,"$.feeds[0].time");
+        if (data != false) {
+            document.getElementById("text-last-msg").innerHTML=data + " (atualizado)";
+        }
 
         valor=self.data.getNumberOfRows();
         if (valor > 0)
             self.data.removeRows(0, valor);
         json_seco=[];
         for (var i = 0; i < 8; i++) {
-            nome = jsonPath(json_config, "$.campos["+i+"].nome");
+            nome = jsonPath(json_feed, "$.campos["+i+"].nome");
             if (nome == undefined)
                     break;
-            ordem = parseInt(jsonPath(json_config, "$.campos["+i+"].ordem"));
+            ordem = parseInt(jsonPath(json_feed, "$.campos["+i+"].ordem"));
             if (nome == false) {
                 break;
             }
@@ -372,8 +382,10 @@ function lerSensorSeco(_dd_div) {
             trocou = parseInt(jsonPath(json_feed, "$.feeds[0].trocou1"));
             data = jsonPath(json_feed, "$.feeds[0].created_at");
             param = parseInt(jsonPath(json_config, "$.campos["+i+"].param1"));
-            html0 = jsonPath(json_config, "$.campos["+i+"].html0");
-            html1 = jsonPath(json_config, "$.campos["+i+"].html1");
+            html0 = jsonPath(json_feed, "$.campos["+i+"].html0");
+            html1 = jsonPath(json_feed, "$.campos["+i+"].html1");
+            texto0 = jsonPath(json_feed, "$.campos["+i+"].texto0");
+            texto1 = jsonPath(json_feed, "$.campos["+i+"].texto1");
             // bit 2   situação regular
             //param = (1 << 2) & param;
             param=0;
@@ -382,25 +394,37 @@ function lerSensorSeco(_dd_div) {
             if (param)
                 flag = !flag;
             if (flag) {
-                if (html1 !== undefined)
+                updated_at=jsonPath(json_feed, "$.campos["+i+"].updated1_at");
+                if (html1 !== undefined && html1.toString() != "")
                     cor=html1.toString();
                 else
                     cor="color:green;";
-                texto='On';
+                if (texto1 !== undefined && texto1.toString() != "")
+                    texto=texto1.toString();
+                else
+                    texto='On';
             } else {
-                if (html0 !== undefined)
+                updated_at=jsonPath(json_feed, "$.campos["+i+"].updated0_at");
+                if (html0 !== undefined && html0.toString() != "")
                     cor=html0.toString();
                 else
                     cor="color:red;" ;
-                texto='Off';
+                if (texto0 !== undefined && texto0.toString() != "")
+                    texto=texto0.toString();
+                else
+                    texto='Off';
             }
             if (trocou) {
                 cor='color:yellow;';
                 updated_at=jsonPath(json_config, "$.feeds[0].created_at");
-                texto=texto + '['+ updated_at  +']';
             }
+            //texto=texto + '['+ updated_at  +']';
+            if (updated_at != false)
+                updated_at=updated_at.toString();
+            else
+                updated_at='';
             html=cor;
-            json_seco.push({nome: nome, texto:texto, cor:html});
+            json_seco.push({nome: nome, texto:texto, cor:html, atualizado_em: updated_at });
             self.data.addRow(["<font color=black>"+nome+"</font>", {
                         v: '1',
                         f: texto,
@@ -529,9 +553,10 @@ var json_config = null;
 //        1 = somente os módulos
 function getMainConfig(tipo, id_sensor) {
     var ret = false;
-    var sens, option;
+    var sens, option, num_nodes=0;
     app.consoleLog(">getMainConfig", tipo);
-
+    clearTimeout(refreshTimer);
+    refreshTimer=undefined;
     /*    if (window.cordova) {
         if (navigator.connection.type == Connection.NONE) {
         text_obj.innerHTML="Sem conexão de rede.";
@@ -554,6 +579,7 @@ function getMainConfig(tipo, id_sensor) {
             '&t2=' + VERSAO.MINOR +
             '&td=' + VERSAO.DATE;
 
+        if (DATABASE != null) url = url + '&DB=' + DATABASE;
         if (window.cordova) {
             url = url + "&dp=" + device.platform +
                 '&dm=' + device.model +
@@ -569,7 +595,7 @@ function getMainConfig(tipo, id_sensor) {
         console.log("url=" + url);
         //  document.getElementById("text_config").innerHTML=url;
         //  document.getElementById("text_config").innerHTML="GET";
-
+        document.getElementById('text-leituras').innerHTML='Leituras';
         $.ajax({
             type: 'GET',
             url: url,
@@ -582,13 +608,15 @@ function getMainConfig(tipo, id_sensor) {
             },
             beforeSend: function () {
                 document.getElementById("text_config").innerHTML = "Running...";
+                document.getElementById('text-inicial').innerHTML +="<BR>Lendo config " + localDB.serie;
             },
             success: function (data) {
                 json_config = data;
                 /*  intel.xdk.notification.alert(json.channel.name, "Canal"); */
                 // TS
                 if (data != 'null') {
-                    document.getElementById("text_config").innerHTML = "OK";
+                    document.getElementById("text_config").innerHTML = "Atualizando Grafico";
+                    document.getElementById('text-inicial').innerHTML +="<BR>Criando grafico.";
                     ret = true;
                     json_feed = null;
 
@@ -640,6 +668,7 @@ function getMainConfig(tipo, id_sensor) {
                         Cookies.create("nome", json_config.canal.nome, 10 * 356);
                         Cookies.create("email", json_config.canal.email, 10 * 356);
                         Cookies.create("celular", json_config.canal.celular, 10 * 356);
+                        document.getElementById('text-leituras').innerHTML= json_config.canal.nome;
                         document.getElementById("count_to_alert").value=json_config.canal.count_to_alert;
 
                         // limites
@@ -649,9 +678,9 @@ function getMainConfig(tipo, id_sensor) {
                         // temp principal
                         //Cookies.create("vcc", json_config.canal.vcc, 10 * 356);
                         define_recuros();
-                        if (json_user != undefined) {
-                            atualizaHeaderLogin(json_user.login,false);
-                        }
+                     //   if (json_user != undefined) {
+                            atualizaHeaderLogin('',false);
+                    //    }
                         sens = 0;
                         $("#sel-temp").empty();
                         if (rec_temperatura == true) {
@@ -668,14 +697,24 @@ function getMainConfig(tipo, id_sensor) {
                             option = $('<option></option>').prop("value", 2).text("3: " + json_config.canal.field7);
                             $("#sel-temp").append(option);
                         }
+                        if (rec_sensor_analogico == true) {
+                            option = $('<option></option>').prop("value", 3).text("4: " + json_config.canal.field8);
+                            $("#sel-temp").append(option);
+                        }
                         json_sensores=null;
                         json_modbus=null;
                         updateSelComandos(json_config);
+                        if (rec_temperatura || rec_humidade) {
+                            $("#btn-s-temp").show();
+                        } else {
+                            $("#btn-s-temp").hide();
+                        }
                         if (rec_modbus) {
                             $("#btn-s-modbus").show();
                             updateSelModBus(json_config);
                         } else {
                             $("#btn-s-modbus").hide();
+                            //$("#btn-s-modbus").css('display','none'); //sig email
                         }
                         console.log(data);
                     } // tipo==0
@@ -686,6 +725,7 @@ function getMainConfig(tipo, id_sensor) {
                         var s_campo = 6 + m;
                         var node = jsonPath(json_config, "$.canal.node" + n_mod);
                         if (node != false) {
+                            num_nodes++;
                             node = "$.node" + n_mod;
                             recursos = jsonPath(json_config, node + ".recursos");
                             $("#sel-mod" + n_mod + " option:eq(0)").prop('selected', true);
@@ -708,7 +748,11 @@ function getMainConfig(tipo, id_sensor) {
                             $("#af-campo-" + s_campo).prop("checked", false);
                         }
                     }
-
+                    if (num_nodes >0) {
+                        $(".uib_w_74").show();
+                    } else {
+                        $(".uib_w_74").hide();
+                    }
 
                     Cookies.create("tela_layout", json_config.canal.tela_layout, 10 * 356);
                     flag_getMainConfig = true;
@@ -716,6 +760,7 @@ function getMainConfig(tipo, id_sensor) {
                     testarBotoesModulo();
                     writeMainConfig();
                     updateSelHoras();
+                    updateSelTipoAlertas(json_config.alertas);
                     atualizaGraficoConfig();
                     if (json_feed == null) {
                         atualiza_dados(tipo==0);
@@ -725,7 +770,15 @@ function getMainConfig(tipo, id_sensor) {
                     // ativa pagina principal
                     
                     //if (tipo == 0) activate_subpage("#uib_page_2");
+                    if (json_config.canal.refreshTimer !== undefined) {
+                        ret=parseInt(json_config.canal.refreshTimer);
+                        if (isNaN(ret)) ret=10000;
 
+                    } else
+                        ret=10000;
+
+                    refreshTimer=setInterval('atualiza_dados()', ret, true);
+                    document.getElementById("text_config").innerHTML = "OK";
                 }
             },
             error: function (data) {
@@ -735,12 +788,14 @@ function getMainConfig(tipo, id_sensor) {
                 document.getElementById("chave").value = localDB.chave;
                 document.getElementById("text_config").innerHTML = "Verifique configuração";
                 //activate_subpage("#uib_page_5");
+                refreshTimer=setInterval('atualiza_dados()', 10000, true);
             }
 
         });
     } else {
         document.getElementById("text_config").innerHTML = "ajuste modelo/serie/chave";
-        activate_subpage("#uib_page_5");
+        //activate_subpage("#uib_page_5");
+        activate_subpage("#uib_page_sign_in");
     }
     return ret;
 }
@@ -848,6 +903,9 @@ function gravarComandoTS(text_obj, _cmd) {
 
     var cmd_forca='';
     var cmd;
+
+    if (DATABASE != null) addr = addr + '&DB=' + DATABASE;
+
     if (_cmd == undefined)
         cmd = jsonPath(json_config, "$.comandos["+cmd_idx+"].comando");
     else {
@@ -855,6 +913,11 @@ function gravarComandoTS(text_obj, _cmd) {
             document.getElementById("text-s-par1").value=1;
         else
             document.getElementById("text-s-par1").value=0;
+        if (_cmd='PR'){ // pisca rele 1s
+            document.getElementById("text-s-par1").value=3; //piscar
+            document.getElementById("text-s-par2").value=1;
+            document.getElementById("text-s-par3").value=1000;
+        }
         cmd='R';
         if ($("#af-checkbox-cmd-limpa").prop("checked"))
             cmd_forca="&forca=1";
@@ -914,15 +977,14 @@ function updateSelSensores(data) {
     json_sensores=data;
     $("#sel-meus-sensores").empty();
     i = 0;
-    m = jsonPath(data, "$.sensores[" + i + "].modelo");
-    if (m != false) {
         document.getElementById("modelo").value = '';
         document.getElementById("serie").value = '';
         document.getElementById("chave").value = '';
         localDB.removeItem('modelo');
         localDB.removeItem('serie');
         localDB.removeItem('chave');
-    }
+
+    m = jsonPath(data, "$.sensores[" + i + "].modelo");
     while (m != false) {
         n = jsonPath(data, "$.sensores[" + i + "].name");
         s = jsonPath(data, "$.sensores[" + i + "].serie");
@@ -938,6 +1000,26 @@ function updateSelSensores(data) {
     eventFire(document.getElementById('sel-meus-sensores'), 'change');
 }
 /**********************************************************************/
+function updateSelTipoAlertas(data) {
+    var i, option;
+    var s,a,c,q;
+    $("#sel-tipo_alertas").empty();
+    i = 0;
+    s = jsonPath(data, "$.alertas[" + i + "].descricao");
+
+    option = $('<option></option>').prop("value", -1).text("todos");
+    $("#sel-tipo_alertas").append(option);
+    $.each(data, function(key, val) {
+           if (val.grupo=='2') {
+                option = $('<option></option>').prop("value", val.id_tipo).text(val.descricao);
+                $("#sel-tipo_alertas").append(option);
+           }
+    });
+    $("#sel-tipo_alertas option:eq(0)").prop('selected', true);
+    //eventFire(document.getElementById('sel-tipo_alertas'), 'change');
+}
+
+/***********************************************************************/
 function updateSelModBus(data) {
     var i, option;
     var s,a,c,q;
@@ -1007,6 +1089,7 @@ function updateSelHoras() {
 /**********************************************************************/
 function signInServer(pag) {
     var addr = SERVER_HTTP + SERVER_IP + SERVER_PATH + '/config_ts.php?';
+    if (DATABASE != null) addr = addr + 'DB=' + DATABASE + '&';
 
     if (window.cordova) {
         if (navigator.connection.type == Connection.NONE) {
@@ -1057,11 +1140,14 @@ function signInServer(pag) {
         var email = $("#text-email").val();
         var user = $("#text-usuario").val();
         var passwd = $("#text-senha-1").val();
+
+        user = user.toLowerCase();
         passwd = CryptoJS.SHA256(passwd);
         var txt = "n=" + nome + "&e=" + email + "&p=" + passwd;
         var etxt = GibberishAES.enc(txt, "TSensor" + user);
-        //var etxt = CryptoJS.AES.encrypt(txt, "TSensor"+user);
+      //  var etxt = CryptoJS.AES.encrypt(txt, "TSensor"+user);
         addr = addr + 'f=4&u=' + user + '&v=' + encodeURIComponent(etxt);
+       // addr = addr + 'f=4&u=' + user + '&v=' + encodeURIComponent(etxt);
     }
     // RESET da senha
     if (pag == 'reset') {
@@ -1193,7 +1279,7 @@ function signInServer(pag) {
                     localDB.removeItem('encodeLogin');
                     atualizaHeaderLogin('');
                 } else {
-                    mensagemTela(data.login, "bem vindo");
+                   // mensagemTela(data.login, "bem vindo");
                     json_user = data;
                     sessao_id = data.sessao;
                     if (document.getElementById("af-checkbox-credenciais").checked) {
@@ -1226,7 +1312,7 @@ function signInServer(pag) {
                        $("#text-email").val(data.email);
                        $("#text-usuario").val(data.login);*/
                     sessao_id = data.sessao;
-                    Cookies.create("sessao_id", sessao_id, 365);
+                    localDB.sessao_id=sessao_id;
                     updateSelSensores(data);
                     atualizaHeaderLogin(data.login,true);
                 } else {
@@ -1235,7 +1321,7 @@ function signInServer(pag) {
                         $("#text-email").empty();
                         $("#text-usuario").empty();*/
                     sessao_id = null;
-                    Cookies.erase("sessao_id");
+                    localDB.removeItem('sessao_id');
                     json_user = undefined;
                     atualizaHeaderLogin('');
                 }
@@ -1245,6 +1331,7 @@ function signInServer(pag) {
                 if (data.status == "1" && nome != false) {
                     updateSelSensores(data);
                     document.getElementById("text_config").innerHTML = "Sucesso na inclusao.";
+                    signInServer('boot');
                 } else
                     document.getElementById("text_config").innerHTML = "Erro:" + data.mensagem;
             } else
@@ -1252,6 +1339,7 @@ function signInServer(pag) {
                 if (data.status == "1") {
                     updateSelSensores(data);
                     document.getElementById("text_config").innerHTML = "Sucesso na remocao.";
+                    signInServer('boot');
                 } else
                     document.getElementById("text_config").innerHTML = "Erro:" + data.mensagem;
             } else
@@ -1273,12 +1361,13 @@ function signInServer(pag) {
 }
 /**********************************************************************/
 function gravarConfiguracao(pag, text_obj) {
-    var chave = Cookies["chave"];
+    var chave =  localDB.chave;
     var addr = SERVER_HTTP + SERVER_IP + SERVER_PATH + '/config_ts.php?f=2' +
         '&m=' + localDB.modelo +
         '&s=' + localDB.serie +
         "&c=" + chave.substring(0, 4);
 
+    if (DATABASE != null) addr = addr + '&DB=' + DATABASE;
     addr = addr + '&pag=' + pag;
     if (pag == 'w') {
         var idx = $("#sel-endereco-TS option:selected").index();
@@ -1345,13 +1434,14 @@ function gravarConfiguracao(pag, text_obj) {
 /**********************************************************************/
 
 function gravarConfiguracaoSensor(pag, text_obj) {
-    var chave = Cookies["chave"];
-    var addr = SERVER_HTTP + SERVER_IP + SERVER_PATH + '/config_ts.php';
+    var chave = localDB.chave;
+    var addr = SERVER_HTTP + SERVER_IP + SERVER_PATH + '/config_ts.php?';
     var data = 'f=2&m=' + localDB.modelo +
         '&s=' + localDB.serie +
         "&c=" + chave.substring(0, 4);
 
 
+    if (DATABASE != null) addr = addr + 'DB=' + DATABASE + '&';
     if (pag == 'r') {
         // rede/corrente
         data = data + '&tensao=' + Cookies["tensao"] +
@@ -1371,21 +1461,50 @@ function gravarConfiguracaoSensor(pag, text_obj) {
         data = data + '&ajuste5=' + document.getElementById("text-s-vcc").value +
             '&field5=' + encodeURIComponent(document.getElementById("text-s-temp-nome").value) +
             '&field5_min=' + document.getElementById("text-s-temp-min").value +
-            '&field5_max=' + document.getElementById("text-s-temp-max").value;
+            '&field5_max=' + document.getElementById("text-s-temp-max").value
+            +
+            '&field5_ocultar=' + document.getElementById("af-checkbox-ocultar-temp").checked;
     }
     if (pag == 't6') {
         // temperatura
         data = data + '&ajuste6=' + document.getElementById("text-s-vcc").value +
             '&field6=' + encodeURIComponent(document.getElementById("text-s-temp-nome").value) +
             '&field6_min=' + document.getElementById("text-s-temp-min").value +
-            '&field6_max=' + document.getElementById("text-s-temp-max").value;
+            '&field6_max=' + document.getElementById("text-s-temp-max").value
+            +
+            '&field6_ocultar=' + document.getElementById("af-checkbox-ocultar-temp").checked;
+
     }
     if (pag == 't7') {
         // temperatura
         data = data + '&ajuste7=' + document.getElementById("text-s-vcc").value +
             '&field7=' + encodeURIComponent(document.getElementById("text-s-temp-nome").value) +
             '&field7_min=' + document.getElementById("text-s-temp-min").value +
-            '&field7_max=' + document.getElementById("text-s-temp-max").value;
+            '&field7_max=' + document.getElementById("text-s-temp-max").value
+            +
+            '&field7_ocultar=' + document.getElementById("af-checkbox-ocultar-temp").checked;
+
+    }
+
+    if (pag == 't8') {
+        // temperatura
+        data = data + '&ajuste8=' + document.getElementById("text-s-vcc").value +
+            '&field8=' + encodeURIComponent(document.getElementById("text-s-temp-nome").value) +
+            '&field8_min=' + document.getElementById("text-s-temp-min").value +
+            '&field8_max=' + document.getElementById("text-s-temp-max").value
+            +
+            '&field8_ocultar=' + document.getElementById("af-checkbox-ocultar-temp").checked;
+    }
+
+    if (pag == 't') {
+        var sms= document.getElementById("af-checkbox-ativar-sms").checked;
+        var email= document.getElementById("af-checkbox-ativar-email").checked;
+        data = data +
+            "&email=" + encodeURIComponent(document.getElementById("text-s-email").value) +
+            "&celular=" + encodeURIComponent(document.getElementById("text-s-celular").value);
+
+        data = data.replace("f=2","f=10")
+
     }
 
     if (pag == 'm') {
@@ -1451,7 +1570,7 @@ function gravarConfiguracaoSensor(pag, text_obj) {
         text_obj.innerHTML = "Enviando servidor";
     $.ajax({
         type: 'GET',
-        url: addr + '?' + data,
+        url: addr + data,
         headers: {
             'User-Agent': 'APP Tsensor/' + VERSAO.MAJOR + '.' + VERSAO.MINOR + '/' + VERSAO.DATE
         },
@@ -1489,12 +1608,13 @@ function gravarConfiguracaoSensor(pag, text_obj) {
 // TODO: passar a serie no get_feed e consistir antes de atualizar os grafico
 var json_feed = null;
 
-function get_feed(flag_atualiza) {
+function get_feed() {
     var hoje=moment().format('YYYY-MM-DD');
     var data = document.getElementById('txt-data').value;
     url = SERVER_HTTP + SERVER_IP + SERVER_PATH + '/get_feed.php?f=1' +
         '&api_key=' + Cookies["api_key"] + '&results=' + Cookies["nro_pontos"];
 
+    if (DATABASE != null) url = url + '&DB=' + DATABASE;
     url = url + '&r_horas=' + r_horas;
     if (hoje != data)
         url = url + '&data=' + data;
@@ -1510,26 +1630,39 @@ function get_feed(flag_atualiza) {
     $.ajax({
         type: 'GET',
         url: url,
-        //  dataType: 'application/json',
+        //dataType: 'application/json',
         headers: {
             'User-Agent': 'APP Tsensor/' + VERSAO.MAJOR + '.' + VERSAO.MINOR + '/' + VERSAO.DATE
         },
         xhrFields: {
             withCredentials: true
         },
+        beforeSend: function () {
+            if (flag_getMainConfig)
+                document.getElementById('text-inicial').innerHTML +="<BR>Lendo dados...";
+            },
         success: function (data) {
             //  console.log("get_feed="+data);
             //    json_feed = JSON.parse(data);
+                document.getElementById('text-inicial').innerHTML +="<BR>Mostrando...";
             json_feed = data;
-            //console.log("GET FEED OK " + flag_atualiza + " canal=" + json_feed.channel.canal);
+            //console.log("GET FEED OK " + flag_getMainConfig + " canal=" + json_feed.channel.canal);
             document.dispatchEvent(evt_get_feed);
             lerFlagStatus();
             //angular.element(document.getElementById('myCtrl')).scope().get();
             angular.element($("#afui")).scope().getSensores();
             angular.element($("#afui")).scope().getFeeds();
             angular.element($("#afui")).scope().getSeco();
-            if (flag_atualiza)
-                activate_subpage("#uib_page_2");
+            getCoordinate();
+            if (flag_getMainConfig) {
+                if (rec_sensor_seco)
+                    activate_subpage("#uib_page_seco");
+                else
+                    activate_subpage("#uib_page_2");
+                flag_getMainConfig=false;
+            } else {
+                document.getElementById('text-inicial').innerHTML ="";
+            }
         },
         error: function (data) {
             console.log(data);
@@ -1561,13 +1694,27 @@ function lerStatus(tipo, _dd_div) {
 
     this.loadData = function () {
         //$("#pag_info_status").html("Conectando servidor.");
-        var url = SERVER_HTTP + SERVER_IP + SERVER_PATH + "/config_ler_status.php?";
+        var url = SERVER_HTTP + SERVER_IP + SERVER_PATH + "/config_ler_status.php?" +
+            'api_key=' + json_config.canal.api_key + '&';
 
-        if (tipo == 'alertas') {
+        switch (tipo) {
+            case 'alertas':
+                url = url + "f=1&m=" + localDB.modelo + "&s=" + localDB.serie + '&limit=' + pagina_status;
+                json_alertas=[];
+                break;
+            case 'retorno':
+                url = url + "f=2&alerta=" + $("#text-alerta-id").val();
+                break;
+            case 'eventos':
+                url = url + "f=3&m=" + localDB.modelo + "&s=" + localDB.serie + '&limit=' + pagina_status;
+                break;
+        }
+    if (DATABASE != null) url = url + '&DB=' + DATABASE;
+/*        if (tipo == 'alertas') {
             url = url + "f=1&m=" + localDB.modelo + "&s=" + localDB.serie + '&limit=' + pagina_status;
         } else {
             url = url + "f=2&alerta=" + $("#text-alerta-id").val();
-        }
+        }*/
         console.log(url);
         $.ajax({
             type: 'GET',
@@ -1626,6 +1773,20 @@ function lerStatus(tipo, _dd_div) {
                             f: ftxt,
                             p: {'style':'color:black;'}
                         }]);
+                        // ==9 sensor_seco e grupo==2 gerador
+                        if (json.feeds[i].tipo_alerta == '9' ||
+                            json.feeds[i].grupo == '2') {
+                            if (sensor_seco.select == -1)
+                                json_alertas.push({tipo_alerta: json.feeds[i].tipo_alerta,
+                                                texto:json.feeds[i].status,
+                                                atualizado_em: json.feeds[i].created_at });
+                            else
+                                if (json.feeds[i].tipo_alerta==sensor_seco.select)
+                                json_alertas.push({tipo_alerta: json.feeds[i].tipo_alerta,
+                                                texto:json.feeds[i].status,
+                                                atualizado_em: json.feeds[i].created_at });
+                        }
+
 
                     }
 
@@ -1643,6 +1804,7 @@ function lerStatus(tipo, _dd_div) {
                 if ($("#btn_info").hasClass("check"))
                     $("#btn_info").toggleClass("info check");
 
+                angular.element($("#afui")).scope().getAlertas();
             },
             error: function (data) {
                 alert("Web Service Doesn't Exist", "Error");
@@ -1887,7 +2049,7 @@ function atualizaGraficoConfig() {
         }
     } // for
 
-    atualiza_dados(false);
+ //   atualiza_dados();
 }
 /**********************************************************************/
 /*********************************************************************/
@@ -1972,9 +2134,9 @@ function lerFlagStatus() {
 
 
 /************************************************************/
-function atualiza_dados(flag) {
+function atualiza_dados() {
     //console.log(">atualiza_dados");
-    get_feed(flag);
+    get_feed();
 }
 
 function c() {
@@ -1994,14 +2156,14 @@ var MAX_NODES_SENSORES = 8;
 var MAX_CAIXA_SENSORES = 8;
 var VERSAO = {
     MAJOR: '1',
-    MINOR: '51',
-    DATE: '28/09/2016'
+    MINOR: '66',
+    DATE: '24/02/2017'
 };
 
 var SERVER_HTTP = 'http://';
 var SERVER_IP = 'ts0.sensoronline.net';
 var SERVER_PATH = '/0';
-
+var DATABASE = 'PROD'; //'DEV';
 /*********************************************************************/
 var g3, g4, g5, g6;
 
@@ -2014,11 +2176,11 @@ var json_user;
 var json_modbus=null;
 var json_sensores=null;
 var json_seco=[];
+var sensor_seco = { eventos: 'todos', select : -1} ;
 /*********************************************************************/
 var sessao_id = null;
 var localDB;
-
-
+var refreshTimer;
 
 var evt_get_feed = document.createEvent("Event");
 evt_get_feed.initEvent("app.Get_Feed", false, false);
@@ -2040,24 +2202,31 @@ function onDeviceReady() {
     var vc = getUrlVars()["c"];
     console.log("modelo=[" + vm + ']');
     if (vm != undefined) {
-        localDB.serie=vm;
+        localDB.modelo=vm;
     }
     if (vs != undefined) {
         localDB.serie=vs;
     }
     if (vc != undefined) {
-        localDB.serie=vc;
+        localDB.chave=vc;
         activate_subpage("#uib_page_2");
     }
+
+    vs=$("#startup-img").next("figcaption").text();
+    console.log("figcaption=" + vs);
+
+    vs='APP Tsensor ' + VERSAO.MAJOR + '.' + VERSAO.MINOR + ' ' + VERSAO.DATE;
+
+    $("#startup-img").next("figcaption").text(vs);
 
     // testa sessao
     if (localDB.sessao_id != undefined) {
         sessao_id = localDB.sessao_id;
         if (localDB.json_user != undefined) {
             json_user= JSON.parse(localDB.json_user);
-        }
         console.log("sessao=" + sessao_id);
         signInServer('boot');
+        }
     } else
         atualizaHeaderLogin('');
 
@@ -2093,10 +2262,10 @@ function onDeviceReady() {
     //$("#text-alerta-data").prop("readonly", true);
     //$("#text-alerta-mensagem").prop("readonly", true);
     // esconde botoes da tela info
-    $("btn_status_anterior").hide();
-    $("btn_status_proximo").hide();
+    $("#btn_status_anterior").hide();
+    $("#btn_status_proximo").hide();
     $("#text-cmd-orientacoes").hide();
-    document.getElementById('img-lamp-rele-g').innerHTML='';
+    document.getElementById('img-lamp-rele-g').html='';
     document.getElementById('text-ss-rele').innerHTML='';
 
 
@@ -2104,11 +2273,12 @@ function onDeviceReady() {
     document.getElementById('txt-data').min = '2015-11-01';
     document.getElementById('txt-data').max = moment().format('YYYY-MM-DD');
 
+    list.innerHTML +="<BR>Lendo configuração";
     getMainConfig(0);
     //atualiza_dados();
     //    createGraphs();
     //    testarBotoesModulo();
-    setInterval('atualiza_dados()', 10000, true);
+    //refreshTimer=setInterval('atualiza_dados()', 10000, true);
     moment.locale("pt-BR");
     $('#api_key').prop('readonly', true);
     $("#api_key").css({
@@ -2124,7 +2294,23 @@ function onDeviceReady() {
         var s=hash.toString(CryptoJS.enc.Hex);
         document.getElementById("chave").value=s;
     */
-    list.innerHTML +="Up...";
+    $(".uib_w_375").hide(); // DB develop
+
+    $("#af-checkbox-s-temp").prop('disabled', true);
+    $("#af-checkbox-s-corrente").prop('disabled', true);
+    $("#af-checkbox-s-alimentacao").prop('disabled', true);
+    $("#af-checkbox-s-rele").prop('disabled', true);
+    $("#af-checkbox-s-extra").prop('disabled', true);
+    $("#af-checkbox-s-extra-2").prop('disabled', true);
+    $("#af-checkbox-s-humidade").prop('disabled', true);
+    $("#af-checkbox-s-seco").prop('disabled', true);
+    $("#af-checkbox-s-modbus").prop('disabled', true);
+    $("#af-checkbox-s-wifi").prop('disabled', true);
+
+    document.getElementById('text-about').innerHTML='Site: www.sensoronline.net<br>';
+    document.getElementById('text-about').innerHTML +='Email: contato@sensoronline.net';
+
+    list.innerHTML +="<BR>Up...";
 }
 
 
@@ -2148,7 +2334,7 @@ function onDeviceReady() {
 #define REC_LED3 8
 #define REC_BOTAO 9
 #define REC_ALIMENTACAO 10  // alimentação da rede
-#define REC_FLUXO_AGUA 11
+#define REC_SENSOR_ANALOGICO 11
 #define REC_SENSOR_9 12 // PIR, sensor de contato, digital 0 ou 1
 #define REC_SENSOR_10 13 // PIR, sensor de contato, digital 0 ou 1
 #define REC_ULTRASOM 14
@@ -2163,8 +2349,9 @@ function onDeviceReady() {
 var rec_corrente_30a, rec_corrente_100a;
 var rec_lm35, rec_dht11, rec_ds18b20, rec_temperatura, rec_humidade;
 var rec_temperatura2, rec_ds18b20_extra, rec_temperatura3;
+var rec_sensor_analogico;
 var rec_rele, rec_led1, rec_led2, rec_led3, rec_alimentacao, rec_botao;
-var rec_ethernet, rec_wifi, rec_modbus, rec_sensor_seco;
+var rec_ethernet, rec_wifi, rec_modbus, rec_sensor_seco, rec_sensor_analogico;
 
 function define_recuros() {
     var recursos = parseInt(json_config.canal.recursos);
@@ -2233,13 +2420,21 @@ function define_recuros() {
         rec_temperatura3 = false;
     }
 
+    // SENSOR_ANALOGICO
+    if ((recursos & 0x0800) == 0x0800) {
+        rec_sensor_analogico = true;
+    } else {
+        rec_sensor_analogico = false;
+    }
+
     // RELE
     if ((recursos & 0x8000) == 0x8000) {
         rec_rele = true;
         $("#btn-s-rele").show();
     } else {
         rec_rele = false;
-        $("#btn-s-rele").hide();
+        //$("#btn-s-rele").hide();
+        $("#btn-s-rele").css('display','none');
     }
     // BOTAO
     if ((recursos & 0x200) == 0x200)
@@ -2290,6 +2485,13 @@ function define_recuros() {
         rec_sensor_seco=true;
     } else {
         rec_sensor_seco=false;
+
+    }
+//#define REC_SENSOR_ANALOGICO
+    if (recursos & (1 << 11)) {
+        rec_sensor_analogico=true;
+    } else {
+        rec_sensor_analogico=false;
 
     }
 }

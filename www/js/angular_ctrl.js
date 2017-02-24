@@ -3,8 +3,22 @@ var myApp = angular.module('myApp', []);
 myApp.controller('myCtrl',  function($scope) {
     $scope.sensores = {};
 
+    $scope.ativar_subpage_eventos_seco = function() {
+        if (typeof $scope.sensores_alertas !== "undefined") {
+        console.log(">ativar_subpage_eventos_seco");
+        activate_subpage('#uib_page_eventos_seco');
+        }
+    }
+
+    $scope.ativar_subpage_seco = function() {
+        console.log(">ativar_subpage_seco");
+        activate_subpage('#uib_page_seco');
+    }
+
     $scope.getFeeds = function() {
         if (json_feed == null) return;
+        if (json_user == undefined || json_user.login == undefined) return;
+        if (json_user.login != 'cap') return;
         delete $scope.feeds;
         delete $scope.nodes_feed1;
         $scope.feeds = json_feed.feeds;
@@ -21,6 +35,13 @@ myApp.controller('myCtrl',  function($scope) {
         $scope.$apply();
     }
 
+    $scope.getAlertas = function() {
+        if (json_alertas.length == 0) return;
+        delete $scope.sensores_alertas;
+        $scope.sensores_alertas = json_alertas;
+        //console.log(json_feed.alertas);
+        $scope.$apply();
+    }
     $scope.getSensores = function() {
         if (json_feed == null) return;
         delete $scope.sensores;

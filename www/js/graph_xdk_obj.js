@@ -151,6 +151,15 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
                 self.ativo=false;
                 return;
             }
+            // testa se é para mostrar o relógio
+            if (json_config.canal.field_ocultar != undefined) {
+                var field_ocultar=parseInt(json_config.canal.field_ocultar);
+                if ((field_ocultar & (1<<campo)) > 0) {
+                        console.log("OCULTAR:" + campo);
+                        self.ativo=false;
+                        return;
+                    }
+            }
         } else
         if (self.modulo >= 0) {
             var campo = self.series[0].campo;
@@ -353,9 +362,13 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
             if (self.status == 3 || self.offline_at != false) {
                 $('#' + self.id_div + ' circle:nth-child(2)').attr('fill', '#FF0000');
                 $(div_painel).css('color','red');
+                if (map != null && map != 0)
+                    markerMap.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
             } else {
                 $('#' + self.id_div + ' circle:nth-child(2)').attr('fill', '#F7F7F7');
                 $(div_painel).css('color','green');
+                if (map != null && map != 0)
+                    markerMap.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
             }
             // fora dos limites
             if (self.field_flag == 0) {

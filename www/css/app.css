@@ -153,3 +153,11 @@ th.th-sensor {
     background-color: white;
   }
 
+
+.eventos_card_header_text {
+    font-size: normal;
+}
+
+.eventos_card_text {
+    font-size: large;
+}
