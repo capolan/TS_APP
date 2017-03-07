@@ -615,6 +615,10 @@ function getMainConfig(tipo, id_sensor) {
                 /*  intel.xdk.notification.alert(json.channel.name, "Canal"); */
                 // TS
                 if (data != 'null') {
+                    if (data.status != 'OK') {
+                        document.getElementById("text_config").innerHTML = data.status;
+                        return;
+                    }
                     document.getElementById("text_config").innerHTML = "Atualizando Grafico";
                     document.getElementById('text-inicial').innerHTML +="<BR>Criando grafico.";
                     ret = true;
@@ -862,6 +866,9 @@ function writeMainConfig() {
         $("#text-s-temp-nome").val(json_config.canal.field5);
         document.getElementById("text-s-temp-min").value = json_config.canal.field5_min;
         document.getElementById("text-s-temp-max").value = json_config.canal.field5_max;
+        document.getElementById('af-checkbox-pullup').checked = (json_config.canal.seco1_tipo & 0x01) == 0x01;
+        fases = json_config.canal.seco1_porta;
+        $('#sel-temp-porta-analogico option')[fases].selected = true;
         // CORRENTE/REDE
         if (Cookies["tensao"] == '220')
             document.getElementById("af-radio-s-220").checked = true;
@@ -1434,6 +1441,7 @@ function gravarConfiguracao(pag, text_obj) {
 /**********************************************************************/
 
 function gravarConfiguracaoSensor(pag, text_obj) {
+    var ocultar;
     var chave = localDB.chave;
     var addr = SERVER_HTTP + SERVER_IP + SERVER_PATH + '/config_ts.php?';
     var data = 'f=2&m=' + localDB.modelo +
@@ -1444,6 +1452,7 @@ function gravarConfiguracaoSensor(pag, text_obj) {
     if (DATABASE != null) addr = addr + 'DB=' + DATABASE + '&';
     if (pag == 'r') {
         // rede/corrente
+        ocultar=document.getElementById("af-checkbox-ocultar-corrente").checked;
         data = data + '&tensao=' + Cookies["tensao"] +
             '&ajuste1=' + document.getElementById("text-s-corrente-ajuste").value +
             '&fases=' + Cookies['fases'] +
@@ -1452,7 +1461,13 @@ function gravarConfiguracaoSensor(pag, text_obj) {
             '&field3=' + encodeURIComponent(document.getElementById("text-s-corrente-fase2").value) +
             '&field4=' + encodeURIComponent(document.getElementById("text-s-corrente-fase3").value) +
             '&field1_min=' + document.getElementById("text-s-corrente-min").value +
-            '&field1_max=' + document.getElementById("text-s-corrente-max").value;
+            '&field1_max=' + document.getElementById("text-s-corrente-max").value +
+            '&field1_ocultar=' + ocultar +
+            '&field2_ocultar=' + ocultar +
+            '&field3_ocultar=' + ocultar +
+            '&field4_ocultar=' + ocultar;
+
+
         data = data + '&updated_flag=10';
 
     }
@@ -1488,12 +1503,21 @@ function gravarConfiguracaoSensor(pag, text_obj) {
 
     if (pag == 't8') {
         // temperatura
+        var tipo=document.getElementById("af-checkbox-pullup").checked;
+        if (tipo)
+            tipo=1;
+        else
+            tipo=0;
+        data = data + '&updated_flag=10';
         data = data + '&ajuste8=' + document.getElementById("text-s-vcc").value +
             '&field8=' + encodeURIComponent(document.getElementById("text-s-temp-nome").value) +
             '&field8_min=' + document.getElementById("text-s-temp-min").value +
             '&field8_max=' + document.getElementById("text-s-temp-max").value
             +
-            '&field8_ocultar=' + document.getElementById("af-checkbox-ocultar-temp").checked;
+            '&field8_ocultar=' + document.getElementById("af-checkbox-ocultar-temp").checked +
+            '&porta8=' + $("#sel-temp-porta-analogico option:selected").index() +
+            '&tipo8=' + tipo;
+            ;
     }
 
     if (pag == 't') {
@@ -2156,8 +2180,8 @@ var MAX_NODES_SENSORES = 8;
 var MAX_CAIXA_SENSORES = 8;
 var VERSAO = {
     MAJOR: '1',
-    MINOR: '66',
-    DATE: '24/02/2017'
+    MINOR: '68',
+    DATE: '07/03/2017'
 };
 
 var SERVER_HTTP = 'http://';
@@ -2255,6 +2279,9 @@ function onDeviceReady() {
     $(".uib_col_31").height(220);
     // select
     $("#sel_horas").css('width', 100);
+    $(".uib_w_399").hide(); // #sel-temp-porta-analogico
+    $(".uib_w_400").hide(); // pullup
+
     $(".uib_w_263").hide(); //#sel-meus-sensores
     // readonly id_alerta
     //$("#text-alerta-id").prop("readonly", true);

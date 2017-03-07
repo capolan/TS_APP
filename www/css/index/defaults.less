@@ -57,7 +57,8 @@ form.urow { margin-bottom: 0px; }
 
 #afui .vertical-col > .afScrollPanel > .widget,
 #afui .vertical-col > .widget,
-.vertical-col > .widget {
+.vertical-col > .widget,
+.camera > .widget {
   width: calc(100% ~'-' 10px);
   margin-left: 5px;
 }
@@ -184,3 +185,26 @@ body:not(#afui) {
 
 //framework 7 searchbar width override
 .searchbar { width: 100% !important; margin: 0 !important; }
+
+//App Framework 3 fixes
+//app framework 3 padding fix
+#afui .panel { padding: 0px; }
+
+//af3 page height
+#afui .pages { height: 100%; }
+#afui .upage-outer { height: 100%; }
+
+//af3 scroll fix
+body#afui.v2 { overflow-y: auto !important; }
+
+//single radio button/checkbox position fix
+body#afui .panel > .widget > input[type="radio"] + label, body#afui .panel > .widget > input[type="checkbox"] + label { padding-top: 14px; }
+
+//radio/checkbox group fix
+#afui .table-thing input[type="radio"] + label, #afui .table-thing input[type="checkbox"] + label { padding-top: 6px !important; }
+
+//af3 flip switch overflow fix
+input.toggle + label:after { width: 32px; }
+
+//side menu splitview fix
+body#afui .splt { width: 200px; }

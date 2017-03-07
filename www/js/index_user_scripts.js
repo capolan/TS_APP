@@ -416,7 +416,8 @@
 
         /* button  #btn-s-s-temp */
         $(document).on("click", "#btn-s-s-temp", function (evt) {
-            var opt = $("#sel-temp option:selected").index();
+            var opt = $("#sel-temp option:selected").val();
+            opt = parseInt(opt);
             var valor = parseFloat(document.getElementById("text-s-vcc").value);
             if (isNaN(valor)) {
                 document.getElementById("text-s-temp").innerHTML = "Ajuste invalido";
@@ -453,7 +454,13 @@
 
         $(document).on("change", "#sel-temp", function (evt) {
             /* your code goes here */
-            var opt = $("#sel-temp option:selected").index();
+            //var opt = $("#sel-temp option:selected").index();
+            var opt = $("#sel-temp option:selected").val();
+            opt=parseInt(opt);
+            // (#sel-temp-porta-analogico)
+            $(".uib_w_399").hide();
+            $(".uib_w_400").hide();
+
             if (opt==1 && rec_temperatura2 == false && rec_humidade == false) {
                 document.getElementById("text-s-temp").innerHTML = "Nao possui sensor extra";
                 $("#sel-temp option:eq(0)").prop('selected', true);
@@ -468,6 +475,10 @@
                 document.getElementById("text-s-temp").innerHTML = "Nao possui sensor analogico";
                 $("#sel-temp option:eq(0)").prop('selected', true);
                 return;
+            }
+            if (opt == 3) {
+                $(".uib_w_400").show();
+                $(".uib_w_399").show();
             }
             document.getElementById("text-s-temp").innerHTML = "";
             opt = opt + 5;
