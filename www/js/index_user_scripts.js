@@ -82,8 +82,8 @@
 
         /* button  #btn_gravar_ts */
         $(document).on("click", "#btn_gravar_ts", function (evt) {
-            Cookies["api_key"] = document.getElementById("api_key").value;
-            Cookies["canal"] = document.getElementById("canal").value;
+            //Cookies["api_key"] = document.getElementById("api_key").value;
+            //Cookies["canal"] = document.getElementById("canal").value;
             Cookies["nro_pontos"] = document.getElementById("nro_pontos").value;
             Cookies["inatividade"] = document.getElementById("inatividade").value;
             Cookies['tempo_ler_corrente'] = document.getElementById("tempo_ler_corrente").value;
@@ -145,6 +145,7 @@
         // click no gauge
         $('#chart11_div, #chart12_div, #chart13_div, #chart14_div, #chart15_div, #chart16_div, #chart17_div, #chart18_div,#chart19_div').click(function() {
             var _div=this.id;
+            var flag_seco=false;
             var sensor=_div.substr(6,1);    //  numero do sensor
             var div_12=_div.substr(5,1);
             var aux = (sensor % (MAX_CAIXA_SENSORES+1)) + 1;
@@ -155,6 +156,14 @@
             if (div_12==2) {
                 click_no_gauge(0);
             } else {
+                if ((aux==sensor || aux==MAX_CAIXA_SENSORES+1)&& rec_sensor_seco) {
+                            activate_subpage("#uib_page_seco");
+                            flag_seco=true;
+                            aux=1;
+                }
+                if (aux==MAX_CAIXA_SENSORES+1 && rec_sensor_seco==false) {
+                    aux=1;
+                }
                 if (gg1[aux] != undefined) {
                     ativo=gg1[aux].ativo;
                     while (ativo == false) {
@@ -170,7 +179,7 @@
                     $('#text_pag_' + aux).css("display", "block");
                     gtext[0].loadData();
 
-                    if (aux == 1) {   // voltou ao inicio
+                    if (aux == 1 && flag_seco==false) {   // voltou ao inicio
                         if (rec_corrente_30a == true || rec_corrente_100a == true) { // Temperatura 2
                             if (g3.sem_dados == true)
                             mensagemTela("Sem dados", "Corrente");
@@ -180,9 +189,6 @@
                             }
                         }
 
-                    }
-                    if ((aux==sensor || aux==MAX_CAIXA_SENSORES+1)&& rec_sensor_seco) {
-                            activate_subpage("#uib_page_seco");
                     }
                 } else {
                     click_no_gauge(0);
@@ -455,6 +461,7 @@
         $(document).on("change", "#sel-temp", function (evt) {
             /* your code goes here */
             //var opt = $("#sel-temp option:selected").index();
+            var idx,aux;
             var opt = $("#sel-temp option:selected").val();
             opt=parseInt(opt);
             // (#sel-temp-porta-analogico)
@@ -466,8 +473,8 @@
                 $("#sel-temp option:eq(0)").prop('selected', true);
                 return;
             }
-            if (opt==2 && rec_temperatura3 == false) {
-                document.getElementById("text-s-temp").innerHTML = "Nao possui sensor extra 2";
+            if (opt==2 && rec_temperatura3 == false && rec_sensor_analogico == false) {
+                document.getElementById("text-s-temp").innerHTML = "Nao possui sensor extra 2/sensor analogico";
                 $("#sel-temp option:eq(0)").prop('selected', true);
                 return;
             }
@@ -476,7 +483,12 @@
                 $("#sel-temp option:eq(0)").prop('selected', true);
                 return;
             }
-            if (opt == 3) {
+            if (opt >= 2  && rec_sensor_analogico == true) {
+                idx=4-opt;
+                aux=jsonPath(json_config,"$.canal.seco"+idx+"_tipo");
+                document.getElementById('af-checkbox-pullup').checked = (aux & 0x01) == 0x01;
+                aux = jsonPath(json_config,"$.canal.seco"+idx+"_porta");
+                $('#sel-temp-porta-analogico option')[aux].selected = true;
                 $(".uib_w_400").show();
                 $(".uib_w_399").show();
             }
@@ -879,10 +891,15 @@
         /* button  #btn-sign-out */
         $(document).on("click", "#btn-sign-out", function (evt) {
             /* your code goes here */
+            var id_google=null;
+            if (json_user.id_google !== undefined)
+                id_google=json_user.id_google;
             if (sessao_id == null)
                 mensagemTela('Erro', 'Usuario nao logado');
             else {
                 signInServer('out');
+                if (id_google != null)
+                    signOut();
                 //$("#text-user-name").empty();
                 //$("#text-user-passwd").empty();
             }
@@ -946,6 +963,8 @@
 
         $(document).on("change", "#sel-meus-sensores", function (evt) {
             var opt = $("#sel-meus-sensores option:selected").index();
+            if (opt == -1)
+                    return;
             /* your code goes here */
             if (json_sensores == null) {
                 document.getElementById("modelo").value = json_user.sensores[opt].modelo;
@@ -988,13 +1007,19 @@
 
         /* button  #btn-login-logoff */
         $(document).on("click", "#btn-login-logoff", function (evt) {
+            var id_google=null;
             document.getElementById('text-leituras').innerHTML='Login';
-            /* your code goes here */
+            if (json_user.id_google !== undefined)
+                id_google=json_user.id_google;
             if (sessao_id == null)
                 mensagemTela('Erro', 'Usuario nao logado');
             else {
                 signInServer('out');
+                if (id_google != null)
+                    signOut();
             }
+
+
         });
 
         /* button  #btn_login */
@@ -1342,6 +1367,14 @@
          /*global activate_subpage */
          activate_subpage("#uib_page_sign_in");
          return false;
+    });
+
+        /* button  #btn-google-signin */
+    $(document).on("click", "#btn-google-signin", function(evt)
+    {
+        /* your code goes here */
+        googleSiginIn()
+        return false;
     });
 
     }

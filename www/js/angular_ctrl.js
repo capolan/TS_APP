@@ -49,6 +49,13 @@ myApp.controller('myCtrl',  function($scope) {
         //console.log(json_feed.sensor);
         $scope.$apply();
     }
+    /*
+    $scope.getDevice = function() {
+        $scope.model=device.model;
+        $scope.model=device.platform;
+        $scope.$apply();
+    }
+    */
     $scope.goSensor = function(idx) {
         var serie, id, ref, modulo, sens;
 

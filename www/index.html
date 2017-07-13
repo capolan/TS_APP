@@ -10,8 +10,6 @@
         <link rel="stylesheet" type="text/css" href="app_framework/2.1/css/af.ui.min.css">
         <link rel="stylesheet" type="text/css" href="app_framework/2.1/css/icons.min.css">
 
-        <link rel="stylesheet" type="text/css" href="css/index_main.less.css" class="main-less">
-
         <link rel="stylesheet" type="text/css" href="css/app.css">
         <link rel="stylesheet" type="text/css" href="css/index_main.less.css" class="main-less">
 
@@ -20,6 +18,9 @@
         <meta http-equiv="Expires" content="-1">
 
         <!--
+        <meta name="google-signin-scope" content="profile email">
+        <meta name="google-signin-client_id" content="629413010047-mirv8igteh3qrh1vfigu8lalr55hgo21.apps.googleusercontent.com">
+
       <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
@@ -64,18 +65,6 @@
 
         <script type="application/javascript" src="app_framework/2.1/appframework.js"></script>
         <script type="application/javascript" src="app_framework/2.1/appframework.ui.js" data-ver="1"></script>
-        <script>
-            //         $.ui.autoLaunch = false;
-                if(false) {
-                        $.ui.autoLaunch = false;
-                        $.ui.useOSThemes = true; //Change this to false to force a device theme
-                        $.ui.blockPageScroll();
-                             $(document).ready(function () {
-                                    if ($.ui.useOSThemes && (!$.os.ios||$.os.ios7))
-                                        $("#afui").removeClass("ios");
-                                });
-            }
-        </script>
         <!--
     <script type="application/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -92,11 +81,11 @@
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+        <script type="application/javascript" src="xdk/ad/angular_support.js"></script>
 -->
 
         <script type="application/javascript" src="lib/jquery.min.js"></script>
         <script type="application/javascript" src="lib/angular.min.js"></script>
-        <script type="application/javascript" src="xdk/ad/angular_support.js"></script>
 
         <script type="text/javascript" src="bower_components/gibberish-aes/dist/gibberish-aes-1.0.0.min.js"></script>
         <script type="text/javascript" src="bower_components/crypto-js/build/rollups/sha256.js"></script>
@@ -109,6 +98,9 @@
         <script type="text/javascript" src="js/base64_encode.js"></script>
         <script type="text/javascript" src="js/network.js"></script>
         <script type="text/javascript" src="js/barcode.js"></script>
+        <!--
+        <script type="text/javascript" src="js/cordova.oauth2.js"></script>
+        -->
 
         <script type="application/javascript" src="js/index_user_scripts.js"></script>
         <!--
@@ -122,7 +114,15 @@
       See http://app-framework-software.intel.com/documentation.php#afui/afui_jquery
         <script type="application/javascript" src="console/console_widget.js"></script>
     -->
-        <script type="application/javascript" src="xdk/appdesigner/js/rest-of-space.js"></script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-96345559-1', 'auto');
+              ga('send', 'pageview');
+        </script>
 
         <!--
     <script src="http://debug-software.intel.com/target/target-script-min.js#A0oaM1vX9ocpCR1lmLJXwtjRHgIMnwrMGlwfuCL-RzI"></script>
@@ -142,24 +142,18 @@
 
         <script type="text/javascript" src="js/angular_ctrl.js"></script>
 
+        <script type="application/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0rk-f5HdafVKxLhe8SaVkwNmNw06RcbI" async="" defer=""></script>
+        <!--
         <script type="application/javascript" src="sidebar/js/hammer.js"></script>
         <script type="application/javascript" src="sidebar/js/jquery.hammer.js"></script>
         <script type="application/javascript" src="sidebar/js/swipe-hammer.js"></script>
         <script type="application/javascript" src="sidebar/js/sidebar.js"></script>
-
-        <script type="application/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0rk-f5HdafVKxLhe8SaVkwNmNw06RcbI" async="" defer=""></script>
-
+        <script src="https://apis.google.com/js/platform.js?onload=renderButton" async="" defer=""></script>
+-->
+        <script type="application/javascript" src="xdk/appdesigner/js/rest-of-space.js"></script>
     </head>
 
     <body id="afui" ng-app="myApp" ng-controller="myCtrl">
-
-        <div id="splashscreen" class="ui-loader">
-            <img src="images/Arrow.png">
-            <br>
-            <br>
-            <span class="ui-icon ui-icon-loading spin"></span>
-            <h1>Iniciando app</h1>
-        </div>
 
         <header class="wrapping-col wrap-element uib_w_66" data-uib="app_framework/header" data-ver="2" id="af-header-0">
             <!-- <a class="button widget uib_w_67 d-margins header-right icon info botao_header" data-uib="app_framework/button" data-ver="1" id="btn_info"></a> -->
@@ -245,7 +239,7 @@
                                 <figure class="figure-align">
                                     <img src="images/logo_sol1.png" id="startup-img">
 
-                                    <figcaption data-position="bottom">@2016</figcaption>
+                                    <figcaption data-position="bottom">@2016-2017</figcaption>
                                 </figure>
                             </div><span class="uib_shim"></span>
                         </div>
@@ -345,7 +339,10 @@
                         <a class="button widget uib_w_226" data-uib="app_framework/button" data-ver="1" id="btn-sign-in-entrar">Login</a>
                         <a class="button widget uib_w_227" data-uib="app_framework/button" data-ver="1" id="btn-sign-in-limpar">Limpar</a>
                         <a class="button widget uib_w_244" data-uib="app_framework/button" data-ver="1" id="btn-sign-out">Logoff</a>
+
                     </div>
+                    <!--<a ng-if="platform == Windows" class="widget uib_w_402 d-margins" id="my-signin2" data-uib="app_framework/button" data-ver="1">Button-Google</a>
+            -->
 
                     <div class="grid grid-pad urow uib_row_33 row-height-33" data-uib="layout/row" data-ver="0">
                         <div class="col uib_col_40 col-0_12-12" data-uib="layout/col" data-ver="0">
@@ -1011,7 +1008,7 @@
                         </div>
                     </div>
                     <div class="table-thing with-label widget uib_w_33 d-margins" data-uib="app_framework/input" data-ver="1">
-                        <label class="narrow-control label-inline" for="api_key">api_key</label>
+                        <label class="narrow-control label-inline" for="api_key">user_key</label>
 
                         <input class="wide-control" type="text" id="api_key">
                     </div>
@@ -1021,7 +1018,7 @@
                         <input class="wide-control" type="text" id="canal">
                     </div>
                     <div class="table-thing with-label widget uib_w_307 d-margins" data-uib="app_framework/input" data-ver="1">
-                        <label class="narrow-control label-inline" for="str_horas">Horas</label>
+                        <label class="narrow-control label-inline" for="str_horas">horas</label>
                         <input class="wide-control" placeholder="2,4,12,24,#" type="text" id="str_horas">
                     </div>
 
@@ -1918,8 +1915,8 @@
 
             <footer class="wrap-element uib_w_114" data-uib="app_framework/footer" data-ver="1" id="af-footer-sensor">
                 <a class="widget uib_w_120 icon home" data-uib="app_framework/button" data-ver="1" style="border-left-width: 1px; border-left-style: solid; border-left-color: rgb(102, 102, 102); border-top-left-radius: 6px; border-bottom-left-radius: 6px;" id="btn_s_inicio"
-                href="#mainpage" data-transition="fade">Inicio</a><a class="widget uib_w_117 icon settings" data-uib="app_framework/button" data-ver="1" id="btn_s_config">Config</a><a class="widget uib_w_118 icon magnifier" data-uib="app_framework/button"
-                data-ver="1" style="border-top-right-radius: 6px; border-bottom-right-radius: 6px;" id="btn-s-temp">Temp</a><a class="widget uib_w_116 icon lamp" data-uib="app_framework/button" data-ver="1" style="border-left-width: 1px; border-left-style: solid; border-left-color: rgb(102, 102, 102); border-top-left-radius: 6px; border-bottom-left-radius: 6px;"
+                href="#mainpage" data-transition="fade">Inicio</a><a class="widget uib_w_117 icon settings" data-uib="app_framework/button" data-ver="1" id="btn_s_config">Config</a><a class="widget uib_w_118 icon tools" data-uib="app_framework/button"
+                data-ver="1" style="border-top-right-radius: 6px; border-bottom-right-radius: 6px;" id="btn-s-temp">Sens</a><a class="widget uib_w_116 icon lamp" data-uib="app_framework/button" data-ver="1" style="border-left-width: 1px; border-left-style: solid; border-left-color: rgb(102, 102, 102); border-top-left-radius: 6px; border-bottom-left-radius: 6px;"
                 id="btn-s-corrente">Corrente</a>
                 <a class="widget uib_w_130 icon pin" data-uib="app_framework/button" data-ver="1" id="btn-s-cmd">Cmd</a><a class="widget uib_w_131 d-margins icon key" data-uib="app_framework/button" data-ver="1" id="btn-s-rele">Chave</a><a class="widget uib_w_342 icon loading"
                 data-uib="app_framework/button" data-ver="1" id="btn-s-modbus">ModBus</a>
@@ -1938,8 +1935,8 @@
                 <a class="widget uib_w_16 icon download" data-uib="app_framework/button" data-ver="1">AP</a>
             </footer>
             <footer class="wrap-element uib_w_3" data-uib="app_framework/footer" data-ver="1" id="af-footer-0"><a class="widget uib_w_4 d-margins icon home" data-uib="app_framework/button" data-ver="1" id="btn_home">Inicio</a><a class="widget uib_w_71 d-margins btn-estilo icon target" data-uib="app_framework/button" data-ver="1" id="btn_mod_extras">Modulos</a>
-                <a class="widget uib_w_5 d-margins icon location" data-uib="app_framework/button" data-ver="1">Sensor</a><a class="widget uib_w_6 d-margins icon settings" data-uib="app_framework/button" data-ver="1" href="#uib_page_4" data-transition="fade"
-                id="btn-config">Config</a>
+                <a class="widget uib_w_5 d-margins icon location" data-uib="app_framework/button" data-ver="1">Sensor</a><a class="widget uib_w_6 d-margins icon camera" data-uib="app_framework/button" data-ver="1" href="#uib_page_4" data-transition="fade"
+                id="btn-config">Caixa</a>
                 <a class="widget uib_w_102 d-margins icon user" data-uib="app_framework/button" data-ver="1" id="btn_login">Login</a>
             </footer>
 

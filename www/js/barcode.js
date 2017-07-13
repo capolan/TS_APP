@@ -1,3 +1,74 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+// http://stackoverflow.com/questions/23930744/how-to-use-google-login-api-with-cordova-phonegap
+var id_token ;
+function sendBackend() {
+	//var id_token = googleUser.getAuthResponse().id_token;
+	var xhr = new XMLHttpRequest();
+    var data, sessao_id;
+	console.log('>send idtoken=' + id_token);
+	xhr.open('POST', 'http://ts0.sensoronline.net/obj/ti/tokensignin.php');
+	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	xhr.onload = function() {
+		console.log('Signed in as: ' + xhr.responseText);
+	};
+	xhr.onreadystatechange=function(){
+      console.log('xhr.readyState=',xhr.readyState);
+      console.log('xhr.status=',xhr.status);
+       if (xhr.readyState==4 && xhr.status==200){
+          console.log('response=',xhr.responseText);
+           data=JSON.parse(xhr.responseText);
+                    json_user = data;
+                    sessao_id = data.sessao;
+                    if (document.getElementById("af-checkbox-credenciais").checked) {
+                        localDB.json_user = JSON.stringify(json_user);
+                    }
+                    localDB.sessao_id=sessao_id;
+                    atualizaHeaderLogin(data.login,true);
+                    updateSelSensores(data);
+                    activate_subpage("#uib_page_5");
+		}
+	}
+	xhr.send('idtoken=' + id_token);
+}
+
+function onSignIn(googleUser) {
+  var profile = googleUser.getBasicProfile();
+  console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+  console.log('Name: ' + profile.getName());
+  console.log('Image URL: ' + profile.getImageUrl());
+  console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+  //console.log(profile);
+ // sendBackend(googleUser);
+  id_token = googleUser.getAuthResponse().id_token;
+
+  sendBackend();
+
+}
+
+function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+  }
+
+    function onFailure(error) {
+      console.log(error);
+    }
+    function renderButton() {
+      gapi.signin2.render('my-signin2', {
+        'scope': 'profile email',
+        'width': 240,
+        'height': 50,
+        'longtitle': true,
+        'theme': 'dark',
+        'onsuccess': onSignIn,
+        'onfailure': onFailure
+      });
+    }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
 var json_barcode;
 function xbarcodeScanned(evt) {
    // intel.xdk.notification.beep(1);

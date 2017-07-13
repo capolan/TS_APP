@@ -552,10 +552,11 @@ var json_config = null;
 // tipo = 0 ler todos os dados
 //        1 = somente os módulos
 function getMainConfig(tipo, id_sensor) {
-    var ret = false;
+    var ret = false, classe;
     var sens, option, num_nodes=0;
     app.consoleLog(">getMainConfig", tipo);
-    clearTimeout(refreshTimer);
+    //clearTimeout(refreshTimer);
+    clearInterval(refreshTimer);
     refreshTimer=undefined;
     /*    if (window.cordova) {
         if (navigator.connection.type == Connection.NONE) {
@@ -603,15 +604,16 @@ function getMainConfig(tipo, id_sensor) {
             xhrFields: {
                 withCredentials: true
             },
-            headers: {
-                'User-Agent': 'APP Tsensor ' + VERSAO.MAJOR + '.' + VERSAO.MINOR + ' ' + VERSAO.DATE
-            },
+           // headers: {
+        //        'User-Agent': 'APP Tsensor ' + VERSAO.MAJOR + '.' + VERSAO.MINOR + ' ' + VERSAO.DATE
+        //    },
             beforeSend: function () {
                 document.getElementById("text_config").innerHTML = "Running...";
                 document.getElementById('text-inicial').innerHTML +="<BR>Lendo config " + localDB.serie;
             },
             success: function (data) {
                 json_config = data;
+                document.getElementById('text-inicial').innerHTML +="_OK";
                 /*  intel.xdk.notification.alert(json.channel.name, "Canal"); */
                 // TS
                 if (data != 'null') {
@@ -687,6 +689,25 @@ function getMainConfig(tipo, id_sensor) {
                     //    }
                         sens = 0;
                         $("#sel-temp").empty();
+                        $(".uib_w_399").hide();
+                        $(".uib_w_400").hide();
+                        //8 - licença free
+                        //9 - licença home
+                        //10 - licença prof
+                        //11 - licença empresa
+                        classe=parseInt(json_config.canal.classe);
+                        if (isNaN(classe))
+                            classe=0;
+                        if ((classe & 0x100) > 0) {
+                            $('#af-checkbox-ativar-sms').prop('disabled', true);;
+                            $('#text-s-celular').prop('readonly', true);
+                            $("#text-s-celular").css({'background-color': '#FFFEEE'});
+                        } else {
+                            $('#af-checkbox-ativar-sms').prop('disabled', false);;
+                            $('#text-s-celular').prop('readonly', false);
+                            $("#text-s-celular").css({'background-color': '#FFFFFF'});
+                        }
+
                         if (rec_temperatura == true) {
                             option = $('<option></option>').prop("value", 0).text("1: " + json_config.canal.field5);
                             $("#sel-temp").append(option);
@@ -697,7 +718,7 @@ function getMainConfig(tipo, id_sensor) {
                             $("#sel-temp").append(option);
                             sens++;
                         }
-                        if (rec_temperatura3 == true) {
+                        if (rec_temperatura3 == true || rec_sensor_analogico == true) {
                             option = $('<option></option>').prop("value", 2).text("3: " + json_config.canal.field7);
                             $("#sel-temp").append(option);
                         }
@@ -829,7 +850,8 @@ function writeMainConfig() {
         document.getElementById("tempo_ler_corrente").value = Cookies["tempo_ler_corrente"];
         document.getElementById("contador_enviar_web").value = Cookies["contador_enviar_web"];
         document.getElementById("contador_gravar_log").value = json_config.canal.contador_gravar_log;
-        document.getElementById("api_key").value = Cookies["api_key"];
+        //document.getElementById("api_key").value = Cookies["api_key"];
+        document.getElementById("api_key").value = json_config.canal.user_key;
         document.getElementById("nro_pontos").value = Cookies["nro_pontos"];
         document.getElementById("inatividade").value = Cookies["inatividade"];
         document.getElementById("str_horas").value = json_config.canal.horas;
@@ -949,9 +971,9 @@ function gravarComandoTS(text_obj, _cmd) {
         type: 'GET',
         url: addr + '?' + data,
         dataType: 'json',
-        headers: {
-            'User-Agent': 'APP Tsensor/' + VERSAO.MAJOR + '.' + VERSAO.MINOR + '/' + VERSAO.DATE
-        },
+       // headers: {
+    //        'User-Agent': 'APP Tsensor/' + VERSAO.MAJOR + '.' + VERSAO.MINOR + '/' + VERSAO.DATE
+      //  },
         xhrFields: {
             withCredentials: true
         },
@@ -1003,7 +1025,8 @@ function updateSelSensores(data) {
         i++;
         m = jsonPath(data, "$.sensores[" + i + "].modelo");
     }
-    $('#sel-meus-sensores option')[0].selected = true;
+//    $('#sel-meus-sensores option')[0].selected = true;
+    $("#sel-meus-sensores option:eq(0)").prop('selected', true);
     eventFire(document.getElementById('sel-meus-sensores'), 'change');
 }
 /**********************************************************************/
@@ -1257,9 +1280,9 @@ function signInServer(pag) {
         type: 'GET',
         url: addr,
         dataType: 'json',
-        headers: {
-            'User-Agent': 'APP Tsensor/' + VERSAO.MAJOR + '.' + VERSAO.MINOR + '/' + VERSAO.DATE
-        },
+        //headers: {
+        //    'User-Agent': 'APP Tsensor/' + VERSAO.MAJOR + '.' + VERSAO.MINOR + '/' + VERSAO.DATE
+        //},
         xhrFields: {
             withCredentials: true
         },
@@ -1361,8 +1384,9 @@ function signInServer(pag) {
                 mensagemTela(data.mensagem,"Retorno");
 
         },
-        error: function (data) {
-            mensagemTela(data.responseText, data.status + ':' + data.statusText);
+        error: //function (data) {
+            function (xhr, ajaxOptions, thrownError) {
+            mensagemTela(xhr.responseText, xhr.status + ':' + xhr.statusText);
         }
     });
 }
@@ -1491,18 +1515,26 @@ function gravarConfiguracaoSensor(pag, text_obj) {
 
     }
     if (pag == 't7') {
-        // temperatura
+        // analogico
+        var tipo=document.getElementById("af-checkbox-pullup").checked;
+        if (tipo)
+            tipo=1;
+        else
+            tipo=0;
+        data = data + '&updated_flag=10';
         data = data + '&ajuste7=' + document.getElementById("text-s-vcc").value +
             '&field7=' + encodeURIComponent(document.getElementById("text-s-temp-nome").value) +
             '&field7_min=' + document.getElementById("text-s-temp-min").value +
             '&field7_max=' + document.getElementById("text-s-temp-max").value
             +
-            '&field7_ocultar=' + document.getElementById("af-checkbox-ocultar-temp").checked;
+            '&field7_ocultar=' + document.getElementById("af-checkbox-ocultar-temp").checked+
+            '&porta7=' + $("#sel-temp-porta-analogico option:selected").index() +
+            '&tipo7=' + tipo;
 
     }
 
     if (pag == 't8') {
-        // temperatura
+        // analogico
         var tipo=document.getElementById("af-checkbox-pullup").checked;
         if (tipo)
             tipo=1;
@@ -1655,9 +1687,9 @@ function get_feed() {
         type: 'GET',
         url: url,
         //dataType: 'application/json',
-        headers: {
-            'User-Agent': 'APP Tsensor/' + VERSAO.MAJOR + '.' + VERSAO.MINOR + '/' + VERSAO.DATE
-        },
+        //headers: {
+        //    'User-Agent': 'APP Tsensor/' + VERSAO.MAJOR + '.' + VERSAO.MINOR + '/' + VERSAO.DATE
+        //},
         xhrFields: {
             withCredentials: true
         },
@@ -1668,10 +1700,11 @@ function get_feed() {
         success: function (data) {
             //  console.log("get_feed="+data);
             //    json_feed = JSON.parse(data);
-                document.getElementById('text-inicial').innerHTML +="<BR>Mostrando...";
+            document.getElementById('text-inicial').innerHTML +="<BR>Mostrando...";
             json_feed = data;
             //console.log("GET FEED OK " + flag_getMainConfig + " canal=" + json_feed.channel.canal);
-            document.dispatchEvent(evt_get_feed);
+            //document.dispatchEvent(evt_get_feed);
+            t_telaTS_global();
             lerFlagStatus();
             //angular.element(document.getElementById('myCtrl')).scope().get();
             angular.element($("#afui")).scope().getSensores();
@@ -2180,12 +2213,13 @@ var MAX_NODES_SENSORES = 8;
 var MAX_CAIXA_SENSORES = 8;
 var VERSAO = {
     MAJOR: '1',
-    MINOR: '68',
-    DATE: '07/03/2017'
+    MINOR: '74',
+    DATE: '11/07/2017'
 };
 
 var SERVER_HTTP = 'http://';
-var SERVER_IP = 'ts0.sensoronline.net';
+//var SERVER_IP = 'ts0.sensoronline.net';
+var SERVER_IP = '45.55.77.192';
 var SERVER_PATH = '/0';
 var DATABASE = 'PROD'; //'DEV';
 /*********************************************************************/
@@ -2206,8 +2240,8 @@ var sessao_id = null;
 var localDB;
 var refreshTimer;
 
-var evt_get_feed = document.createEvent("Event");
-evt_get_feed.initEvent("app.Get_Feed", false, false);
+//var evt_get_feed = document.createEvent("Event");
+//evt_get_feed.initEvent("app.Get_Feed", false, false);
 var HREF = window.location.href;
 var CHAVE1=0;
 
@@ -2217,8 +2251,23 @@ function onDeviceReadyXDK() {
 
 function onDeviceReady() {
     console.log("onDeviceReady");
-    var list=document.getElementById('text-inicial');
+ //   window.open = cordova.InAppBrowser.open;
+    /*
+    window.plugins.googleplus.trySilentLogin(
+    {
+      'scopes': 'profile email', // optional - space-separated list of scopes, If not included or empty, defaults to `profile` and `email`.
+      'webClientId': '629413010047-mirv8igteh3qrh1vfigu8lalr55hgo21.apps.googleusercontent.com', // optional - clientId of your Web application from Credentials settings of your project - On Android, this MUST be included to get an idToken. On iOS, it is not required.
+      'offline': true, // Optional, but requires the webClientId - if set to true the plugin will also return a serverAuthCode, which can be used to grant offline access to a non-Google server
+    },
+    function (obj) {
+      alert(JSON.stringify(obj)); // do something useful instead of alerting
+    },
+    function (msg) {
+      alert('error: ' + msg);
+    }
+);    */
 
+    var list=document.getElementById('text-inicial');
     list.innerHTML="LocalStorage";
     localDB = getLocalStorage();
     var vm = getUrlVars()["m"];
@@ -2260,6 +2309,7 @@ function onDeviceReady() {
         list.innerHTML +="Intel XDK Emulator";
         $("#div_campos").hide();
     }
+    //angular.element($("#afui")).scope().getDevice();
 
     // sensor principal
     $(".uib_col_6").height(200);

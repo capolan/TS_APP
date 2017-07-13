@@ -7,10 +7,11 @@ function initMap() {
 	var myHome = {lng:-51.177074,lat:-29.916178};
 	var myLatLng, str_icon, str_name;
     if (map == 0) return;
-    if (json_config.latitude == undefined) return;
+    if (json_feed.channel.latitude == undefined) return;
+    //if (json_config.latitude == undefined) return;
 
-    var l = parseFloat(json_config.latitude);
-    var g = parseFloat(json_config.longitude);
+    var l = parseFloat(json_feed.channel.latitude);
+    var g = parseFloat(json_feed.channel.longitude);
 	myLatLng = {lat: l, lng: g};
 
     var offline_at=json_feed.channel.offline_at;

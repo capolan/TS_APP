@@ -155,7 +155,7 @@ function runGraph(_tipo, _id_div, _page, _titulo, _largura, _altura, _series, _m
             if (json_config.canal.field_ocultar != undefined) {
                 var field_ocultar=parseInt(json_config.canal.field_ocultar);
                 if ((field_ocultar & (1<<campo)) > 0) {
-                        console.log("OCULTAR:" + campo);
+                      //  console.log("OCULTAR:" + campo);
                         self.ativo=false;
                         return;
                     }
