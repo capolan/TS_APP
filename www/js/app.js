@@ -8,8 +8,8 @@ var MAX_NODES_SENSORES = 8;
 var MAX_CAIXA_SENSORES = 8;
 var VERSAO = {
     MAJOR: '1',
-    MINOR: '74',
-    DATE: '11/07/2017'
+    MINOR: '75',
+    DATE: '18/07/2017'
 };
 
 var SERVER_HTTP = 'http://';
@@ -1716,6 +1716,15 @@ function get_feed_update(data) {
             } else {
                 document.getElementById('text-inicial').innerHTML ="";
             }
+
+        check_elem_cor();
+        if (json_config.canal.refreshTimer !== undefined) {
+                ret=parseInt(json_config.canal.refreshTimer);
+                if (isNaN(ret)) ret=10000;
+        } else
+            ret=10000;
+
+        refreshTimer=setInterval('atualiza_dados()', ret, true);
 }
 /**********************************************************************/
 
@@ -1724,6 +1733,8 @@ function get_feed() {
     var data = document.getElementById('txt-data').value;
     url = SERVER_HTTP + SERVER_IP + SERVER_PATH + '/get_feed.php?f=1' +
         '&api_key=' + Cookies["api_key"] + '&results=' + Cookies["nro_pontos"];
+
+    clearInterval(refreshTimer);
 
     if (DATABASE != null) url = url + '&DB=' + DATABASE;
     url = url + '&r_horas=' + r_horas;
