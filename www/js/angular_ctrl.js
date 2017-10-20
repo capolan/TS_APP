@@ -32,6 +32,17 @@ myApp.controller('myCtrl',  function($scope) {
         activate_subpage('#uib_page_seco');
     }
 
+    $scope.sub_page_config_seco = function() {
+        console.log(">sub-page-config-seco");
+        activate_subpage('#sub-page-config-seco');
+    }
+
+
+    $scope.ativar_subpage_restricao = function() {
+        console.log(">ativar_subpage_restricao");
+        activate_subpage('#uib-page-config-restricao');
+    }
+
     $scope.getFeeds = function() {
         if (json_feed == null) return;
         if (json_user == undefined || json_user.login == undefined) return;
@@ -45,11 +56,65 @@ myApp.controller('myCtrl',  function($scope) {
     }
 
     $scope.getSeco = function() {
+        var arr=[];
         if (json_seco.length == 0) return;
         delete $scope.sensores_seco;
-        $scope.sensores_seco = json_seco;
+        //$scope.sensores_seco = json_seco;
+
+        json_seco.forEach(function(elem) {
+            if (elem.ativo=='s')
+                arr.push(elem);
+        });
+        $scope.sensores_seco = arr;
+        $scope.campos = json_config.campos;
         //console.log(json_feed.sensor);
         $scope.$apply();
+    }
+
+    $scope.getDesativados = function() {
+        var arr=[];
+        if (json_desativados == undefined) return;
+        if (json_desativados.length == 0) return;
+        delete $scope.desativados;
+        //$scope.sensores_seco = json_seco;
+
+        json_desativados.forEach(function(elem) {
+                var hora = elem.ends_at.substring(0,2);
+                var min = elem.ends_at.substring(3,2);
+                elem.starts = new Date ('Fri, 01 Jan 1971 '+elem.starts_at+' GMT');
+                elem.ends = new Date ('Fri, 01 Jan 1971 '+elem.ends_at+' GMT');
+          //      arr.push(elem);
+        });
+        //$scope.desativados = arr;
+        $scope.desativados = json_desativados;
+        $scope.$apply();
+    }
+
+    $scope.changeStarts = function(elem) {
+        var des=elem.desativ;
+        var hh = des.starts.getHours();
+        var mm = des.starts.getMinutes();
+        var ss = '00';
+
+        if (des.starts > des.ends) {
+            mensagemTela('Hora inicial maior que hora final',"Atenção")
+            return false;
+        }
+        if (hh < 10) {hh = "0"+hh;}
+        if (mm < 10) {mm = "0"+mm;}
+        des.starts_at=hh+":"+mm+":"+ss;
+
+        hh = des.ends.getHours();
+        mm = des.ends.getMinutes();
+        if (hh < 10) {hh = "0"+hh;}
+        if (mm < 10) {mm = "0"+mm;}
+        des.ends_at=hh+":"+mm+":"+ss;
+//        console.log(elem);
+    }
+
+    $scope.removeDesativado = function (elem,index) {
+        json_desativados.splice(index,1);
+
     }
 
     $scope.getAlertas = function() {
