@@ -1,0 +1,1630 @@
+{
+  "project": {
+    "projectSettingsVersion": "3.0.0",
+    "creationData": {
+      "type": "App Designer",
+      "projectTypeName": "com.intel.xdk.projecttype.jsapp",
+      "src": "appDesigner",
+      "projectGuid": "654e0415-2f0e-4669-a4ab-6920442b6787",
+      "lastModifiedDate": 1517659881749,
+      "creationDate": 1435255671699
+    },
+    "XDK-app-designer": "true",
+    "sourceDirectory": "www",
+    "startFile": "index.html",
+    "projectFiles": {
+      "xdk-publish-meta-data.json": {
+        "settings": {
+          "project": {
+            "XDK-not-deployed": "True"
+          }
+        }
+      }
+    },
+    "projectDirectories": {
+      "xdk/services/iodocs": {
+        "settings": {
+          "project": {
+            "XDK-generated": "true"
+          }
+        }
+      }
+    },
+    "libraries": [],
+    "serviceMethods": [
+      {
+        "methodName": "TS_ler_statusler_alertas",
+        "serviceName": "TS_ler_status",
+        "resultType": "object",
+        "selectedPaths": {
+          ".contador": "string",
+          ".feeds[0].created_at": "string",
+          ".feeds[0].status": "string",
+          ".feeds[0].descricao": "string",
+          ".feeds[0].grupo": "string",
+          ".feeds[0].tipo_alerta": "string"
+        },
+        "cachedResult": {
+          "contador": "100",
+          "feeds": [
+            {
+              "created_at": "2015-11-26 16:34:45",
+              "status": "NORMAL Hemoterapia:sala 2:24.7 < 25\n",
+              "canal": "10007",
+              "descricao": "limite",
+              "grupo": "1",
+              "tipo_alerta": "2",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 16:30:45",
+              "status": "ACIMA Hemoterapia:sala 2:25 >= 25\n",
+              "canal": "10007",
+              "descricao": "limite",
+              "grupo": "1",
+              "tipo_alerta": "2",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 16:07:45",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:4.4 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 16:06:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-5.9 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 16:04:45",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:1.7 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 16:03:45",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-9.1 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 16:02:45",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:7.5 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 15:58:45",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-4 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 15:57:45",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:4.4 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 15:56:45",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-5.9 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 15:54:45",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:1.7 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 15:53:45",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-9.1 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 15:51:45",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:3.9 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 15:47:45",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-4 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 15:46:45",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:19.4 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 15:44:45",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-9.4 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 14:59:45",
+              "status": "NORMAL Hemoterapia:sala 2:24.8 < 25\n",
+              "canal": "10007",
+              "descricao": "limite",
+              "grupo": "1",
+              "tipo_alerta": "2",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 14:21:45",
+              "status": "ACIMA Hemoterapia:sala 2:25 >= 25\n",
+              "canal": "10007",
+              "descricao": "limite",
+              "grupo": "1",
+              "tipo_alerta": "2",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 12:31:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:5.1 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 12:28:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-9.6 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 12:26:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:14.7 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 12:23:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-9.1 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 12:20:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:3.9 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 12:17:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-9.4 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 12:15:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:17.5 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 12:13:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-9.6 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 12:10:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:9.2 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 12:08:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-2.3 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 12:06:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:2.6 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 12:05:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-7.5 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 12:03:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:13 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 12:01:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-7.8 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 12:00:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:5.2 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:59:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-0.7 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:58:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:1.7 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:57:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-2.9 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:54:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:2.6 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:51:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-1 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:46:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:7 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:44:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-1.4 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:41:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:1.6 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:40:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-5.7 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:38:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:11.7 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:37:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-8.4 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:36:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:19.2 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:35:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-7.7 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:33:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:4.4 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:32:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-8.5 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:30:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:3.9 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:24:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-9.6 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:23:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:14.2 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:22:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-9.4 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:20:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:17.5 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:19:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-8.6 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:18:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:2.1 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:17:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-2.2 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:15:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:7.1 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:14:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-8.4 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:08:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:10 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 11:04:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-6.6 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:54:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:19.1 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:53:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-8.8 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:50:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:2.3 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:49:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-3.8 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:46:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:18.1 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:43:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-6.9 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:42:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:19.4 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:40:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-9.4 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:36:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:3.9 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:35:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-9.1 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:34:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:7.5 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:30:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-4 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:29:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:4.4 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:28:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-5.9 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:26:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:1.7 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:25:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-9.1 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:24:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:4.4 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:23:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-9.6 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:21:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:14.7 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:18:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-3.9 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:14:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:5.1 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:12:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-6.9 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:10:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:14.2 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:09:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-9.4 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:05:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:5.1 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 10:02:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-9.6 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 09:59:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:9.2 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 09:57:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-9.1 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 09:55:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:17.5 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 09:52:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-4 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 09:51:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:4.4 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 09:50:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-5.9 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 09:48:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:1.7 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 09:44:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-9.6 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 09:41:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:9.2 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 09:39:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-9.4 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 09:37:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:17.5 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 09:35:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-4 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 09:32:46",
+              "status": "NORMAL node node6 s2.6: serie=6 field1:13.2 > 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            },
+            {
+              "created_at": "2015-11-26 09:30:46",
+              "status": "ABAIXO node node6 s2.6: serie=6 field1:-8.5 < 0\n",
+              "canal": "10007",
+              "descricao": "limite nos",
+              "grupo": "1",
+              "tipo_alerta": "6",
+              "serie": "6"
+            }
+          ]
+        },
+        "codeGenerationParams": {
+          "apiName": "TS_ler_status",
+          "endpointName": "TS alertas",
+          "methodName": "ler_alertas",
+          "namespace": "intel.xdk.services."
+        },
+        "parameters": {
+          "f": "1",
+          "m": "TS0",
+          "s": "6"
+        },
+        "requiredLibraries": [
+          "xhr.js",
+          "xdk/services/service-credentials.js",
+          "xdk/services/service-methods.js"
+        ]
+      }
+    ],
+    "cordovaPluginsDirectory": "plugins",
+    "cordovaPlugins": [
+      {
+        "id": "cordova-plugin-device",
+        "name": "Device",
+        "version": "1.1.6",
+        "originType": "cordova.io",
+        "origin": "cordova-plugin-device",
+        "gitref": "",
+        "paramvals": {},
+        "sourceLocation": "plugins/cordova-plugin-device",
+        "selectedState": "Included",
+        "checksum": "f347c2e6",
+        "dependsOn": [],
+        "topLevel": true,
+        "permissions": {},
+        "description": "Cordova Device Plugin",
+        "data": {},
+        "dependedBy": [],
+        "cordovaVersion": ">=3.0.0"
+      },
+      {
+        "id": "cordova-plugin-network-information",
+        "name": "Network Information",
+        "version": "1.3.3",
+        "originType": "cordova.io",
+        "origin": "cordova-plugin-network-information",
+        "gitref": "",
+        "paramvals": {},
+        "sourceLocation": "plugins/cordova-plugin-network-information",
+        "selectedState": "Included",
+        "checksum": "218ab567",
+        "dependsOn": [],
+        "topLevel": true,
+        "permissions": {
+          "android:name": [
+            "android.permission.ACCESS_NETWORK_STATE"
+          ]
+        },
+        "description": "Cordova Network Information Plugin",
+        "data": {},
+        "dependedBy": [],
+        "cordovaVersion": ">=3.1.0"
+      },
+      {
+        "id": "cordova-plugin-dialogs",
+        "name": "Notification",
+        "version": "1.3.3",
+        "originType": "cordova.io",
+        "origin": "cordova-plugin-dialogs",
+        "gitref": "",
+        "paramvals": {},
+        "sourceLocation": "plugins/cordova-plugin-dialogs",
+        "selectedState": "Included",
+        "checksum": "f7f1331d",
+        "dependsOn": [],
+        "topLevel": true,
+        "permissions": {},
+        "description": "Cordova Notification Plugin",
+        "data": {},
+        "dependedBy": [],
+        "cordovaVersion": ">=3.0.0"
+      },
+      {
+        "id": "phonegap-plugin-barcodescanner",
+        "name": "BarcodeScanner",
+        "version": "4.1.0",
+        "originType": "cordova.io",
+        "origin": "phonegap-plugin-barcodescanner",
+        "gitref": "",
+        "paramvals": {},
+        "sourceLocation": "plugins/phonegap-plugin-barcodescanner",
+        "selectedState": "Included",
+        "checksum": "980170d7",
+        "dependsOn": [],
+        "topLevel": false,
+        "cordovaVersion": ">=3.0.0",
+        "permissions": {
+          "android:name": [
+            "android.permission.CAMERA",
+            "android.permission.FLASHLIGHT"
+          ]
+        },
+        "description": "You can use the BarcodeScanner plugin to scan different types of barcodes (using the device's camera) and get the metadata encoded in them for processing within your application.",
+        "data": {},
+        "dependedBy": []
+      },
+      {
+        "id": "cordova-plugin-splashscreen",
+        "name": "Splashscreen",
+        "version": "4.0.3",
+        "originType": "cordova.io",
+        "origin": "cordova-plugin-splashscreen",
+        "gitref": "",
+        "paramvals": {},
+        "sourceLocation": "plugins/cordova-plugin-splashscreen",
+        "selectedState": "Included",
+        "checksum": "77dd2a16",
+        "dependsOn": [],
+        "topLevel": true,
+        "permissions": {},
+        "description": "Cordova Splashscreen Plugin",
+        "data": {},
+        "dependedBy": [],
+        "cordovaVersion": ">=3.1.0"
+      },
+      {
+        "id": "cordova-plugin-inappbrowser",
+        "name": "InAppBrowser",
+        "version": "1.7.1",
+        "originType": "cordova.io",
+        "origin": "cordova-plugin-inappbrowser",
+        "gitref": "",
+        "paramvals": {},
+        "sourceLocation": "plugins/cordova-plugin-inappbrowser",
+        "selectedState": "Included",
+        "checksum": "bd792a08",
+        "dependsOn": [],
+        "topLevel": true,
+        "cordovaVersion": ">=3.1.0",
+        "permissions": {},
+        "description": "Cordova InAppBrowser Plugin",
+        "data": {},
+        "dependedBy": []
+      },
+      {
+        "id": "phonegap-plugin-push",
+        "name": "PushPlugin",
+        "version": "1.9.4",
+        "originType": "cordova.io",
+        "origin": "phonegap-plugin-push",
+        "gitref": "",
+        "paramvals": {},
+        "sourceLocation": "plugins/phonegap-plugin-push",
+        "selectedState": "Included",
+        "checksum": "f04bc0b1",
+        "dependsOn": [],
+        "topLevel": true,
+        "cordovaVersion": ">=6.4.0",
+        "permissions": {
+          "android:name": [
+            "android.permission.INTERNET",
+            "android.permission.ACCESS_NETWORK_STATE",
+            "android.permission.WAKE_LOCK",
+            "android.permission.VIBRATE",
+            "com.google.android.c2dm.permission.RECEIVE",
+            "${applicationId}.permission.C2D_MESSAGE",
+            "${applicationId}.permission.PushHandlerActivity"
+          ]
+        },
+        "description": "\n\t\tThis plugin allows your application to receive push notifications on Android, iOS and Windows devices.\n    Android uses Google Cloud Messaging.\n    iOS uses Apple APNS Notifications.\n    Windows uses Microsoft WNS Notifications.\n\t",
+        "data": {},
+        "dependedBy": [],
+        "custom": "true"
+      },
+      {
+        "id": "cordova-plugin-app-version",
+        "name": "AppVersion",
+        "version": "0.1.9",
+        "originType": "cordova.io",
+        "origin": "cordova-plugin-app-version",
+        "gitref": "",
+        "paramvals": {},
+        "sourceLocation": "plugins/cordova-plugin-app-version",
+        "selectedState": "Included",
+        "checksum": "358be0be",
+        "dependsOn": [],
+        "topLevel": true,
+        "cordovaVersion": ">=3.0.0",
+        "permissions": {},
+        "description": "\n        This plugin will return the version of your App that you have set in\n        packaging it. I.e. it will always match the version in the app store.\n    ",
+        "data": {},
+        "dependedBy": []
+      }
+    ],
+    "buildConfigurations": {
+      "iOS": {
+        "platform_": "ios",
+        "runtime_": "Cordova 3.x",
+        "name_": "iOS",
+        "preferences_": {
+          "ios-configuration": "adhoc",
+          "deployment-target": "8.0"
+        },
+        "isActive_": true,
+        "certificateId_": "",
+        "appName_": "Sensor Online",
+        "appID_": "K757W9DJX8.net.sensoronline.tsensor",
+        "appAccess_": {
+          "mode": "whitelist",
+          "network": [
+            "*"
+          ],
+          "intents": [
+            "*"
+          ],
+          "navigation": [],
+          "properties": {}
+        },
+        "icons_": [
+          {
+            "relPath": "package-assets/Simbolo_IOS_29x29px.png",
+            "width": 29,
+            "height": 29
+          },
+          {
+            "relPath": "package-assets/Simbolo_IOS_167x167px.png",
+            "width": 167,
+            "height": 167
+          },
+          {
+            "relPath": "package-assets/Simbolo_IOS_100x100px.png",
+            "width": 100,
+            "height": 100
+          },
+          {
+            "relPath": "package-assets/Simbolo_IOS_50x50px.png",
+            "width": 50,
+            "height": 50
+          },
+          {
+            "relPath": "package-assets/Simbolo_IOS_58x58px.png",
+            "width": 58,
+            "height": 58
+          },
+          {
+            "relPath": "package-assets/Simbolo_IOS_87x87px.png",
+            "width": 87,
+            "height": 87
+          },
+          {
+            "relPath": "package-assets/Simbolo_IOS_120x120px.png",
+            "width": 120,
+            "height": 120
+          },
+          {
+            "relPath": "package-assets/Simbolo_IOS_180x180px.png",
+            "width": 180,
+            "height": 180
+          },
+          {
+            "relPath": "package-assets/Simbolo_IOS_76x76px.png",
+            "width": 76,
+            "height": 76
+          },
+          {
+            "relPath": "package-assets/Simbolo_IOS_152x152px.png",
+            "width": 152,
+            "height": 152
+          },
+          {
+            "relPath": "package-assets/Simbolo_IOS_40x40px.png",
+            "width": 40,
+            "height": 40
+          },
+          {
+            "relPath": "package-assets/Simbolo_IOS_80x80px.png",
+            "width": 80,
+            "height": 80
+          },
+          {
+            "relPath": "package-assets/Simbolo_IOS_57x57px.png",
+            "width": 57,
+            "height": 57
+          },
+          {
+            "relPath": "package-assets/Simbolo_IOS_114x114px.png",
+            "width": 114,
+            "height": 114
+          },
+          {
+            "relPath": "package-assets/Simbolo_IOS_72x72px.png",
+            "width": 72,
+            "height": 72
+          },
+          {
+            "relPath": "package-assets/Simbolo_IOS_144x114px.png",
+            "width": 144,
+            "height": 144
+          },
+          {
+            "relPath": "package-assets/Simbolo_IOS_60x60px.png",
+            "width": 60,
+            "height": 60
+          }
+        ],
+        "splashes_": [
+          {
+            "relPath": "package-assets/Logo_IOS_1024x768px.png",
+            "height": 768,
+            "width": 1024,
+            "orientation": "landscape"
+          },
+          {
+            "relPath": "package-assets/Logo_IOS_1334x750px.png",
+            "height": 750,
+            "width": 1334,
+            "orientation": "landscape"
+          },
+          {
+            "relPath": "package-assets/Logo_IOS_2048x1536px.png",
+            "height": 1536,
+            "width": 2048,
+            "orientation": "landscape"
+          },
+          {
+            "relPath": "package-assets/Logo_IOS_2208x1242px.png",
+            "height": 1242,
+            "width": 2208,
+            "orientation": "landscape"
+          },
+          {
+            "relPath": "package-assets/Logo_IOS_2732x2048px.png",
+            "height": 2048,
+            "width": 2732,
+            "orientation": "landscape"
+          },
+          {
+            "relPath": "package-assets/Logo_IOS_320x480px.png",
+            "height": 480,
+            "width": 320,
+            "orientation": "portrait"
+          },
+          {
+            "relPath": "package-assets/Logo_IOS_640x960px.png",
+            "height": 960,
+            "width": 640,
+            "orientation": "portrait"
+          },
+          {
+            "relPath": "package-assets/Logo_IOS_640x1136px.png",
+            "height": 1136,
+            "width": 640,
+            "orientation": "portrait"
+          },
+          {
+            "relPath": "package-assets/Logo_IOS_768x1024px.png",
+            "height": 1024,
+            "width": 768,
+            "orientation": "portrait"
+          },
+          {
+            "relPath": "package-assets/Logo_IOS_1242x2208px.png",
+            "height": 2208,
+            "width": 1242,
+            "orientation": "portrait"
+          },
+          {
+            "relPath": "package-assets/Logo_IOS_1536x2048px.png",
+            "height": 2048,
+            "width": 1536,
+            "orientation": "portrait"
+          },
+          {
+            "relPath": "package-assets/Logo_IOS_2048x2732px.png",
+            "height": 2732,
+            "width": 2048,
+            "orientation": "portrait"
+          },
+          {
+            "relPath": "package-assets/Logo_IOS_750x1334px.png",
+            "height": 1334,
+            "width": 750,
+            "orientation": "portrait"
+          }
+        ],
+        "addlPermissions_": "",
+        "excludedLibraries_": "",
+        "iosProvs_": [
+          {
+            "relPath": "package-assets/CAP_Tsensor01.mobileprovision",
+            "type": "adhoc"
+          }
+        ],
+        "cordovaCLIVersion_": "6.5.0",
+        "crosswalkVersion_": "11",
+        "appVersion_": "0.1.98",
+        "appAuthor_": "Carlos Alexandre Polanczyk",
+        "appDescription_": "Sistema de monitoramento da SensorOnline",
+        "appVersionCode_": "0.1.98"
+      },
+      "Windows8": {
+        "platform_": "windows8",
+        "runtime_": "Cordova 3.x",
+        "name_": "Windows8",
+        "preferences_": {
+          "windows-publisher-display-name": "SensorOnLine",
+          "windows-publisher-id": "0110"
+        },
+        "isActive_": false,
+        "certificateId_": "",
+        "appName_": "TSensor",
+        "appID_": "xdk.intel.sensoronline.tsensor.ts0",
+        "appAccess_": {
+          "mode": "whitelist",
+          "network": [],
+          "intents": [],
+          "navigation": [],
+          "properties": {}
+        },
+        "icons_": [],
+        "splashes_": [],
+        "addlPermissions_": "",
+        "excludedLibraries_": "",
+        "iosProvs_": [],
+        "cordovaCLIVersion_": "6.5.0",
+        "crosswalkVersion_": "11",
+        "appVersion_": "0.0.1.90",
+        "appAuthor_": "Carlos Alexandre Polanczyk",
+        "appDescription_": "Monitoramento"
+      },
+      "WebApp": {
+        "platform_": "webapp",
+        "runtime_": "W3C",
+        "name_": "WebApp",
+        "preferences_": {},
+        "isActive_": true,
+        "certificateId_": "",
+        "appName_": "Teste",
+        "appID_": "xdk.intel.blank.ad.template",
+        "appAccess_": {
+          "mode": "legacy",
+          "network": [
+            "*"
+          ],
+          "intents": [],
+          "navigation": []
+        },
+        "icons_": [],
+        "splashes_": [],
+        "addlPermissions_": "",
+        "excludedLibraries_": "",
+        "appVersion_": "0.0.1",
+        "appAuthor_": "Intel XDK",
+        "appDescription_": "Template to develop a packaged mobile web app using the App Designer UI editor."
+      },
+      "Chrome": {
+        "platform_": "chromeos",
+        "runtime_": "W3C on Chrome OS",
+        "name_": "Chrome",
+        "preferences_": {},
+        "isActive_": false,
+        "certificateId_": "",
+        "appName_": "Tsensor",
+        "appID_": "xdk.intel.blank.ad.template",
+        "appAccess_": {
+          "mode": "legacy",
+          "network": [
+            "*"
+          ],
+          "intents": [],
+          "navigation": []
+        },
+        "icons_": [],
+        "splashes_": [],
+        "addlPermissions_": "",
+        "excludedLibraries_": "",
+        "appVersion_": "0.1.70",
+        "appAuthor_": "Intel XDK",
+        "appDescription_": "Template to develop a packaged mobile web app using the App Designer UI editor."
+      },
+      "Firefox": {
+        "platform_": "firefoxos",
+        "runtime_": "W3C on Firefox OS",
+        "name_": "Firefox",
+        "preferences_": {},
+        "isActive_": false,
+        "certificateId_": "",
+        "appName_": "Teste",
+        "appID_": "xdk.intel.blank.ad.template",
+        "appAccess_": {
+          "mode": "legacy",
+          "network": [
+            "*"
+          ],
+          "intents": [],
+          "navigation": []
+        },
+        "icons_": [],
+        "splashes_": [],
+        "addlPermissions_": "",
+        "excludedLibraries_": "",
+        "appVersion_": "0.0.1",
+        "appAuthor_": "Intel XDK",
+        "appDescription_": "Template to develop a packaged mobile web app using the App Designer UI editor."
+      },
+      "Facebook": {
+        "platform_": "facebook",
+        "runtime_": "W3C on Facebook",
+        "name_": "Facebook",
+        "preferences_": {},
+        "isActive_": false,
+        "certificateId_": "",
+        "appName_": "Teste",
+        "appID_": "xdk.intel.blank.ad.template",
+        "appAccess_": {
+          "mode": "legacy",
+          "network": [
+            "*"
+          ],
+          "intents": [],
+          "navigation": []
+        },
+        "icons_": [],
+        "splashes_": [],
+        "addlPermissions_": "",
+        "excludedLibraries_": "",
+        "appVersion_": "0.0.1",
+        "appAuthor_": "Intel XDK",
+        "appDescription_": "Template to develop a packaged mobile web app using the App Designer UI editor."
+      },
+      "WP81": {
+        "platform_": "wp81",
+        "runtime_": "Cordova 3.x",
+        "name_": "WP81",
+        "preferences_": {},
+        "isActive_": true,
+        "certificateId_": "",
+        "appName_": "Teste",
+        "appID_": "not.yet.specified",
+        "appAccess_": {
+          "mode": "legacy",
+          "network": [],
+          "intents": [],
+          "navigation": []
+        },
+        "icons_": [],
+        "splashes_": [],
+        "addlPermissions_": "",
+        "excludedLibraries_": "",
+        "appVersion_": "0.0.0.1",
+        "cordovaCLIVersion_": "6.5.0"
+      },
+      "Android": {
+        "platform_": "android",
+        "runtime_": "Crosswalk with Cordova 3.x",
+        "name_": "Android",
+        "preferences_": {
+          "android-minSdkVersion": "16",
+          "android-targetSdkVersion": "19",
+          "android-installLocation": "auto",
+          "android-signed": true,
+          "AndroidLaunchMode": "singleTop"
+        },
+        "isActive_": true,
+        "certificateId_": "v57wa4UtI0-DcPeW3RKX3A2",
+        "appName_": "Sensor Online",
+        "appID_": "xdk.intel.sensoronline.tsensor.ts0",
+        "appAccess_": {
+          "mode": "whitelist",
+          "network": [],
+          "intents": [],
+          "navigation": [],
+          "properties": {}
+        },
+        "icons_": [
+          {
+            "density": "ldpi",
+            "relPath": "package-assets/Simbolo_Android_36x36px.png",
+            "width": 36,
+            "height": 36
+          },
+          {
+            "density": "mdpi",
+            "relPath": "package-assets/Simbolo_Android_48x48px.png",
+            "width": 48,
+            "height": 48
+          },
+          {
+            "density": "hdpi",
+            "relPath": "package-assets/Simbolo_Android_72x72px.png",
+            "width": 72,
+            "height": 72
+          },
+          {
+            "density": "xhdpi",
+            "relPath": "package-assets/Simbolo_Android_96x96px.png",
+            "width": 96,
+            "height": 96
+          }
+        ],
+        "splashes_": [
+          {
+            "relPath": "package-assets/Logo_Android_426x320px.png",
+            "density": "ldpi",
+            "height": 320,
+            "width": 426,
+            "orientation": "landscape"
+          },
+          {
+            "relPath": "package-assets/Logo_Android_470x320px.png",
+            "density": "mdpi",
+            "height": 320,
+            "width": 470,
+            "orientation": "landscape"
+          },
+          {
+            "relPath": "package-assets/Logo_Android_640x480px.png",
+            "density": "hdpi",
+            "height": 480,
+            "width": 640,
+            "orientation": "landscape"
+          },
+          {
+            "relPath": "package-assets/Logo_Android_960x720px.png",
+            "density": "xhdpi",
+            "height": 720,
+            "width": 960,
+            "orientation": "landscape"
+          },
+          {
+            "relPath": "package-assets/Logo_Android_320x470px.png",
+            "density": "mdpi",
+            "height": 470,
+            "width": 320,
+            "orientation": "portrait"
+          },
+          {
+            "relPath": "package-assets/Logo_Android_480x640px.png",
+            "density": "hdpi",
+            "height": 640,
+            "width": 480,
+            "orientation": "portrait"
+          },
+          {
+            "relPath": "package-assets/Logo_Android_720x960px.png",
+            "density": "xhdpi",
+            "height": 960,
+            "width": 720,
+            "orientation": "portrait"
+          },
+          {
+            "relPath": "package-assets/Logo_Android_320x426px.png",
+            "density": "ldpi",
+            "height": 426,
+            "width": 320,
+            "orientation": "portrait"
+          }
+        ],
+        "addlPermissions_": "",
+        "excludedLibraries_": "",
+        "iosProvs_": [],
+        "cordovaCLIVersion_": "6.5.0",
+        "crosswalkVersion_": "23",
+        "appVersion_": "0.1.98",
+        "appAuthor_": "Carlos Alexandre Polanczyk",
+        "appDescription_": "Monitoramento",
+        "appVersionCode_": "6026"
+      }
+    },
+    "gameAssetDirectory": "asset",
+    "gameMetadata": {},
+    "projectTags": [
+      "XDK-disallow-legacy-whitelist"
+    ],
+    "testDirectory": "test"
+  },
+  "editorTab": {
+    "showLiveDevelopmentTasksPanel": false
+  }
+}

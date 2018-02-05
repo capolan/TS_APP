@@ -126,16 +126,22 @@
                 }
 
             }
-            $("#text_info_modelo").append('AP=' + json_feed.channel.ip0 + '<br>');
-            $("#text_info_modelo").append('STA=' + json_feed.channel.ip1);
-            $("#text_info_modelo").append(json_feed.channel.updated_ip_at + '(atualizado)<br>');
 
+            if (json_feed != null) {
+                $("#text_info_modelo").append('AP=' + json_feed.channel.ip0 + '<br>');
+                $("#text_info_modelo").append('STA=' + json_feed.channel.ip1);
+                $("#text_info_modelo").append(json_feed.channel.updated_ip_at + '(atualizado)<br>');
+            }
 
             $("#text_info_modelo").append('Platform:' + device.platform + '<BR>');
             $("#text_info_modelo").append('Model:' + device.model + '<BR>');
             $("#text_info_modelo").append('Version:' + device.version + '<BR>');
             $("#text_info_modelo").append('UUID:' + device.uuid + '<BR>');
             $("#text_info_modelo").append('Cordova:' + device.cordova + '<BR>');
+            $("#text_info_modelo").append('vsApp:' + vsApp + '<BR>');
+
+            if (localDB.registrationId != undefined)
+                $("#text_info_modelo").append('PushId:' + localDB.registrationId + ':' + localDB.sendRegistration);
         });
 
         /* button  #btn_ler_status */
@@ -172,6 +178,17 @@
                         aux = (aux % (MAX_CAIXA_SENSORES+1)) + 1;
                         if (gg1[aux] != undefined)
                             ativo=gg1[aux].ativo;
+                    }
+                    if (aux==9 && rec_sensor_seco == true) {
+                            activate_subpage("#uib_page_seco");
+                            flag_seco=true;
+                            aux=1;
+                    ativo=gg1[aux].ativo;
+                    while (ativo == false) {
+                        aux = (aux % (MAX_CAIXA_SENSORES+1)) + 1;
+                        if (gg1[aux] != undefined)
+                            ativo=gg1[aux].ativo;
+                    }
                     }
                     $('#'+_div).css("display", "none");
                     $('#'+_div2).css("display", "none");
@@ -265,10 +282,17 @@
         $(document).on("click", "#btn_home", function (evt) {
             /* your code goes here */
             var flag = rec_temperatura || rec_sensor_analogico;
+                activate_subpage("#uib_page_2");
+            return;
                 if (rec_sensor_seco && !flag)
                     activate_subpage("#uib_page_seco");
                 else
-                    activate_subpage("#uib_page_2");
+                    if (json_feed == null)
+                        activate_subpage("#uib_page_2");
+                    else 
+                        if (json_feed.campos == undefined || json_feed.campos.length == 0)
+                        activate_subpage("#uib_page_painel");
+
         });
 
 
@@ -322,6 +346,9 @@
             var modelo = document.getElementById("modelo").value;
             var serie = document.getElementById("serie").value;
             var chave = document.getElementById("chave").value;
+            localDB.modelo=undefined;
+            localDB.serie=undefined;
+            localDB.chave=undefined;
             console.log("btn_let_config_web  serie=" + serie);
             document.getElementById("text_config").innerHTML = "";
             if (modelo != '' && serie != '' && chave != '') {
@@ -423,6 +450,11 @@
         });
 
         /* button  #btn-s-s-temp */
+        $(document).on("click", "#btn-s-seco-salvar", function (evt) {
+                gravarConfiguracaoSensorPOST('s', document.getElementById("text-s-temp"));
+        });
+
+        /* button  #btn-s-s-temp */
         $(document).on("click", "#btn-s-s-temp", function (evt) {
             var opt = $("#sel-temp option:selected").val();
             opt = parseInt(opt);
@@ -444,7 +476,16 @@
                 return;
             }
             document.getElementById("text-s-temp").innerHTML = "";
+            if (opt >=4)
+                opt = opt-3;
+            else
+                opt = opt +5;
             console.log(">btn-s-s-temp " + opt)
+            if (opt >=1 || opt <=8) {
+                gravarConfiguracaoSensor('s'+opt, document.getElementById("text-s-temp"));
+
+            }
+            return;
             if (opt == 0) {
                 gravarConfiguracaoSensor('t5', document.getElementById("text-s-temp"));
             }
@@ -458,6 +499,7 @@
             if (opt == 3) {
                 gravarConfiguracaoSensor('t8', document.getElementById("text-s-temp"));
             }
+
         });
 
         $(document).on("change", "#sel-temp", function (evt) {
@@ -485,7 +527,7 @@
                 $("#sel-temp option:eq(0)").prop('selected', true);
                 return;
             }
-            if (opt >= 2  && rec_sensor_analogico == true) {
+            if ((opt== 2||opt==3)  && rec_sensor_analogico == true) {
                 idx=4-opt;
                 aux=jsonPath(json_config,"$.canal.seco"+idx+"_tipo");
                 document.getElementById('af-checkbox-pullup').checked = (aux & 0x01) == 0x01;
@@ -494,6 +536,10 @@
                 $(".uib_w_400").show();
                 $(".uib_w_399").show();
             }
+            if (opt >= 4 && (rec_corrente_100a == true || rec_corrente_30a == true)) {
+                opt=opt-3-5;
+            }
+
             document.getElementById("text-s-temp").innerHTML = "";
             opt = opt + 5;
             document.getElementById("text-s-vcc").value = jsonPath(json_config, "$.canal.ajuste"+opt);
@@ -501,7 +547,9 @@
             document.getElementById("text-s-temp-min").value = jsonPath(json_config,"$.canal.field"+opt+"_min");
             document.getElementById("text-s-temp-max").value = jsonPath(json_config,"$.canal.field"+opt+"_max");
             if (json_config.canal.field_ocultar & (1<<opt)) {
-                document.getElementById("af-checkbox-ocultar-temp").checked;
+                document.getElementById("af-checkbox-ocultar-temp").checked=true;
+            } else {
+                document.getElementById("af-checkbox-ocultar-temp").checked=false;
             }
         });
 
@@ -688,6 +736,13 @@
                 gravarConfiguracaoSensor('t', document.getElementById("text-s-main"));
         });
 
+
+        /* button  #btn-s-s-testar */
+        $(document).on("click", "#btn-s-s-push", function (evt) {
+            /* your code goes here */
+            if (confirm("Enviar teste de PUSH. Confirma ?"))
+                gravarConfiguracaoSensor('p', document.getElementById("text-s-main"));
+        });
 
         /* button  #btn_mod_extras */
         $(document).on("click", "#btn_mod_extras", function (evt) {
@@ -1376,6 +1431,27 @@
     {
         /* your code goes here */
         googleSiginIn()
+        return false;
+    });
+
+        /* button  #btn-in-sensores */
+
+
+        /* button  #btn-in-sensores */
+    $(document).on("click", "#btn-in-sensores", function(evt)
+    {
+         /*global activate_subpage */
+         activate_subpage("#sub-page-config-seco");
+         return false;
+    });
+
+        /* button  #btn-res-incluir */
+    $(document).on("click", "#btn-res-incluir", function(evt)
+    {
+        /* your code goes here */
+        var data= {starts_at:"12:00:00", ends_at:"13:00:00"};
+        json_desativados.push(data);
+        angular.element($("#afui")).scope().getDesativados();
         return false;
     });
 
