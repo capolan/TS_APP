@@ -129,7 +129,7 @@
 
             if (json_feed != null) {
                 $("#text_info_modelo").append('AP=' + json_feed.channel.ip0 + '<br>');
-                $("#text_info_modelo").append('STA=' + json_feed.channel.ip1);
+                $("#text_info_modelo").append('STA=' + json_feed.channel.ip1 + '<br>');
                 $("#text_info_modelo").append(json_feed.channel.updated_ip_at + '(atualizado)<br>');
             }
 
@@ -282,17 +282,14 @@
         $(document).on("click", "#btn_home", function (evt) {
             /* your code goes here */
             var flag = rec_temperatura || rec_sensor_analogico;
-                activate_subpage("#uib_page_2");
-            return;
-                if (rec_sensor_seco && !flag)
+            if (json_user != undefined) {
+                    activate_subpage("#uib_page_painel");
+            } else
+                if (rec_sensor_seco)
                     activate_subpage("#uib_page_seco");
                 else
                     if (json_feed == null)
                         activate_subpage("#uib_page_2");
-                    else 
-                        if (json_feed.campos == undefined || json_feed.campos.length == 0)
-                        activate_subpage("#uib_page_painel");
-
         });
 
 
@@ -547,9 +544,9 @@
             document.getElementById("text-s-temp-min").value = jsonPath(json_config,"$.canal.field"+opt+"_min");
             document.getElementById("text-s-temp-max").value = jsonPath(json_config,"$.canal.field"+opt+"_max");
             if (json_config.canal.field_ocultar & (1<<opt)) {
-                document.getElementById("af-checkbox-ocultar-temp").checked=true;
+                document.getElementById("af-checkbox-ocultar-temp").checked=!true;
             } else {
-                document.getElementById("af-checkbox-ocultar-temp").checked=false;
+                document.getElementById("af-checkbox-ocultar-temp").checked=!false;
             }
         });
 

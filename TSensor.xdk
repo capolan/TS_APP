@@ -6,7 +6,7 @@
       "projectTypeName": "com.intel.xdk.projecttype.jsapp",
       "src": "appDesigner",
       "projectGuid": "654e0415-2f0e-4669-a4ab-6920442b6787",
-      "lastModifiedDate": 1517659881749,
+      "lastModifiedDate": 1532083804150,
       "creationDate": 1435255671699
     },
     "XDK-app-designer": "true",
@@ -1339,14 +1339,18 @@
           {
             "relPath": "package-assets/CAP_Tsensor01.mobileprovision",
             "type": "adhoc"
+          },
+          {
+            "relPath": "package-assets/Tsensor01_distribution.mobileprovision",
+            "type": "production"
           }
         ],
         "cordovaCLIVersion_": "6.5.0",
         "crosswalkVersion_": "11",
-        "appVersion_": "0.1.98",
+        "appVersion_": "0.1.103",
         "appAuthor_": "Carlos Alexandre Polanczyk",
         "appDescription_": "Sistema de monitoramento da SensorOnline",
-        "appVersionCode_": "0.1.98"
+        "appVersionCode_": "0.1.103"
       },
       "Windows8": {
         "platform_": "windows8",
@@ -1383,7 +1387,7 @@
         "runtime_": "W3C",
         "name_": "WebApp",
         "preferences_": {},
-        "isActive_": true,
+        "isActive_": false,
         "certificateId_": "",
         "appName_": "Teste",
         "appID_": "xdk.intel.blank.ad.template",
@@ -1611,10 +1615,10 @@
         "iosProvs_": [],
         "cordovaCLIVersion_": "6.5.0",
         "crosswalkVersion_": "23",
-        "appVersion_": "0.1.98",
+        "appVersion_": "0.1.103",
         "appAuthor_": "Carlos Alexandre Polanczyk",
         "appDescription_": "Monitoramento",
-        "appVersionCode_": "6026"
+        "appVersionCode_": "6031"
       }
     },
     "gameAssetDirectory": "asset",

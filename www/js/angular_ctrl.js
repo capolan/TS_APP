@@ -71,6 +71,7 @@ myApp.controller('myCtrl',  function($scope) {
         });
         $scope.sensores_seco = arr;
         $scope.campos = json_config.campos;
+        $scope.modelo = localDB.modelo;
         //console.log(json_feed.sensor);
         $scope.$apply();
     }
@@ -129,9 +130,17 @@ myApp.controller('myCtrl',  function($scope) {
         $scope.$apply();
     }
     $scope.getSensores = function() {
+        var arr=[];
+        var serie;
         if (json_feed == null) return;
         delete $scope.sensores;
-        $scope.sensores = json_feed.sensor;
+        json_feed.sensor.forEach(function(elem) {
+            if (elem.ocultar == 0) {
+              arr.push(elem);
+            }
+        });
+//        $scope.sensores = json_feed.sensor;
+        $scope.sensores = arr;
         //console.log(json_feed.sensor);
         $scope.$apply();
     }
@@ -143,13 +152,14 @@ myApp.controller('myCtrl',  function($scope) {
     }
     */
     $scope.goSensor = function(idx) {
-        var modelo, serie, chave, id, ref, modulo, sens;
+        var modelo, serie, chave, id, ref, modulo, sens, canal;
 
         modelo=$scope.sensores[idx].modelo;
         serie=$scope.sensores[idx].serie;
         chave=$scope.sensores[idx].chave;
         id=$scope.sensores[idx].idp;
         ref=$scope.sensores[idx].ref;
+        canal=$scope.sensores[idx].canal;
         modulo = Math.trunc(ref / 10);
         sens = ref % 10;
 
@@ -165,6 +175,11 @@ myApp.controller('myCtrl',  function($scope) {
             localDB.serie=serie;
             $("#chave").val(chave); 
             localDB.chave=chave;
+            //$("div.id_100 select").val("val2");
+            //$("#sel-meus-sensores option:eq("+selectOption+")").prop('selected', true);
+            //$("#sel-meus-sensores select").val(canal);
+            $("#sel-meus-sensores").val(canal).change();
+
             getMainConfig(0,id);
         }
     }
